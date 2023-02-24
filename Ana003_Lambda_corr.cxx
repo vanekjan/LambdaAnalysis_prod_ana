@@ -67,7 +67,7 @@ const double L_mass_PDG = 1.115683; //mass in GeV/c^2 from latest PDG
 const float L_y_cut = 1;
 //0 - hybrid TOF for both daughters, 1 - strict TOF for pions, 2 - strict TOF for both pion and proton
 //also check candidate tree - may have TOF requirement in production
-const int strictTOF_cut = 0;
+//const int strictTOF_cut = 0;
 const float L_cos_theta_cut = 0.996;
 const float L_decayL_cut = 25;
 
@@ -128,14 +128,14 @@ double LpairThetaStar(TLorentzVector L1, TLorentzVector p1, TLorentzVector L2, T
   return p1.Angle(p2.Vect());
 }
 
-bool cuts(int pi_hasTOFinfo, int p_hasTOFinfo, float L_y, float L_theta, float L_decayL)
+bool cuts(int strictTOF_cut, int pi_hasTOFinfo, int p_hasTOFinfo, float L_y)
 {
 
   if( !( TMath::Abs(L_y) < L_y_cut ) ) return false;
   if( strictTOF_cut == 1 && pi_hasTOFinfo == 0 ) return false; //TOF matched pions
   if( strictTOF_cut == 2 && (pi_hasTOFinfo == 0 || p_hasTOFinfo == 0) ) return false; //TOF matched pions and protons
-  if(cos(L_theta) < L_cos_theta_cut) return false;
-  if(L_decayL > L_decayL_cut) return false;
+  //if(cos(L_theta) < L_cos_theta_cut) return false;
+  //if(L_decayL > L_decayL_cut) return false;
 
   return true;
 
@@ -229,16 +229,16 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
 
   Int_t charge;
-  Float_t L_mass, L_pt, L_eta, L_decayL, L_theta, L_DCAdaughters;
+  Float_t L_mass, L_pt, L_eta; //, L_decayL, L_theta, L_DCAdaughters;
 
   Float_t pi_pt, p_pt;
   Float_t pi_eta, p_eta;
   Float_t pi_phi, p_phi;
   Int_t p_ch;
-  Float_t pi_dca, p_dca;
+  //Float_t pi_dca, p_dca;
   Int_t pi_hasTOFinfo, p_hasTOFinfo;
 
-  Float_t thetaProdPlane;
+  //Float_t thetaProdPlane;
 
   Int_t eventId;
 
@@ -251,26 +251,26 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
     L_tree->SetBranchAddress("pair_mass", &L_mass);
     L_tree->SetBranchAddress("pair_pt", &L_pt);
     L_tree->SetBranchAddress("pair_eta", &L_eta);
-    L_tree->SetBranchAddress("pair_decayL", &L_decayL);
-    L_tree->SetBranchAddress("pair_theta", &L_theta);
-    L_tree->SetBranchAddress("pair_DCAdaughters", &L_DCAdaughters);
+    //L_tree->SetBranchAddress("pair_decayL", &L_decayL);
+    //L_tree->SetBranchAddress("pair_theta", &L_theta);
+    //L_tree->SetBranchAddress("pair_DCAdaughters", &L_DCAdaughters);
 
     //pion is particle 2 in the pair niside the TTree
     L_tree->SetBranchAddress("p2_pt", &pi_pt);
     L_tree->SetBranchAddress("p2_eta", &pi_eta);
     L_tree->SetBranchAddress("p2_phi", &pi_phi);
-    L_tree->SetBranchAddress("p2_dca", &pi_dca);
+    //L_tree->SetBranchAddress("p2_dca", &pi_dca);
     L_tree->SetBranchAddress("p2_hasTOFinfo", &pi_hasTOFinfo);
 
     //proton is particle 1 in the pair niside the TTree
     L_tree->SetBranchAddress("p1_pt", &p_pt);
     L_tree->SetBranchAddress("p1_eta", &p_eta);
     L_tree->SetBranchAddress("p1_phi", &p_phi);
-    L_tree->SetBranchAddress("p1_dca", &p_dca);
+    //L_tree->SetBranchAddress("p1_dca", &p_dca);
     L_tree->SetBranchAddress("p1_ch", &p_ch);
     L_tree->SetBranchAddress("p1_hasTOFinfo", &p_hasTOFinfo);
 
-    L_tree->SetBranchAddress("thetaProdPlane", &thetaProdPlane);
+    //L_tree->SetBranchAddress("thetaProdPlane", &thetaProdPlane);
 
     L_tree->SetBranchAddress("eventId", &eventId);
 
@@ -303,7 +303,9 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
 
     //cuts
-    if( !cuts(pi_hasTOFinfo, p_hasTOFinfo, L_y, L_theta, L_decayL) ) continue;
+    //always require at least pion matched to TOF for imvariant mass
+    //need to suppress pileup to nice peaks and determine M_inv window for each bin
+    if( !cuts(1, pi_hasTOFinfo, p_hasTOFinfo, L_y) ) continue;
 
 
 
@@ -645,10 +647,10 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
         L0_inv_mass[pTbin][etaBin]->Draw("p e");
 
 
-        if( ( (energy == 510 || strictTOF_cut == 2) && pTbin > 0 ) || energy == 200 )//skip first pT bin for 510 GeV - no peak visisble
+        if( ( (energy == 510 ) && pTbin > 0 ) || energy == 200 )//skip first pT bin for 510 GeV - no peak visisble
         {
           //if( pTbin == 1 ) fitGauss_L0->SetParameters(2000, 1.116, 0.002);
-          if( ( ( energy == 510 || strictTOF_cut == 2 ) && pTbin == 1) ) fitGauss_L0->SetParameters(2000, 1.116, 0.002);
+          if( ( ( energy == 510 ) && pTbin == 1) ) fitGauss_L0->SetParameters(2000, 1.116, 0.002);
           else if( energy == 200) fitGauss_L0->SetParameters(50, 1.116, 0.002);
           else fitGauss_L0->SetParameters(fit_res_gaus_L0->Parameter(0), fit_res_gaus_L0->Parameter(1), fit_res_gaus_L0->Parameter(2));
 
@@ -755,10 +757,10 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
         L0bar_inv_mass[pTbin][etaBin]->Draw("p e");
 
 
-        if( ( (energy == 510 || strictTOF_cut == 2) && pTbin > 0 ) || energy == 200 )//skip first pT bin for 510 GeV - no peak visisble
+        if( ( (energy == 510 ) && pTbin > 0 ) || energy == 200 )//skip first pT bin for 510 GeV - no peak visisble
         {
           //if(   pTbin == 1 ) fitGauss_L0bar->SetParameters(2000, 1.116, 0.002);
-          if( ( (energy == 510 || strictTOF_cut == 2) && pTbin == 1) ) fitGauss_L0bar->SetParameters(2000, 1.116, 0.002);
+          if( ( (energy == 510 ) && pTbin == 1) ) fitGauss_L0bar->SetParameters(2000, 1.116, 0.002);
           else if( energy == 200 ) fitGauss_L0bar->SetParameters(50, 1.116, 0.002);
           else fitGauss_L0bar->SetParameters(fit_res_gaus_L0bar->Parameter(0), fit_res_gaus_L0bar->Parameter(1), fit_res_gaus_L0bar->Parameter(2));
 
@@ -1344,16 +1346,16 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   Long64_t nEntries = 0; //total nEntries
 
   Int_t charge;
-  Float_t L_mass, L_pt, L_eta, L_phi, L_decayL, L_theta, L_DCAdaughters;
+  Float_t L_mass, L_pt, L_eta, L_phi;//, L_decayL, L_theta, L_DCAdaughters;
 
   Float_t pi_pt, p_pt;
   Float_t pi_eta, p_eta;
   Float_t pi_phi, p_phi;
   Int_t p_ch;
-  Float_t pi_dca, p_dca;
+  //Float_t pi_dca, p_dca;
   Int_t pi_hasTOFinfo, p_hasTOFinfo;
 
-  Float_t thetaProdPlane;
+  //Float_t thetaProdPlane;
 
   Int_t eventId;
 
@@ -1366,26 +1368,26 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
     L_tree->SetBranchAddress("pair_pt", &L_pt);
     L_tree->SetBranchAddress("pair_eta", &L_eta);
     L_tree->SetBranchAddress("pair_phi", &L_phi);
-    L_tree->SetBranchAddress("pair_decayL", &L_decayL);
-    L_tree->SetBranchAddress("pair_theta", &L_theta);
-    L_tree->SetBranchAddress("pair_DCAdaughters", &L_DCAdaughters);
+    //L_tree->SetBranchAddress("pair_decayL", &L_decayL);
+    //L_tree->SetBranchAddress("pair_theta", &L_theta);
+    //L_tree->SetBranchAddress("pair_DCAdaughters", &L_DCAdaughters);
 
     //pion is particle 2 in the pair niside the TTree
     L_tree->SetBranchAddress("p2_pt", &pi_pt);
     L_tree->SetBranchAddress("p2_eta", &pi_eta);
     L_tree->SetBranchAddress("p2_phi", &pi_phi);
-    L_tree->SetBranchAddress("p2_dca", &pi_dca);
+    //L_tree->SetBranchAddress("p2_dca", &pi_dca);
     L_tree->SetBranchAddress("p2_hasTOFinfo", &pi_hasTOFinfo);
 
     //proton is particle 1 in the pair niside the TTree
     L_tree->SetBranchAddress("p1_pt", &p_pt);
     L_tree->SetBranchAddress("p1_eta", &p_eta);
     L_tree->SetBranchAddress("p1_phi", &p_phi);
-    L_tree->SetBranchAddress("p1_dca", &p_dca);
+    //L_tree->SetBranchAddress("p1_dca", &p_dca);
     L_tree->SetBranchAddress("p1_ch", &p_ch);
     L_tree->SetBranchAddress("p1_hasTOFinfo", &p_hasTOFinfo);
 
-    L_tree->SetBranchAddress("thetaProdPlane", &thetaProdPlane);
+    //L_tree->SetBranchAddress("thetaProdPlane", &thetaProdPlane);
 
     L_tree->SetBranchAddress("eventId", &eventId);
 
@@ -1542,7 +1544,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       if(eventId == eventID_last) //same event as in previous iteration and first event
       {
         //cuts
-        if( cuts(pi_hasTOFinfo, p_hasTOFinfo, L_y, L_theta, L_decayL) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
+        if( cuts(0, pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
         {
           if( p_ch == 1 && L_mass > invMassRange_L0[0][pT_bin][eta_bin] && L_mass < invMassRange_L0[1][pT_bin][eta_bin])
           {
@@ -1581,6 +1583,8 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
             {
               double L_Lbar_pairThetaStar = LpairThetaStar(L_vector.at(iLambda), p_vector.at(iLambda), Lbar_vector.at(iLambdaBar), pbar_vector.at(iLambdaBar));
 
+              //if( fabs(p_vector.at(iLambda).Rapidity()) < 0.001  ) continue;
+
               L0_L0bar_cosThetaProdPlane_US_hist->Fill(TMath::Cos(L_Lbar_pairThetaStar));
               L0_L0bar_cosThetaProdPlane_pT_US_hist[L_pT_bin_vector.at(iLambda)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
               L0_L0bar_cosThetaProdPlane_eta_US_hist[L_eta_bin_vector.at(iLambda)][Lbar_eta_bin_vector.at(iLambdaBar)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
@@ -1616,8 +1620,10 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
           {
             for(unsigned int iLambda2 = iLambda1+1; iLambda2 < L_vector.size(); iLambda2++)
             {
-              if(p_vector.at(iLambda1).Phi() == p_vector.at(iLambda2).Phi()) continue;
-              if(pi_vector.at(iLambda1).Phi() == pi_vector.at(iLambda2).Phi()) continue;
+              //if( fabs(p_vector.at(iLambda1).Rapidity()) < 0.001 || fabs(p_vector.at(iLambda2).Rapidity()) < 0.001 ) continue;
+
+              if(p_vector.at(iLambda1).Rapidity() == p_vector.at(iLambda2).Rapidity()) continue;
+              if(pi_vector.at(iLambda1).Rapidity() == pi_vector.at(iLambda2).Rapidity()) continue;
 
               double L_L_pairThetaStar = LpairThetaStar(L_vector.at(iLambda1), p_vector.at(iLambda1), L_vector.at(iLambda2), p_vector.at(iLambda2));
 
@@ -1654,8 +1660,8 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
           {
             for(unsigned int iLambdaBar2 = iLambdaBar1+1; iLambdaBar2 < Lbar_vector.size(); iLambdaBar2++)
             {
-              if(pbar_vector.at(iLambdaBar1).Phi() == pbar_vector.at(iLambdaBar2).Phi()) continue;
-              if(pibar_vector.at(iLambdaBar1).Phi() == pibar_vector.at(iLambdaBar2).Phi()) continue;
+              if(pbar_vector.at(iLambdaBar1).Rapidity() == pbar_vector.at(iLambdaBar2).Rapidity()) continue;
+              if(pibar_vector.at(iLambdaBar1).Rapidity() == pibar_vector.at(iLambdaBar2).Rapidity()) continue;
 
               double Lbar_Lbar_pairThetaStar = LpairThetaStar(Lbar_vector.at(iLambdaBar1), pbar_vector.at(iLambdaBar1), Lbar_vector.at(iLambdaBar2), pbar_vector.at(iLambdaBar2));
 
@@ -1739,7 +1745,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
         //fill L or Lbar from new event
         //need to check cuts again in the new event
-        if( cuts(pi_hasTOFinfo, p_hasTOFinfo, L_y, L_theta, L_decayL) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
+        if( cuts(0,pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
         {
           if( p_ch == 1 && L_mass > invMassRange_L0[0][pT_bin][eta_bin] && L_mass < invMassRange_L0[1][pT_bin][eta_bin])
           {
@@ -1788,7 +1794,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       if(eventId == eventID_last_background) //same event as in previous iteration
       {
         //cuts
-        if( cuts(pi_hasTOFinfo, p_hasTOFinfo, L_y, L_theta, L_decayL) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
+        if( cuts(0,pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
         {
           if( p_ch == 1 && L_mass > invMassRange_L0[0][pT_bin][eta_bin] && L_mass < invMassRange_L0[1][pT_bin][eta_bin])
           {
@@ -1824,6 +1830,8 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
           {
             for(unsigned int iLambdaBar = 0; iLambdaBar < Lbar_vector_background.size(); iLambdaBar++)
             {
+              //if( fabs(p_vector_background.at(iLambda).Rapidity()) < 0.001  ) continue;
+
               double L_Lbar_pairThetaStar = LpairThetaStar(L_vector_background.at(iLambda), p_vector_background.at(iLambda), Lbar_vector_background.at(iLambdaBar), pbar_vector_background.at(iLambdaBar));
 
               L0_L0bar_cosThetaProdPlane_LS_hist->Fill(TMath::Cos(L_Lbar_pairThetaStar));
@@ -1859,8 +1867,10 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
           {
             for(unsigned int iLambda2 = iLambda1+1; iLambda2 < L_vector_background.size(); iLambda2++)
             {
-              if(p_vector_background.at(iLambda1).Phi() == p_vector_background.at(iLambda2).Phi()) continue;
-              if(pi_vector_background.at(iLambda1).Phi() == pi_vector_background.at(iLambda2).Phi()) continue;
+              //if( fabs(p_vector_background.at(iLambda1).Rapidity()) < 0.001 || fabs(p_vector_background.at(iLambda2).Rapidity()) < 0.001 ) continue;
+
+              if(p_vector_background.at(iLambda1).Rapidity() == p_vector_background.at(iLambda2).Rapidity()) continue;
+              if(pi_vector_background.at(iLambda1).Rapidity() == pi_vector_background.at(iLambda2).Rapidity()) continue;
 
               double L_L_pairThetaStar = LpairThetaStar(L_vector_background.at(iLambda1), p_vector_background.at(iLambda1), L_vector_background.at(iLambda2), p_vector_background.at(iLambda2));
 
@@ -1896,8 +1906,8 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
           {
             for(unsigned int iLambdaBar2 = iLambdaBar1+1; iLambdaBar2 < Lbar_vector_background.size(); iLambdaBar2++)
             {
-              if(pbar_vector_background.at(iLambdaBar1).Phi() == pbar_vector_background.at(iLambdaBar2).Phi()) continue;
-              if(pibar_vector_background.at(iLambdaBar1).Phi() == pibar_vector_background.at(iLambdaBar2).Phi()) continue;
+              if(pbar_vector_background.at(iLambdaBar1).Rapidity() == pbar_vector_background.at(iLambdaBar2).Rapidity()) continue;
+              if(pibar_vector_background.at(iLambdaBar1).Rapidity() == pibar_vector_background.at(iLambdaBar2).Rapidity()) continue;
 
               double Lbar_Lbar_pairThetaStar = LpairThetaStar(Lbar_vector_background.at(iLambdaBar1), pbar_vector_background.at(iLambdaBar1), Lbar_vector_background.at(iLambdaBar2), pbar_vector_background.at(iLambdaBar2));
 
@@ -1944,7 +1954,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
         pibar_vector_background.clear();
 
         //cuts
-        if( cuts(pi_hasTOFinfo, p_hasTOFinfo, L_y, L_theta, L_decayL) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
+        if( cuts(0,pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
         {
           if( p_ch == 1 && L_mass > invMassRange_L0[0][pT_bin][eta_bin] && L_mass < invMassRange_L0[1][pT_bin][eta_bin])
           {
@@ -2775,7 +2785,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_L0bar_delta_eta_vs_delta_phi_can->cd();
 
-  //L0_L0bar_delta_eta_vs_delta_phi_US_hist->Add(L0_L0bar_delta_eta_vs_delta_phi_LS_hist, -1);
+  L0_L0bar_delta_eta_vs_delta_phi_US_hist->Add(L0_L0bar_delta_eta_vs_delta_phi_LS_hist, -1);
   L0_L0bar_delta_eta_vs_delta_phi_US_hist->GetXaxis()->SetTitle("#Delta#eta");
   L0_L0bar_delta_eta_vs_delta_phi_US_hist->GetXaxis()->CenterTitle();
   L0_L0bar_delta_eta_vs_delta_phi_US_hist->GetYaxis()->SetTitle("#Delta#phi");
@@ -2789,7 +2799,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_L0bar_y1_vs_y2_can->cd();
 
-  //L0_L0bar_y1_vs_y2_US_hist->Add(L0_L0bar_y1_vs_y2_LS_hist, -1);
+  L0_L0bar_y1_vs_y2_US_hist->Add(L0_L0bar_y1_vs_y2_LS_hist, -1);
   L0_L0bar_y1_vs_y2_US_hist->GetXaxis()->SetTitle("y_{#Lambda}");
   L0_L0bar_y1_vs_y2_US_hist->GetXaxis()->CenterTitle();
   L0_L0bar_y1_vs_y2_US_hist->GetYaxis()->SetTitle("y_{#bar{#Lambda}}");
@@ -2803,7 +2813,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_L0bar_pT1_vs_pT2_can->cd();
 
-  //L0_L0bar_pT1_vs_pT2_US_hist->Add(L0_L0bar_pT1_vs_pT2_LS_hist, -1);
+  L0_L0bar_pT1_vs_pT2_US_hist->Add(L0_L0bar_pT1_vs_pT2_LS_hist, -1);
   L0_L0bar_pT1_vs_pT2_US_hist->GetXaxis()->SetTitle("p_{T}(#Lambda) (GeV/#it{c})");
   L0_L0bar_pT1_vs_pT2_US_hist->GetXaxis()->CenterTitle();
   L0_L0bar_pT1_vs_pT2_US_hist->GetYaxis()->SetTitle("p_{T}(#bar{#Lambda}) (GeV/#it{c})");
@@ -2817,7 +2827,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_L0bar_phi1_vs_phi2_can->cd();
 
-  //L0_L0bar_phi1_vs_phi2_US_hist->Add(L0_L0bar_phi1_vs_phi2_LS_hist, -1);
+  L0_L0bar_phi1_vs_phi2_US_hist->Add(L0_L0bar_phi1_vs_phi2_LS_hist, -1);
   L0_L0bar_phi1_vs_phi2_US_hist->GetXaxis()->SetTitle("#phi_{#Lambda}");
   L0_L0bar_phi1_vs_phi2_US_hist->GetXaxis()->CenterTitle();
   L0_L0bar_phi1_vs_phi2_US_hist->GetYaxis()->SetTitle("#phi_{#bar{#Lambda}}");
@@ -2835,7 +2845,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_L0_delta_eta_vs_delta_phi_can->cd();
 
-  //L0_L0_delta_eta_vs_delta_phi_US_hist->Add(L0_L0_delta_eta_vs_delta_phi_LS_hist, -1);
+  L0_L0_delta_eta_vs_delta_phi_US_hist->Add(L0_L0_delta_eta_vs_delta_phi_LS_hist, -1);
   L0_L0_delta_eta_vs_delta_phi_US_hist->GetXaxis()->SetTitle("#Delta#eta");
   L0_L0_delta_eta_vs_delta_phi_US_hist->GetXaxis()->CenterTitle();
   L0_L0_delta_eta_vs_delta_phi_US_hist->GetYaxis()->SetTitle("#Delta#phi");
@@ -2849,7 +2859,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_L0_delta_eta_vs_delta_phi_zoom_can->cd();
 
-  //L0_L0_delta_eta_vs_delta_phi_US_zoom_hist->Add(L0_L0_delta_eta_vs_delta_phi_LS_zoom_hist, -1);
+  L0_L0_delta_eta_vs_delta_phi_US_zoom_hist->Add(L0_L0_delta_eta_vs_delta_phi_LS_zoom_hist, -1);
   L0_L0_delta_eta_vs_delta_phi_US_zoom_hist->GetXaxis()->SetTitle("#Delta#eta");
   L0_L0_delta_eta_vs_delta_phi_US_zoom_hist->GetXaxis()->CenterTitle();
   L0_L0_delta_eta_vs_delta_phi_US_zoom_hist->GetYaxis()->SetTitle("#Delta#phi");
@@ -2863,7 +2873,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_L0_y1_vs_y2_can->cd();
 
-  //L0_L0_y1_vs_y2_US_hist->Add(L0_L0_y1_vs_y2_LS_hist, -1);
+  L0_L0_y1_vs_y2_US_hist->Add(L0_L0_y1_vs_y2_LS_hist, -1);
   L0_L0_y1_vs_y2_US_hist->GetXaxis()->SetTitle("y_{#Lambda}");
   L0_L0_y1_vs_y2_US_hist->GetXaxis()->CenterTitle();
   L0_L0_y1_vs_y2_US_hist->GetYaxis()->SetTitle("y_{#Lambda}");
@@ -2877,7 +2887,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_p_L0_p_y1_vs_y2_can->cd();
 
-  //L0_p_L0_p_y1_vs_y2_US_hist->Add(L0_p_L0_p_y1_vs_y2_LS_hist, -1);
+  L0_p_L0_p_y1_vs_y2_US_hist->Add(L0_p_L0_p_y1_vs_y2_LS_hist, -1);
   L0_p_L0_p_y1_vs_y2_US_hist->GetXaxis()->SetTitle("y_{p}");
   L0_p_L0_p_y1_vs_y2_US_hist->GetXaxis()->CenterTitle();
   L0_p_L0_p_y1_vs_y2_US_hist->GetYaxis()->SetTitle("y_{p}");
@@ -2891,7 +2901,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_pi_L0_pi_y1_vs_y2_can->cd();
 
-  //L0_pi_L0_pi_y1_vs_y2_US_hist->Add(L0_pi_L0_pi_y1_vs_y2_LS_hist, -1);
+  L0_pi_L0_pi_y1_vs_y2_US_hist->Add(L0_pi_L0_pi_y1_vs_y2_LS_hist, -1);
   L0_pi_L0_pi_y1_vs_y2_US_hist->GetXaxis()->SetTitle("y_{#pi^{-}}");
   L0_pi_L0_pi_y1_vs_y2_US_hist->GetXaxis()->CenterTitle();
   L0_pi_L0_pi_y1_vs_y2_US_hist->GetYaxis()->SetTitle("y_{#pi^{-}}");
@@ -2905,7 +2915,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_L0_pT1_vs_pT2_can->cd();
 
-  //L0_L0_pT1_vs_pT2_US_hist->Add(L0_L0_pT1_vs_pT2_LS_hist, -1);
+  L0_L0_pT1_vs_pT2_US_hist->Add(L0_L0_pT1_vs_pT2_LS_hist, -1);
   L0_L0_pT1_vs_pT2_US_hist->GetXaxis()->SetTitle("p_{T}(#Lambda) (GeV/#it{c})");
   L0_L0_pT1_vs_pT2_US_hist->GetXaxis()->CenterTitle();
   L0_L0_pT1_vs_pT2_US_hist->GetYaxis()->SetTitle("p_{T}(#Lambda) (GeV/#it{c})");
@@ -2919,7 +2929,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_L0_phi1_vs_phi2_can->cd();
 
-  //L0_L0_phi1_vs_phi2_US_hist->Add(L0_L0_phi1_vs_phi2_LS_hist, -1);
+  L0_L0_phi1_vs_phi2_US_hist->Add(L0_L0_phi1_vs_phi2_LS_hist, -1);
   L0_L0_phi1_vs_phi2_US_hist->GetXaxis()->SetTitle("#phi_{#Lambda}");
   L0_L0_phi1_vs_phi2_US_hist->GetXaxis()->CenterTitle();
   L0_L0_phi1_vs_phi2_US_hist->GetYaxis()->SetTitle("#phi_{#Lambda}");
@@ -2933,7 +2943,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_p_L0_p_phi1_vs_phi2_can->cd();
 
-  //L0_p_L0_p_phi1_vs_phi2_US_hist->Add(L0_p_L0_p_phi1_vs_phi2_LS_hist, -1);
+  L0_p_L0_p_phi1_vs_phi2_US_hist->Add(L0_p_L0_p_phi1_vs_phi2_LS_hist, -1);
   L0_p_L0_p_phi1_vs_phi2_US_hist->GetXaxis()->SetTitle("#phi_{p}");
   L0_p_L0_p_phi1_vs_phi2_US_hist->GetXaxis()->CenterTitle();
   L0_p_L0_p_phi1_vs_phi2_US_hist->GetYaxis()->SetTitle("#phi_{p}");
@@ -2947,7 +2957,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0_pi_L0_pi_phi1_vs_phi2_can->cd();
 
-  //L0_pi_L0_pi_phi1_vs_phi2_US_hist->Add(L0_pi_L0_pi_phi1_vs_phi2_LS_hist, -1);
+  L0_pi_L0_pi_phi1_vs_phi2_US_hist->Add(L0_pi_L0_pi_phi1_vs_phi2_LS_hist, -1);
   L0_pi_L0_pi_phi1_vs_phi2_US_hist->GetXaxis()->SetTitle("#phi_{#pi^{-}}");
   L0_pi_L0_pi_phi1_vs_phi2_US_hist->GetXaxis()->CenterTitle();
   L0_pi_L0_pi_phi1_vs_phi2_US_hist->GetYaxis()->SetTitle("#phi_{#pi^{-}}");
@@ -2963,7 +2973,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0bar_L0bar_delta_eta_vs_delta_phi_can->cd();
 
-  //L0bar_L0bar_delta_eta_vs_delta_phi_US_hist->Add(L0bar_L0bar_delta_eta_vs_delta_phi_LS_hist, -1);
+  L0bar_L0bar_delta_eta_vs_delta_phi_US_hist->Add(L0bar_L0bar_delta_eta_vs_delta_phi_LS_hist, -1);
   L0bar_L0bar_delta_eta_vs_delta_phi_US_hist->GetXaxis()->SetTitle("#Delta#eta");
   L0bar_L0bar_delta_eta_vs_delta_phi_US_hist->GetXaxis()->CenterTitle();
   L0bar_L0bar_delta_eta_vs_delta_phi_US_hist->GetYaxis()->SetTitle("#Delta#phi");
@@ -2977,7 +2987,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0bar_L0bar_delta_eta_vs_delta_phi_zoom_can->cd();
 
-  //L0bar_L0bar_delta_eta_vs_delta_phi_US_zoom_hist->Add(L0bar_L0bar_delta_eta_vs_delta_phi_LS_zoom_hist, -1);
+  L0bar_L0bar_delta_eta_vs_delta_phi_US_zoom_hist->Add(L0bar_L0bar_delta_eta_vs_delta_phi_LS_zoom_hist, -1);
   L0bar_L0bar_delta_eta_vs_delta_phi_US_zoom_hist->GetXaxis()->SetTitle("#Delta#eta");
   L0bar_L0bar_delta_eta_vs_delta_phi_US_zoom_hist->GetXaxis()->CenterTitle();
   L0bar_L0bar_delta_eta_vs_delta_phi_US_zoom_hist->GetYaxis()->SetTitle("#Delta#phi");
@@ -2991,7 +3001,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0bar_L0bar_y1_vs_y2_can->cd();
 
-  //L0bar_L0bar_y1_vs_y2_US_hist->Add(L0bar_L0bar_y1_vs_y2_LS_hist, -1);
+  L0bar_L0bar_y1_vs_y2_US_hist->Add(L0bar_L0bar_y1_vs_y2_LS_hist, -1);
   L0bar_L0bar_y1_vs_y2_US_hist->GetXaxis()->SetTitle("y_{#bar{#Lambda}}");
   L0bar_L0bar_y1_vs_y2_US_hist->GetXaxis()->CenterTitle();
   L0bar_L0bar_y1_vs_y2_US_hist->GetYaxis()->SetTitle("y_{#bar{#Lambda}}");
@@ -3005,7 +3015,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0bar_p_L0bar_p_y1_vs_y2_can->cd();
 
-  //L0bar_p_L0bar_p_y1_vs_y2_US_hist->Add(L0bar_p_L0bar_p_y1_vs_y2_LS_hist, -1);
+  L0bar_p_L0bar_p_y1_vs_y2_US_hist->Add(L0bar_p_L0bar_p_y1_vs_y2_LS_hist, -1);
   L0bar_p_L0bar_p_y1_vs_y2_US_hist->GetXaxis()->SetTitle("y_{#bar{p}}");
   L0bar_p_L0bar_p_y1_vs_y2_US_hist->GetXaxis()->CenterTitle();
   L0bar_p_L0bar_p_y1_vs_y2_US_hist->GetYaxis()->SetTitle("y_{#bar{p}}");
@@ -3019,7 +3029,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0bar_pi_L0bar_pi_y1_vs_y2_can->cd();
 
-  //L0bar_pi_L0bar_pi_y1_vs_y2_US_hist->Add(L0bar_pi_L0bar_pi_y1_vs_y2_LS_hist, -1);
+  L0bar_pi_L0bar_pi_y1_vs_y2_US_hist->Add(L0bar_pi_L0bar_pi_y1_vs_y2_LS_hist, -1);
   L0bar_pi_L0bar_pi_y1_vs_y2_US_hist->GetXaxis()->SetTitle("y_{#pi^{+}}");
   L0bar_pi_L0bar_pi_y1_vs_y2_US_hist->GetXaxis()->CenterTitle();
   L0bar_pi_L0bar_pi_y1_vs_y2_US_hist->GetYaxis()->SetTitle("y_{#pi^{+}}");
@@ -3033,7 +3043,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0bar_L0bar_pT1_vs_pT2_can->cd();
 
-  //L0bar_L0bar_pT1_vs_pT2_US_hist->Add(L0bar_L0bar_pT1_vs_pT2_LS_hist, -1);
+  L0bar_L0bar_pT1_vs_pT2_US_hist->Add(L0bar_L0bar_pT1_vs_pT2_LS_hist, -1);
   L0bar_L0bar_pT1_vs_pT2_US_hist->GetXaxis()->SetTitle("p_{T}(#bar{#Lambda}) (GeV/#it{c})");
   L0bar_L0bar_pT1_vs_pT2_US_hist->GetXaxis()->CenterTitle();
   L0bar_L0bar_pT1_vs_pT2_US_hist->GetYaxis()->SetTitle("p_{T}(#bar{#Lambda}) (GeV/#it{c})");
@@ -3047,7 +3057,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0bar_L0bar_phi1_vs_phi2_can->cd();
 
-  //L0bar_L0bar_phi1_vs_phi2_US_hist->Add(L0bar_L0bar_phi1_vs_phi2_LS_hist, -1);
+  L0bar_L0bar_phi1_vs_phi2_US_hist->Add(L0bar_L0bar_phi1_vs_phi2_LS_hist, -1);
   L0bar_L0bar_phi1_vs_phi2_US_hist->GetXaxis()->SetTitle("#phi_{#bar{#Lambda}}");
   L0bar_L0bar_phi1_vs_phi2_US_hist->GetXaxis()->CenterTitle();
   L0bar_L0bar_phi1_vs_phi2_US_hist->GetYaxis()->SetTitle("#phi_{#bar{#Lambda}}");
@@ -3061,7 +3071,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0bar_p_L0bar_p_phi1_vs_phi2_can->cd();
 
-  //L0bar_p_L0bar_p_phi1_vs_phi2_US_hist->Add(L0bar_p_L0bar_p_phi1_vs_phi2_LS_hist, -1);
+  L0bar_p_L0bar_p_phi1_vs_phi2_US_hist->Add(L0bar_p_L0bar_p_phi1_vs_phi2_LS_hist, -1);
   L0bar_p_L0bar_p_phi1_vs_phi2_US_hist->GetXaxis()->SetTitle("#phi_{#bar{p}}");
   L0bar_p_L0bar_p_phi1_vs_phi2_US_hist->GetXaxis()->CenterTitle();
   L0bar_p_L0bar_p_phi1_vs_phi2_US_hist->GetYaxis()->SetTitle("#phi_{#bar{p}}");
@@ -3075,7 +3085,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   L0bar_pi_L0bar_pi_phi1_vs_phi2_can->cd();
 
-  //L0bar_pi_L0bar_pi_phi1_vs_phi2_US_hist->Add(L0bar_pi_L0bar_pi_phi1_vs_phi2_LS_hist, -1);
+  L0bar_pi_L0bar_pi_phi1_vs_phi2_US_hist->Add(L0bar_pi_L0bar_pi_phi1_vs_phi2_LS_hist, -1);
   L0bar_pi_L0bar_pi_phi1_vs_phi2_US_hist->GetXaxis()->SetTitle("#phi_{#pi^{+}}");
   L0bar_pi_L0bar_pi_phi1_vs_phi2_US_hist->GetXaxis()->CenterTitle();
   L0bar_pi_L0bar_pi_phi1_vs_phi2_US_hist->GetYaxis()->SetTitle("#phi_{#pi^{+}}");
@@ -3171,7 +3181,7 @@ void Ana003_Lambda_corr(const int ReadMode = 0, const int trigger = 0, const int
     if(trigger == 1) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17_JP2/fileList.list");
 
     //MB without strict TOF matching
-    if(trigger == 2) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17_MB_no_TOF_match/fileList.list");
+    if(trigger == 2) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17_MB_noTOF/fileList.list");
 
   }
   else if(energy == 200)
@@ -3181,6 +3191,9 @@ void Ana003_Lambda_corr(const int ReadMode = 0, const int trigger = 0, const int
 
     //JP2
     if(trigger == 1) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12_JP2/fileList.list");
+
+    //MB without strict TOF matching
+    if(trigger == 2) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12_MB_noTOF/fileList.list");
 
   }
   else
