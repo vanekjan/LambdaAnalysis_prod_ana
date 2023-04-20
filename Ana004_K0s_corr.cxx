@@ -58,16 +58,17 @@ const int nPtBins_corr = 2;
 float const pT_bins_corr[nPtBins_corr+1] = { 0.5, 1.5, 5.};
 
 const int nEtaBins = 3;
-float const eta_bins[nEtaBins+1] = { -1, -0.4, 0.4, 1 };
+float const eta_bins[nEtaBins+1] = { -1, -0.2, 0.2, 1 };
+//float const eta_bins[nEtaBins+1] = { -1, -0.4, 0.4, 1 };
 
 //const double p_mass_PDG = 0.93827208816; //p mass on GeV/c^2 from latest PDG
 const double pi_mass_PDG = 0.13957039; //p mass on GeV/c^2 from latest PDG
 const double K0s_mass_PDG = 1.115683; //mass in GeV/c^2 from latest PDG
 
 const float K0s_y_cut = 1;
-const int strictTOF_cut = 1; //0 - hybrid TOF for both daughters, 1 - strict TOF for pions, 2 - strict TOF for both pion and proton
-const float K0s_cos_theta_cut = 0.996;
-const float K0s_decayK0s_cut = 25;
+//const int strictTOF_cut = 1; //0 - hybrid TOF for both daughters, 1 - strict TOF for pions, 2 - strict TOF for both pion and proton
+//const float K0s_cos_theta_cut = 0.996;
+//const float K0s_decayK0s_cut = 25;
 
 
 Double_t LinFunc(Double_t *x, Double_t *par)
@@ -126,14 +127,14 @@ double LpairThetaStar(TLorentzVector L1, TLorentzVector p1, TLorentzVector L2, T
   return p1.Angle(p2.Vect());
 }
 
-bool cuts(int pi1_hasTOFinfo, int pi2_hasTOFinfo, float K0s_y, float K0s_theta, float K0s_decayL)
+bool cuts(int strictTOF_cut, int pi1_hasTOFinfo, int pi2_hasTOFinfo, float K0s_y)
 {
 
   if( !( TMath::Abs(K0s_y) < K0s_y_cut ) ) return false;
   if( strictTOF_cut == 1 && pi1_hasTOFinfo == 0 ) return false; //TOF matched pions
   if( strictTOF_cut == 2 && (pi1_hasTOFinfo == 0 || pi2_hasTOFinfo == 0) ) return false; //TOF matched pions and protons
-  if(cos(K0s_theta) < K0s_cos_theta_cut) return false;
-  if(K0s_decayL > K0s_decayK0s_cut) return false;
+  //if(cos(K0s_theta) < K0s_cos_theta_cut) return false;
+  //if(K0s_decayL > K0s_decayK0s_cut) return false;
 
   return true;
 
@@ -170,7 +171,7 @@ bool InvMass(TChain *K0s_tree, double (&invMassRange)[2][nPtBins+1][nEtaBins+1],
 
 
   Int_t charge;
-  Float_t K0s_mass, K0s_pt, K0s_eta, K0s_decayL, K0s_theta, K0s_DCAdaughters;
+  Float_t K0s_mass, K0s_pt, K0s_eta;//, K0s_decayL, K0s_theta, K0s_DCAdaughters;
 
 
   Float_t pi1_pt, pi2_pt;
@@ -180,7 +181,7 @@ bool InvMass(TChain *K0s_tree, double (&invMassRange)[2][nPtBins+1][nEtaBins+1],
   Int_t pi1_hasTOFinfo, pi2_hasTOFinfo;
 
 
-  Float_t thetaProdPlane;
+  //Float_t thetaProdPlane;
 
 
   //---------------SET BARANCH ADDRESSES------------------------
@@ -188,9 +189,9 @@ bool InvMass(TChain *K0s_tree, double (&invMassRange)[2][nPtBins+1][nEtaBins+1],
   K0s_tree->SetBranchAddress("pair_mass", &K0s_mass);
   K0s_tree->SetBranchAddress("pair_pt", &K0s_pt);
   K0s_tree->SetBranchAddress("pair_eta", &K0s_eta);
-  K0s_tree->SetBranchAddress("pair_decayL", &K0s_decayL);
-  K0s_tree->SetBranchAddress("pair_theta", &K0s_theta);
-  K0s_tree->SetBranchAddress("pair_DCAdaughters", &K0s_DCAdaughters);
+  //K0s_tree->SetBranchAddress("pair_decayL", &K0s_decayL);
+  //K0s_tree->SetBranchAddress("pair_theta", &K0s_theta);
+  //K0s_tree->SetBranchAddress("pair_DCAdaughters", &K0s_DCAdaughters);
 
   K0s_tree->SetBranchAddress("p1_pt", &pi1_pt);
   K0s_tree->SetBranchAddress("p1_eta", &pi1_eta);
@@ -203,7 +204,7 @@ bool InvMass(TChain *K0s_tree, double (&invMassRange)[2][nPtBins+1][nEtaBins+1],
   K0s_tree->SetBranchAddress("p2_phi", &pi2_phi);
   K0s_tree->SetBranchAddress("p2_hasTOFinfo", &pi2_hasTOFinfo);
 
-  K0s_tree->SetBranchAddress("thetaProdPlane", &thetaProdPlane);
+  //K0s_tree->SetBranchAddress("thetaProdPlane", &thetaProdPlane);
 
   //--------------------------------------------------------------------------
 
@@ -266,7 +267,8 @@ bool InvMass(TChain *K0s_tree, double (&invMassRange)[2][nPtBins+1][nEtaBins+1],
     //------------------------------------------------------------------------------------------------------------------
 
     //cuts
-    if( !cuts(pi1_hasTOFinfo, pi2_hasTOFinfo, K0s_y, K0s_theta, K0s_decayL) ) continue;
+    //one pi matched for Minv
+    if( !cuts(1, pi1_hasTOFinfo, pi2_hasTOFinfo, K0s_y) ) continue;
 
     //----------------------------------------------------------------------------------------------------------------
 
@@ -560,7 +562,7 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
   Long64_t nEntries = 0; //total nEntries
 
   Int_t charge;
-  Float_t K0s_mass, K0s_pt, K0s_eta, K0s_phi, K0s_decayL, K0s_theta, K0s_DCAdaughters;
+  Float_t K0s_mass, K0s_pt, K0s_eta, K0s_phi;//, K0s_decayL, K0s_theta, K0s_DCAdaughters;
 
   Float_t pi2_pt, pi1_pt;
   Float_t pi2_eta, pi1_eta;
@@ -569,7 +571,7 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
   Float_t pi2_dca, pi1_dca;
   Int_t pi2_hasTOFinfo, pi1_hasTOFinfo;
 
-  Float_t thetaProdPlane;
+  //Float_t thetaProdPlane;
 
   Int_t eventId;
 
@@ -582,15 +584,15 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
     K0s_tree->SetBranchAddress("pair_pt", &K0s_pt);
     K0s_tree->SetBranchAddress("pair_eta", &K0s_eta);
     K0s_tree->SetBranchAddress("pair_phi", &K0s_phi);
-    K0s_tree->SetBranchAddress("pair_decayL", &K0s_decayL);
-    K0s_tree->SetBranchAddress("pair_theta", &K0s_theta);
-    K0s_tree->SetBranchAddress("pair_DCAdaughters", &K0s_DCAdaughters);
+    //K0s_tree->SetBranchAddress("pair_decayL", &K0s_decayL);
+    //K0s_tree->SetBranchAddress("pair_theta", &K0s_theta);
+    //K0s_tree->SetBranchAddress("pair_DCAdaughters", &K0s_DCAdaughters);
 
     //pion 1
     K0s_tree->SetBranchAddress("p1_pt", &pi1_pt);
     K0s_tree->SetBranchAddress("p1_eta", &pi1_eta);
     K0s_tree->SetBranchAddress("p1_phi", &pi1_phi);
-    K0s_tree->SetBranchAddress("p1_dca", &pi1_dca);
+    //K0s_tree->SetBranchAddress("p1_dca", &pi1_dca);
     K0s_tree->SetBranchAddress("p1_hasTOFinfo", &pi1_hasTOFinfo);
 
     //pion 2
@@ -598,10 +600,10 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
     K0s_tree->SetBranchAddress("p2_eta", &pi2_eta);
     K0s_tree->SetBranchAddress("p2_phi", &pi2_phi);
     //K0s_tree->SetBranchAddress("p2_ch", &pi2_ch);
-    K0s_tree->SetBranchAddress("p2_dca", &pi2_dca);
+    //K0s_tree->SetBranchAddress("p2_dca", &pi2_dca);
     K0s_tree->SetBranchAddress("p2_hasTOFinfo", &pi2_hasTOFinfo);
 
-    K0s_tree->SetBranchAddress("thetaProdPlane", &thetaProdPlane);
+    //K0s_tree->SetBranchAddress("thetaProdPlane", &thetaProdPlane);
 
     K0s_tree->SetBranchAddress("eventId", &eventId);
 
@@ -637,14 +639,10 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
       cout<<i<<endl;
     }
 
-
-
     //double K0s_xF = fabs(pz(K0s_pt, K0s_eta))/energy/2.; //energy is in CMS, need energz of one proton
 
     //calculate K0s rapidity y
     double K0s_y = rapidity(K0s_pt, K0s_eta, K0s_mass_PDG);
-
-
 
     if(nK0s == -1 ) //first iteration
     {
@@ -720,7 +718,7 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
 
       if(eventId == eventID_last) //same event as in previous iteration and first event
       {
-        if( cuts(pi1_hasTOFinfo, pi2_hasTOFinfo, K0s_y, K0s_theta, K0s_decayL) && pT_bin != -1 && pT_bin_corr != -1 && eta_bin != -1)
+        if( cuts(0, pi1_hasTOFinfo, pi2_hasTOFinfo, K0s_y) && pT_bin != -1 && pT_bin_corr != -1 && eta_bin != -1)
         {
           if( K0s_mass > invMassRange[0][pT_bin][eta_bin] && K0s_mass < invMassRange[1][pT_bin][eta_bin] )
           {
@@ -782,7 +780,7 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
         eventID_last = eventId;
 
         //check if we have good K0s in the new event
-        if( cuts(pi1_hasTOFinfo, pi2_hasTOFinfo, K0s_y, K0s_theta, K0s_decayL) && pT_bin != -1 && pT_bin_corr != -1 && eta_bin != -1)
+        if( cuts(0, pi1_hasTOFinfo, pi2_hasTOFinfo, K0s_y) && pT_bin != -1 && pT_bin_corr != -1 && eta_bin != -1)
         {
           if( K0s_mass > invMassRange[0][pT_bin][eta_bin] && K0s_mass < invMassRange[1][pT_bin][eta_bin] )
           {
@@ -811,7 +809,7 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
     {
       if(eventId == eventID_last_background) //same event as in previous iteration
       {
-        if( cuts(pi1_hasTOFinfo, pi2_hasTOFinfo, K0s_y, K0s_theta, K0s_decayL) && pT_bin != -1 && pT_bin_corr != -1 && eta_bin != -1)
+        if( cuts(0, pi1_hasTOFinfo, pi2_hasTOFinfo, K0s_y) && pT_bin != -1 && pT_bin_corr != -1 && eta_bin != -1)
         {
           if( K0s_mass > invMassRange[0][pT_bin][eta_bin] && K0s_mass < invMassRange[1][pT_bin][eta_bin] )
           {
@@ -868,7 +866,7 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
 
         eventID_last_background = eventId;
 
-        if( cuts(pi1_hasTOFinfo, pi2_hasTOFinfo, K0s_y, K0s_theta, K0s_decayL) && pT_bin != -1 && pT_bin_corr != -1 && eta_bin != -1)
+        if( cuts(0, pi1_hasTOFinfo, pi2_hasTOFinfo, K0s_y) && pT_bin != -1 && pT_bin_corr != -1 && eta_bin != -1)
         {
           if( K0s_mass > invMassRange[0][pT_bin][eta_bin] && K0s_mass < invMassRange[1][pT_bin][eta_bin] )
           {
@@ -902,8 +900,6 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
   gStyle->SetOptTitle(0);
 
 
-
-
   TCanvas *K0s_K0s_cosThetaProdPlane_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_can"), Form("K0s_K0s_cosThetaProdPlane_can"), 1200, 1000);
 
   K0s_K0s_cosThetaProdPlane_can->cd();
@@ -917,8 +913,10 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
   K0s_K0s_cosThetaProdPlane_US_hist->SetLineColor(kRed);
   double nK0sK0s = K0s_K0s_cosThetaProdPlane_US_hist->Integral();
   K0s_K0s_cosThetaProdPlane_US_hist->Sumw2();
+  //K0s_K0s_cosThetaProdPlane_US_hist->Add(K0s_K0s_cosThetaProdPlane_LS_hist, -1);
   K0s_K0s_cosThetaProdPlane_US_hist->Scale(1./K0s_K0s_cosThetaProdPlane_US_hist->GetXaxis()->GetBinWidth(1));
   K0s_K0s_cosThetaProdPlane_US_hist->Divide(K0s_K0s_costhetaProdPlane_eff);
+  //K0s_K0s_cosThetaProdPlane_US_hist->Scale(1./K0s_K0s_cosThetaProdPlane_US_hist->Integral());
   K0s_K0s_cosThetaProdPlane_US_hist->SetMinimum(0);
   K0s_K0s_cosThetaProdPlane_US_hist->Draw("p e");
 
@@ -939,7 +937,8 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
   double nK0sK0s_back = K0s_K0s_cosThetaProdPlane_LS_hist->Integral();
   K0s_K0s_cosThetaProdPlane_LS_hist->Sumw2();
   K0s_K0s_cosThetaProdPlane_LS_hist->Scale(1./K0s_K0s_cosThetaProdPlane_LS_hist->GetXaxis()->GetBinWidth(1));
-  K0s_K0s_cosThetaProdPlane_LS_hist->Divide(K0s_K0s_costhetaProdPlane_eff);
+  //K0s_K0s_cosThetaProdPlane_LS_hist->Divide(K0s_K0s_costhetaProdPlane_eff);
+  K0s_K0s_cosThetaProdPlane_LS_hist->Scale(1./K0s_K0s_cosThetaProdPlane_LS_hist->Integral());
   //K0s_K0s_cosThetaProdPlane_LS_hist->Draw("p e same");
 
 
@@ -975,8 +974,10 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetLineColor(kRed);
       //double nLL = K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral();
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Sumw2();
+      //K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Add(K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2], -1);
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Divide(K0s_K0s_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
+      //K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral());
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMinimum(0);
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Draw("p e");
 
@@ -985,7 +986,8 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
       //double nLL_back = K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral();
       K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Sumw2();
       K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Scale(1./K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
-      K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Divide(K0s_K0s_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
+      //K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Divide(K0s_K0s_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
+      K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Scale(1./K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral());
       //K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Draw("p e same");
 
 
@@ -1036,8 +1038,10 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
       K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetLineColor(kRed);
       //double nLL = K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral();
       K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Sumw2();
+      //K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Add(K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2], -1);
       K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
       K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Divide(K0s_K0s_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
+      //K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral());
       K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMinimum(0);
       K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Draw("p e");
 
@@ -1046,7 +1050,8 @@ void K0sK0sSpinCorr(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBins
       //double nLL_back = K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Integral();
       K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Sumw2();
       K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Scale(1./K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
-      K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Divide(K0s_K0s_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
+      //K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Divide(K0s_K0s_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
+      K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Scale(1./K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Integral());
       //K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Draw("p e same");
 
 
@@ -1100,8 +1105,8 @@ void Ana004_K0s_corr(const int ReadMode = 0, const int energy = 510, const int y
 {
   ifstream fileList;
 
-  if(energy == 510) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17/fileList.list");
-  else if(energy == 200) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12/fileList.list");
+  if(energy == 510) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17_MB_noTOF/fileList.list");
+  else if(energy == 200) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12_MB_noTOF/fileList.list");
   else
   {
     cout<<"Not a valid colliison energy! Abborting!"<<endl;

@@ -54,7 +54,7 @@ const int nPtBins = 8;
 float const pT_bins[nPtBins+1] = { 0., 0.5, 1.,1.5, 2., 2.5, 3., 4., 5.};
 
 const int nEtaBins = 3;
-float const eta_bins[nEtaBins+1] = { -1, -0.4, 0.4, 1 };
+float const eta_bins[nEtaBins+1] = { -1, -0.2, 0.2, 1 };
 
 const float K0s_mass_PDG = 0.497611; //PDG mass in GeV
 
@@ -527,8 +527,10 @@ void K0sPolarization(TChain *K0s_tree, double invMassRange[2][nPtBins+1][nEtaBin
 
   TFile *EffFile;
 
-  if(energy == 510) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/K0s_cosThetaStar_eff_Run17_new.root", "read");
-  else if(energy == 200) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/K0s_cosThetaStar_eff_Run12.root", "read");
+  //if(energy == 510) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/K0s_cosThetaStar_eff_Run17_new.root", "read");
+  //else if(energy == 200) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/K0s_cosThetaStar_eff_Run12.root", "read");
+  if(energy == 510) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/K0s_cosThetaStar_eff_Run17_1B_tight_eta.root", "read");
+  else if(energy == 200) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/K0s_cosThetaStar_eff_Run12_1B_tight_eta.root", "read");
   else
   {
     cout<<"Not a valid colliison energy! Abborting!"<<endl;
@@ -875,8 +877,8 @@ void Ana002_K0s_reference(const int ReadMode = 0, const int energy = 510, const 
 {
   ifstream fileList;
 
-  if(energy == 510) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17/fileList.list");
-  else if(energy == 200) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12/fileList.list");
+  if(energy == 510) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17_MB_noTOF/fileList.list");
+  else if(energy == 200) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12_MB_noTOF/fileList.list");
   else
   {
     cout<<"Not a valid colliison energy! Abborting!"<<endl;

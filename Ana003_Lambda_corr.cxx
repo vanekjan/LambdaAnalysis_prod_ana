@@ -58,6 +58,7 @@ const int nPtBins_corr = 2;
 float const pT_bins_corr[nPtBins_corr+1] = { 0.5, 1.5, 5.};
 
 const int nEtaBins = 3;
+//float const eta_bins[nEtaBins+1] = { -1, -0.2, 0.2, 1 };
 float const eta_bins[nEtaBins+1] = { -1, -0.4, 0.4, 1 };
 
 const double pi_mass_PDG = 0.13957039; //p mass on GeV/c^2 from latest PDG
@@ -453,19 +454,19 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
         //cout<< nEtaBins+1<<endl;
 
-        InvMassCan_US_LS[pTbin][etaBin] = new TCanvas(Form("InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), Form("InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), 1200, 1000);
-        InvMassCan[pTbin][etaBin] = new TCanvas(Form("InvMassCan_pT_%i_eta_%i", pTbin, etaBin), Form("InvMassCan_pT_%i_eta_%i", pTbin, etaBin), 1200, 1000);
+        InvMassCan_US_LS[pTbin][etaBin] = new TCanvas(Form("InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), Form("InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), 1300, 1000);
+        InvMassCan[pTbin][etaBin] = new TCanvas(Form("InvMassCan_pT_%i_eta_%i", pTbin, etaBin), Form("InvMassCan_pT_%i_eta_%i", pTbin, etaBin), 1300, 1000);
 
-        InvMassCanL0_US_LS[pTbin][etaBin] = new TCanvas(Form("L0_InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), Form("L0_InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), 1200, 1000);
-        InvMassCanL0[pTbin][etaBin] = new TCanvas(Form("L0_InvMassCan_pT_%i_eta_%i", pTbin, etaBin), Form("L0_InvMassCan_pT_%i_eta_%i", pTbin, etaBin), 1200, 1000);
+        InvMassCanL0_US_LS[pTbin][etaBin] = new TCanvas(Form("L0_InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), Form("L0_InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), 1300, 1000);
+        InvMassCanL0[pTbin][etaBin] = new TCanvas(Form("L0_InvMassCan_pT_%i_eta_%i", pTbin, etaBin), Form("L0_InvMassCan_pT_%i_eta_%i", pTbin, etaBin), 1300, 1000);
 
-        InvMassCanL0bar_US_LS[pTbin][etaBin] = new TCanvas(Form("L0bar_InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), Form("L0bar_InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), 1200, 1000);
-        InvMassCanL0bar[pTbin][etaBin] = new TCanvas(Form("L0bar_InvMassCan_pT_%i_eta_%i", pTbin, etaBin), Form("L0bar_InvMassCan_pT_%i_eta_%i", pTbin, etaBin), 1200, 1000);
+        InvMassCanL0bar_US_LS[pTbin][etaBin] = new TCanvas(Form("L0bar_InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), Form("L0bar_InvMassCan_US_LS_pT_%i_eta_%i", pTbin, etaBin), 1300, 1000);
+        InvMassCanL0bar[pTbin][etaBin] = new TCanvas(Form("L0bar_InvMassCan_pT_%i_eta_%i", pTbin, etaBin), Form("L0bar_InvMassCan_pT_%i_eta_%i", pTbin, etaBin), 1300, 1000);
 
 
         TString *pT_range = new TString();
         if(pTbin < nPtBins) pT_range->Form("%0.1f < #it{p}_{T} < %0.1f GeV/#it{c}", pT_bins[pTbin], pT_bins[pTbin+1]);
-        else pT_range->Form("p_{T} integrated");
+        else pT_range->Form("0.5 < p_{T} < 5.0 GeV/#it{c}");
 
 
         TString *eta_range = new TString();
@@ -483,6 +484,8 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
         InvMassCan_US_LS[pTbin][etaBin]->cd();
 
+        gPad->SetLeftMargin(0.1);
+
         L_inv_mass_US[pTbin][etaBin]->SetMarkerStyle(20);
         L_inv_mass_US[pTbin][etaBin]->SetMarkerColor(kRed);
         L_inv_mass_US[pTbin][etaBin]->SetLineColor(kRed);
@@ -494,23 +497,24 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
         //L_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetRangeUser(0, 3000);
         L_inv_mass_US[pTbin][etaBin]->Draw("p e");
 
-        L_inv_mass_LS[pTbin][etaBin]->SetMarkerStyle(20);
+        L_inv_mass_LS[pTbin][etaBin]->SetMarkerStyle(24);
         L_inv_mass_LS[pTbin][etaBin]->SetMarkerColor(kBlue);
         L_inv_mass_LS[pTbin][etaBin]->SetLineColor(kBlue);
         L_inv_mass_LS[pTbin][etaBin]->Draw("p e same");
 
-        TLegend *SigAndBckgLeg = new TLegend(0.2, 0.65, 0.4, 0.75 );
+        TLegend *SigAndBckgLeg = new TLegend(0.15, 0.3, 0.4, 0.45 );
         SigAndBckgLeg->SetTextFont(42);
         SigAndBckgLeg->AddEntry(L_inv_mass_US[pTbin][etaBin], "Unlike-sign");
         SigAndBckgLeg->AddEntry(L_inv_mass_LS[pTbin][etaBin], "Like-sign");
         SigAndBckgLeg->SetBorderSize(0);
         SigAndBckgLeg->Draw("same");
 
-        TPaveText *cent_text = new TPaveText(0.6, 0.6, 0.89, 0.75, "NDC");
+        TPaveText *cent_text = new TPaveText(0.15, 0.5, 0.45, 0.8, "NDC");
+        cent_text->SetTextFont(42);
         //cent_text->AddText("STAR preliminary");
         //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
         cent_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-        if(trigger == 0) cent_text->AddText("Minimum bias");
+        if(trigger == 0 || trigger == 2) cent_text->AddText("Minimum bias");
         if(trigger == 1) cent_text->AddText("JP2");
         cent_text->AddText("#Lambda^{0} and #bar{#Lambda^{0}}");
         cent_text->AddText(eta_range->Data());
@@ -523,6 +527,8 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
 
         InvMassCan[pTbin][etaBin]->cd();
+
+        gPad->SetLeftMargin(0.1);
 
         L_inv_mass[pTbin][etaBin] = (TH1D*)L_inv_mass_US[pTbin][etaBin]->Clone();
         L_inv_mass[pTbin][etaBin]->Sumw2();
@@ -573,7 +579,7 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
         zeroLine->SetLineStyle(9);
         zeroLine->Draw("same");
 
-        TLegend *SigMinusBckgLeg = new TLegend(0.2, 0.65, 0.4, 0.89 );
+        TLegend *SigMinusBckgLeg = new TLegend(0.15, 0.3, 0.4, 0.45 );
         SigMinusBckgLeg->AddEntry(L_inv_mass[pTbin][etaBin], "US-LS");
         SigMinusBckgLeg->AddEntry(fitGauss_L, "Fit: Gauss");
         SigMinusBckgLeg->SetBorderSize(0);
@@ -594,19 +600,25 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
         InvMassCanL0_US_LS[pTbin][etaBin]->cd();
 
+        gPad->SetLeftMargin(0.1);
+
         L0_inv_mass_US[pTbin][etaBin]->SetMarkerStyle(20);
         L0_inv_mass_US[pTbin][etaBin]->SetMarkerColor(kRed);
         L0_inv_mass_US[pTbin][etaBin]->SetLineColor(kRed);
         L0_inv_mass_US[pTbin][etaBin]->GetXaxis()->SetTitle("M_{inv}^{p#pi^{-}} (GeV/#it{c}^{2})");
         L0_inv_mass_US[pTbin][etaBin]->GetXaxis()->CenterTitle();
+        L0_inv_mass_US[pTbin][etaBin]->GetXaxis()->SetTitleSize(0.04);
+        L0_inv_mass_US[pTbin][etaBin]->GetXaxis()->SetLabelSize(0.04);
         L0_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetTitle("Counts");
         L0_inv_mass_US[pTbin][etaBin]->GetYaxis()->CenterTitle();
+        L0_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetTitleSize(0.04);
+        L0_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetLabelSize(0.04);
         L0_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetMaxDigits(3);
         //L0_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetRangeUser(0, 7000);
         //L0_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetRangeUser(0, 3000);
         L0_inv_mass_US[pTbin][etaBin]->Draw("p e");
 
-        L0_inv_mass_LS[pTbin][etaBin]->SetMarkerStyle(20);
+        L0_inv_mass_LS[pTbin][etaBin]->SetMarkerStyle(24);
         L0_inv_mass_LS[pTbin][etaBin]->SetMarkerColor(kBlue);
         L0_inv_mass_LS[pTbin][etaBin]->SetLineColor(kBlue);
         L0_inv_mass_LS[pTbin][etaBin]->Draw("p e same");
@@ -614,13 +626,13 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
         SigAndBckgLeg->Draw("same");
 
-        TPaveText *cent_text_2 = new TPaveText(0.15, 0.3, 0.45, 0.6, "NDC");
+        TPaveText *cent_text_2 = new TPaveText(0.15, 0.5, 0.45, 0.8, "NDC");
         cent_text_2->SetTextFont(42);
-        cent_text_2->AddText("STAR Internal");
+        //cent_text_2->AddText("STAR Internal");
         //cent_text->AddText("STAR preliminary");
         //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
         cent_text_2->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-        if(trigger == 0) cent_text_2->AddText("Minimum bias");
+        if(trigger == 0|| trigger == 2) cent_text_2->AddText("Minimum bias");
         if(trigger == 1) cent_text_2->AddText("JP2");
         cent_text_2->AddText("#Lambda^{0}");
         cent_text_2->AddText(eta_range->Data());
@@ -634,13 +646,19 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
         InvMassCanL0[pTbin][etaBin]->cd();
 
+        gPad->SetLeftMargin(0.1);
+
         L0_inv_mass[pTbin][etaBin] = (TH1D*)L0_inv_mass_US[pTbin][etaBin]->Clone();
         L0_inv_mass[pTbin][etaBin]->Sumw2();
         L0_inv_mass[pTbin][etaBin]->Add(L0_inv_mass_LS[pTbin][etaBin], -1);
         L0_inv_mass[pTbin][etaBin]->GetXaxis()->SetTitle("M_{inv}^{p#pi} (GeV/#it{c}^{2})");
         L0_inv_mass[pTbin][etaBin]->GetXaxis()->CenterTitle();
+        L0_inv_mass[pTbin][etaBin]->GetXaxis()->SetTitleSize(0.04);
+        L0_inv_mass[pTbin][etaBin]->GetXaxis()->SetLabelSize(0.04);
         L0_inv_mass[pTbin][etaBin]->GetYaxis()->SetTitle("Counts");
         L0_inv_mass[pTbin][etaBin]->GetYaxis()->CenterTitle();
+        L0_inv_mass[pTbin][etaBin]->GetYaxis()->SetTitleSize(0.04);
+        L0_inv_mass[pTbin][etaBin]->GetYaxis()->SetLabelSize(0.04);
         L0_inv_mass[pTbin][etaBin]->SetMarkerStyle(20);
         L0_inv_mass[pTbin][etaBin]->SetMarkerColor(kRed);
         L0_inv_mass[pTbin][etaBin]->SetLineColor(kRed);
@@ -707,18 +725,24 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
         InvMassCanL0bar_US_LS[pTbin][etaBin]->cd();
 
+        gPad->SetLeftMargin(0.1);
+
         L0bar_inv_mass_US[pTbin][etaBin]->SetMarkerStyle(20);
         L0bar_inv_mass_US[pTbin][etaBin]->SetMarkerColor(kRed);
         L0bar_inv_mass_US[pTbin][etaBin]->SetLineColor(kRed);
         L0bar_inv_mass_US[pTbin][etaBin]->GetXaxis()->SetTitle("M_{inv}^{#bar{p}#pi^{+}} (GeV/#it{c}^{2})");
         L0bar_inv_mass_US[pTbin][etaBin]->GetXaxis()->CenterTitle();
+        L0bar_inv_mass_US[pTbin][etaBin]->GetXaxis()->SetTitleSize(0.04);
+        L0bar_inv_mass_US[pTbin][etaBin]->GetXaxis()->SetLabelSize(0.04);
         L0bar_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetTitle("Counts");
         L0bar_inv_mass_US[pTbin][etaBin]->GetYaxis()->CenterTitle();
+        L0bar_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetTitleSize(0.04);
+        L0bar_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetLabelSize(0.04);
         //L0bar_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetRangeUser(0, 7000);
         //L0bar_inv_mass_US[pTbin][etaBin]->GetYaxis()->SetRangeUser(0, 3000);
         L0bar_inv_mass_US[pTbin][etaBin]->Draw("p e");
 
-        L0bar_inv_mass_LS[pTbin][etaBin]->SetMarkerStyle(20);
+        L0bar_inv_mass_LS[pTbin][etaBin]->SetMarkerStyle(24);
         L0bar_inv_mass_LS[pTbin][etaBin]->SetMarkerColor(kBlue);
         L0bar_inv_mass_LS[pTbin][etaBin]->SetLineColor(kBlue);
         L0bar_inv_mass_LS[pTbin][etaBin]->Draw("p e same");
@@ -726,11 +750,12 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
         SigAndBckgLeg->Draw("same");
 
-        TPaveText *cent_text_3 = new TPaveText(0.6, 0.6, 0.89, 0.75, "NDC");
+        TPaveText *cent_text_3 = new TPaveText(0.15, 0.5, 0.45, 0.8, "NDC");
+        cent_text_3->SetTextFont(42);
         //cent_text->AddText("STAR preliminary");
         //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
         cent_text_3->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-        if(trigger == 0) cent_text_3->AddText("Minimum bias");
+        if(trigger == 0 || trigger == 2) cent_text_3->AddText("Minimum bias");
         if(trigger == 1) cent_text_3->AddText("JP2");
         cent_text_3->AddText("#bar{#Lambda^{0}}");
         cent_text_3->AddText(eta_range->Data());
@@ -744,13 +769,19 @@ bool InvMass(TChain *L_tree, double (&invMassRange_L)[2][nPtBins+1][nEtaBins+1],
 
         InvMassCanL0bar[pTbin][etaBin]->cd();
 
+        gPad->SetLeftMargin(0.1);
+
         L0bar_inv_mass[pTbin][etaBin] = (TH1D*)L0bar_inv_mass_US[pTbin][etaBin]->Clone();
         L0bar_inv_mass[pTbin][etaBin]->Sumw2();
         L0bar_inv_mass[pTbin][etaBin]->Add(L0bar_inv_mass_LS[pTbin][etaBin], -1);
         L0bar_inv_mass[pTbin][etaBin]->GetXaxis()->SetTitle("M_{inv}^{#bar{p}#pi^{+}} (GeV/#it{c}^{2})");
         L0bar_inv_mass[pTbin][etaBin]->GetXaxis()->CenterTitle();
+        L0bar_inv_mass[pTbin][etaBin]->GetXaxis()->SetTitleSize(0.04);
+        L0bar_inv_mass[pTbin][etaBin]->GetXaxis()->SetLabelSize(0.04);
         L0bar_inv_mass[pTbin][etaBin]->GetYaxis()->SetTitle("Counts");
         L0bar_inv_mass[pTbin][etaBin]->GetYaxis()->CenterTitle();
+        L0bar_inv_mass[pTbin][etaBin]->GetYaxis()->SetTitleSize(0.04);
+        L0bar_inv_mass[pTbin][etaBin]->GetYaxis()->SetLabelSize(0.04);
         L0bar_inv_mass[pTbin][etaBin]->SetMarkerStyle(20);
         L0bar_inv_mass[pTbin][etaBin]->SetMarkerColor(kRed);
         L0bar_inv_mass[pTbin][etaBin]->SetLineColor(kRed);
@@ -858,6 +889,11 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   const float L0_alpha = 0.732; //decay parameter of L0
   const float L0bar_alpha = -0.758; //decay paramteter of L0bar
 
+  //set TOF requirement based on trigger
+  int requireTOF_Lcorr = 0; //dafault is no TOF requirement
+
+  if(trigger == 0 || trigger == 1) requireTOF_Lcorr = 1;
+
   TFile *LLbarOutFile; //output file to store production plane histograms
 
   if(ReadMode == 0) //create production plane file from nTuple - run in this mode first
@@ -882,6 +918,20 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   if(energy == 510) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/L_cosThetaStar_eff_Run17_1B_ME.root", "read");
   else if(energy == 200) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/L_cosThetaStar_eff_Run12_1B_ME.root", "read");
+  //if(energy == 510) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/L_cosThetaStar_eff_Run17_1B_ME_tight_eta.root", "read");
+  //else if(energy == 200) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/L_cosThetaStar_eff_Run12_1B_ME_tight_eta.root", "read");
+  else
+  {
+    cout<<"Not a valid colliison energy! Abborting!"<<endl;
+    return;
+  }
+
+  TFile *EffFileEmbedd;
+
+  if(energy == 510) EffFileEmbedd = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/L_cosThetaStar_eff_Run12_embedd.root", "read");
+  else if(energy == 200) EffFileEmbedd = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/L_cosThetaStar_eff_Run12_embedd.root", "read");
+  //if(energy == 510) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/L_cosThetaStar_eff_Run17_1B_ME_tight_eta.root", "read");
+  //else if(energy == 200) EffFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Eff/L_cosThetaStar_eff_Run12_1B_ME_tight_eta.root", "read");
   else
   {
     cout<<"Not a valid colliison energy! Abborting!"<<endl;
@@ -891,6 +941,8 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   //_______________________________________________________________________________________________________________________________________________
 
   //efficiency histograms
+
+  //TH1D *L0_L0bar_cosThetaProdPlane_eff = (TH1D*)EffFileEmbedd->Get("L0_L0bar_cosThetaProdPlane_RC_hist");
   TH1D *L0_L0bar_cosThetaProdPlane_eff = (TH1D*)EffFile->Get("L0_L0bar_cosThetaProdPlane_eff");
   TH1D *L0_L0_cosThetaProdPlane_eff = (TH1D*)EffFile->Get("L0_L0_cosThetaProdPlane_eff");
   TH1D *L0bar_L0bar_cosThetaProdPlane_eff = (TH1D*)EffFile->Get("L0bar_L0bar_cosThetaProdPlane_eff");
@@ -922,6 +974,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   {
     for(unsigned int pTbin2 = 0; pTbin2 < nPtBins_corr; pTbin2++)
     {
+      //L0_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2] = (TH1D*)EffFileEmbedd->Get(Form("L0_L0bar_cosThetaProdPlane_RC_pT1_%i_pT2_%i_hist", pTbin1, pTbin2));
       L0_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2] = (TH1D*)EffFile->Get(Form("L0_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_eff", pTbin1, pTbin2));
       L0_L0_cosThetaProdPlane_pT_eff[pTbin1][pTbin2] = (TH1D*)EffFile->Get(Form("L0_L0_cosThetaProdPlane_pT1_%i_pT2_%i_eff", pTbin1, pTbin2));
       L0bar_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2] = (TH1D*)EffFile->Get(Form("L0bar_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_eff", pTbin1, pTbin2));
@@ -947,6 +1000,46 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   }
   //_____________________________________________________________________________
 
+  //stat. err. projection histograms
+
+  TH1D *L0_L0bar_cosThetaProdPlane_stat_err = new TH1D("L0_L0bar_cosThetaProdPlane_stat_err", "L0_L0bar_cosThetaProdPlane_stat_err", 10, -1, 1);
+  TH1D *L0_L0_cosThetaProdPlane_stat_err = new TH1D("L0_L0_cosThetaProdPlane_stat_err",  "L0_L0_cosThetaProdPlane_stat_err",10, -1, 1);
+  TH1D *L0bar_L0bar_cosThetaProdPlane_stat_err = new TH1D("L0bar_L0bar_cosThetaProdPlane_stat_err", "L0bar_L0bar_cosThetaProdPlane_stat_err", 10, -1, 1);
+
+  TH1D *L0_L0bar_cosThetaProdPlane_pT_stat_err[nPtBins_corr][nPtBins_corr];
+  TH1D *L0_L0bar_cosThetaProdPlane_eta_stat_err[nEtaBins][nEtaBins];
+
+  TH1D *L0_L0_cosThetaProdPlane_pT_stat_err[nPtBins_corr][nPtBins_corr];
+  TH1D *L0_L0_cosThetaProdPlane_eta_stat_err[nEtaBins][nEtaBins];
+
+  TH1D *L0bar_L0bar_cosThetaProdPlane_pT_stat_err[nPtBins_corr][nPtBins_corr];
+  TH1D *L0bar_L0bar_cosThetaProdPlane_eta_stat_err[nEtaBins][nEtaBins];
+
+
+  for(unsigned int pTbin1 = 0; pTbin1 < nPtBins_corr; pTbin1++)
+  {
+    for(unsigned int pTbin2 = 0; pTbin2 < nPtBins_corr; pTbin2++)
+    {
+
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2] = new TH1D(Form("L0_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_stat_err", pTbin1, pTbin2), Form("L0_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_stat_err", pTbin1, pTbin2), 10, -1, 1);
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2] = new TH1D(Form("L0_L0_cosThetaProdPlane_pT1_%i_pT2_%i_stat_err", pTbin1, pTbin2), Form("L0_L0_cosThetaProdPlane_pT1_%i_pT2_%i_stat_err", pTbin1, pTbin2), 10, -1, 1);
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2] = new TH1D(Form("L0bar_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_stat_err", pTbin1, pTbin2), Form("L0bar_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_stat_err", pTbin1, pTbin2), 10, -1, 1);
+
+    }
+  }
+
+  for(unsigned int etaBin1 = 0; etaBin1 < nEtaBins; etaBin1++)
+  {
+    for(unsigned int etaBin2 = 0; etaBin2 < nEtaBins; etaBin2++)
+    {
+      L0_L0bar_cosThetaProdPlane_eta_stat_err[etaBin1][etaBin2] = new TH1D(Form("L0_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_stat_err", etaBin1, etaBin2), Form("L0_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_stat_err", etaBin1, etaBin2), 10, -1, 1);
+      L0_L0_cosThetaProdPlane_eta_stat_err[etaBin1][etaBin2] = new TH1D(Form("L0_L0_cosThetaProdPlane_eta1_%i_eta2_%i_stat_err", etaBin1, etaBin2), Form("L0_L0_cosThetaProdPlane_eta1_%i_eta2_%i_stat_err", etaBin1, etaBin2), 10, -1, 1);
+      L0bar_L0bar_cosThetaProdPlane_eta_stat_err[etaBin1][etaBin2] = new TH1D(Form("L0bar_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_stat_err", etaBin1, etaBin2), Form("L0bar_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_stat_err", etaBin1, etaBin2), 10, -1, 1);
+
+    }
+  }
+  //_____________________________________________________________________________
+
   //data histograms
   TH1D *L0_L0bar_cosThetaProdPlane_US_hist;
   TH1D *L0_L0bar_cosThetaProdPlane_LS_hist;
@@ -955,6 +1048,16 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   TH1D *L0_L0bar_cosThetaProdPlane_pT_US_hist[nPtBins_corr][nPtBins_corr];
   TH1D *L0_L0bar_cosThetaProdPlane_pT_LS_hist[nPtBins_corr][nPtBins_corr];
   TH1D *L0_L0bar_cosThetaProdPlane_pT_ME_hist[nPtBins_corr][nPtBins_corr];
+
+  //|eta| < 0.2
+  TH1D *L0_L0bar_cosThetaProdPlane_pT_tight_eta_US_hist[nPtBins_corr][nPtBins_corr];
+  TH1D *L0_L0bar_cosThetaProdPlane_pT_tight_eta_LS_hist[nPtBins_corr][nPtBins_corr];
+  TH1D *L0_L0bar_cosThetaProdPlane_pT_tight_eta_ME_hist[nPtBins_corr][nPtBins_corr];
+
+  //low pT is fixed, upper is different for each bin
+  TH1D *L0_L0bar_cosThetaProdPlane_pUp_US_hist[nPtBins_corr][nPtBins-1];
+  TH1D *L0_L0bar_cosThetaProdPlane_pUp_LS_hist[nPtBins_corr][nPtBins-1];
+  TH1D *L0_L0bar_cosThetaProdPlane_pUp_ME_hist[nPtBins_corr][nPtBins-1];
 
   TH1D *L0_L0bar_cosThetaProdPlane_eta_US_hist[nEtaBins][nEtaBins];
   TH1D *L0_L0bar_cosThetaProdPlane_eta_LS_hist[nEtaBins][nEtaBins];
@@ -980,6 +1083,16 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   TH1D *L0_L0_cosThetaProdPlane_pT_US_hist[nPtBins_corr][nPtBins_corr];
   TH1D *L0_L0_cosThetaProdPlane_pT_LS_hist[nPtBins_corr][nPtBins_corr];
   TH1D *L0_L0_cosThetaProdPlane_pT_ME_hist[nPtBins_corr][nPtBins_corr];
+
+  //|eta| < 0.2
+  TH1D *L0_L0_cosThetaProdPlane_pT_tight_eta_US_hist[nPtBins_corr][nPtBins_corr];
+  TH1D *L0_L0_cosThetaProdPlane_pT_tight_eta_LS_hist[nPtBins_corr][nPtBins_corr];
+  TH1D *L0_L0_cosThetaProdPlane_pT_tight_eta_ME_hist[nPtBins_corr][nPtBins_corr];
+
+  //low pT is fixed, upper is different for each bin
+  TH1D *L0_L0_cosThetaProdPlane_pUp_US_hist[nPtBins_corr][nPtBins-1];
+  TH1D *L0_L0_cosThetaProdPlane_pUp_LS_hist[nPtBins_corr][nPtBins-1];
+  TH1D *L0_L0_cosThetaProdPlane_pUp_ME_hist[nPtBins_corr][nPtBins-1];
 
   TH1D *L0_L0_cosThetaProdPlane_eta_US_hist[nEtaBins][nEtaBins];
   TH1D *L0_L0_cosThetaProdPlane_eta_LS_hist[nEtaBins][nEtaBins];
@@ -1021,6 +1134,16 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   TH1D *L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[nPtBins_corr][nPtBins_corr];
   TH1D *L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[nPtBins_corr][nPtBins_corr];
 
+  //|eta| < 0.2
+  TH1D *L0bar_L0bar_cosThetaProdPlane_pT_tight_eta_US_hist[nPtBins_corr][nPtBins_corr];
+  TH1D *L0bar_L0bar_cosThetaProdPlane_pT_tight_eta_LS_hist[nPtBins_corr][nPtBins_corr];
+  TH1D *L0bar_L0bar_cosThetaProdPlane_pT_tight_eta_ME_hist[nPtBins_corr][nPtBins_corr];
+
+  //low pT is fixed, upper is different for each bin
+  TH1D *L0bar_L0bar_cosThetaProdPlane_pUp_US_hist[nPtBins_corr][nPtBins-1];
+  TH1D *L0bar_L0bar_cosThetaProdPlane_pUp_LS_hist[nPtBins_corr][nPtBins-1];
+  TH1D *L0bar_L0bar_cosThetaProdPlane_pUp_ME_hist[nPtBins_corr][nPtBins-1];
+
   TH1D *L0bar_L0bar_cosThetaProdPlane_eta_US_hist[nEtaBins][nEtaBins];
   TH1D *L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[nEtaBins][nEtaBins];
   TH1D *L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[nEtaBins][nEtaBins];
@@ -1055,6 +1178,38 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   TH1D *L_pair_cosThetaProdPlane_US_hist;
   TH1D *L_pair_cosThetaProdPlane_LS_hist;
+
+
+  //polarization histograms
+
+  //one bin for each lower pT selection
+  //histograms are as function of upper pT
+  TH1D *L0_L0bar_polarization_pT_hist[nPtBins_corr];
+  TH1D *L0_L0_polarization_pT_hist[nPtBins_corr];
+  TH1D *L0bar_L0bar_polarization_pT_hist[nPtBins_corr];
+
+
+  //invariant mass histigrams for L from pairs
+  TH1D *L_inv_mass_US_from_L_Lbar = new TH1D("L_inv_mass_US_from_L_Lbar", "L_inv_mass_US_from_L_Lbar", 200, 1, 1.2);
+  TH1D *L_inv_mass_LS_from_L_Lbar = new TH1D("L_inv_mass_LS_from_L_Lbar", "L_inv_mass_LS_from_L_Lbar", 200, 1, 1.2);
+
+  TH1D *Lbar_inv_mass_US_from_L_Lbar = new TH1D("Lbar_inv_mass_US_from_L_Lbar", "Lbar_inv_mass_US_from_L_Lbar", 200, 1, 1.2);
+  TH1D *Lbar_inv_mass_LS_from_L_Lbar = new TH1D("Lbar_inv_mass_LS_from_L_Lbar", "Lbar_inv_mass_LS_from_L_Lbar", 200, 1, 1.2);
+
+  TH2D *L_vs_Lbar_mass_US = new TH2D("L_vs_Lbar_mass_US", "L_vs_Lbar_mass_US", 200, 1, 1.2, 200, 1, 1.2);
+  TH2D *L_vs_Lbar_mass_LS = new TH2D("L_vs_Lbar_mass_LS", "L_vs_Lbar_mass_LS", 200, 1, 1.2, 200, 1, 1.2);
+
+  TH1D *L_inv_mass_US_from_L_L = new TH1D("L_inv_mass_US_from_L_L", "L_inv_mass_US_from_L_L", 200, 1, 1.2);
+  TH1D *L_inv_mass_LS_from_L_L = new TH1D("L_inv_mass_LS_from_L_L", "L_inv_mass_LS_from_L_L", 200, 1, 1.2);
+
+  TH2D *L_vs_L_mass_US = new TH2D("L_vs_L_mass_US", "L_vs_L_mass_US", 200, 1, 1.2, 200, 1, 1.2);
+  TH2D *L_vs_L_mass_LS = new TH2D("L_vs_L_mass_LS", "L_vs_L_mass_LS", 200, 1, 1.2, 200, 1, 1.2);
+
+  TH1D *Lbar_inv_mass_US_from_Lbar_Lbar = new TH1D("Lbar_inv_mass_US_from_Lbar_Lbar", "Lbar_inv_mass_US_from_Lbar_Lbar", 200, 1, 1.2);
+  TH1D *Lbar_inv_mass_LS_from_Lbar_Lbar = new TH1D("Lbar_inv_mass_LS_from_Lbar_Lbar", "Lbar_inv_mass_LS_from_Lbar_Lbar", 200, 1, 1.2);
+
+  TH2D *Lbar_vs_Lbar_mass_US = new TH2D("Lbar_vs_Lbar_mass_US", "Lbar_vs_Lbar_mass_US", 200, 1, 1.2, 200, 1, 1.2);
+  TH2D *Lbar_vs_Lbar_mass_LS = new TH2D("Lbar_vs_Lbar_mass_LS", "Lbar_vs_Lbar_mass_LS", 200, 1, 1.2, 200, 1, 1.2);
 
 
 
@@ -1098,6 +1253,30 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
         L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2] = new TH1D(Form("L0bar_L0bar_cosThetaProdPlane_LS_pT1_%i_pT2_%i_hist", pTbin1, pTbin2), Form("L0bar_L0bar_cosThetaProdPlane_LS_pT1_%i_pT2_%i_hist", pTbin1, pTbin2), 10, -1, 1);
         L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2] = new TH1D(Form("L0bar_L0bar_cosThetaProdPlane_ME_pT1_%i_pT2_%i_hist", pTbin1, pTbin2), Form("L0bar_L0bar_cosThetaProdPlane_ME_pT1_%i_pT2_%i_hist", pTbin1, pTbin2), 10, -1, 1);
       }
+    }
+
+    for(unsigned int pTupbin = 0; pTupbin < nPtBins_corr; pTupbin++)
+    {
+      for(unsigned int pTbin = 0; pTbin < nPtBins-1; pTbin++)
+      {
+        L0_L0bar_cosThetaProdPlane_pUp_US_hist[pTupbin][pTbin] = new TH1D(Form("L0_L0bar_cosThetaProdPlane_pUp_US_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), Form("L0_L0bar_cosThetaProdPlane_pUp_US_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), 10, -1, 1);
+        L0_L0bar_cosThetaProdPlane_pUp_LS_hist[pTupbin][pTbin] = new TH1D(Form("L0_L0bar_cosThetaProdPlane_pUp_LS_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), Form("L0_L0bar_cosThetaProdPlane_pUp_LS_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), 10, -1, 1);
+        L0_L0bar_cosThetaProdPlane_pUp_ME_hist[pTupbin][pTbin] = new TH1D(Form("L0_L0bar_cosThetaProdPlane_pUp_ME_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), Form("L0_L0bar_cosThetaProdPlane_pUp_ME_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), 10, -1, 1);
+
+        L0_L0_cosThetaProdPlane_pUp_US_hist[pTupbin][pTbin] = new TH1D(Form("L0_L0_cosThetaProdPlane_pUp_US_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), Form("L0_L0_cosThetaProdPlane_pUp_US_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), 10, -1, 1);
+        L0_L0_cosThetaProdPlane_pUp_LS_hist[pTupbin][pTbin] = new TH1D(Form("L0_L0_cosThetaProdPlane_pUp_LS_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), Form("L0_L0_cosThetaProdPlane_pUp_LS_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), 10, -1, 1);
+        L0_L0_cosThetaProdPlane_pUp_ME_hist[pTupbin][pTbin] = new TH1D(Form("L0_L0_cosThetaProdPlane_pUp_ME_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), Form("L0_L0_cosThetaProdPlane_pUp_ME_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), 10, -1, 1);
+
+        L0bar_L0bar_cosThetaProdPlane_pUp_US_hist[pTupbin][pTbin] = new TH1D(Form("L0bar_L0bar_cosThetaProdPlane_pUp_US_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), Form("L0bar_L0bar_cosThetaProdPlane_pUp_US_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), 10, -1, 1);
+        L0bar_L0bar_cosThetaProdPlane_pUp_LS_hist[pTupbin][pTbin] = new TH1D(Form("L0bar_L0bar_cosThetaProdPlane_pUp_LS_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), Form("L0bar_L0bar_cosThetaProdPlane_pUp_LS_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), 10, -1, 1);
+        L0bar_L0bar_cosThetaProdPlane_pUp_ME_hist[pTupbin][pTbin] = new TH1D(Form("L0bar_L0bar_cosThetaProdPlane_pUp_ME_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), Form("L0bar_L0bar_cosThetaProdPlane_pUp_ME_pUp1_%i_pUp2_%i_hist", pTupbin, pTbin), 10, -1, 1);
+      }
+
+      //one bin for each lower pT selection
+      //histograms are as function of upper pT
+      L0_L0bar_polarization_pT_hist[pTupbin] = new TH1D(Form("L0_L0bar_polarization_pT_pTup_%i", pTupbin), Form("L0_L0bar_polarization_pT_pTup_%i", pTupbin), nPtBins, pT_bins);
+      L0_L0_polarization_pT_hist[pTupbin] = new TH1D(Form("L0_L0_polarization_pT_pTup_%i", pTupbin), Form("L0_L0_polarization_pT_pTup_%i", pTupbin), nPtBins, pT_bins);
+      L0bar_L0bar_polarization_pT_hist[pTupbin] = new TH1D(Form("L0bar_L0bar_polarization_pT_pTup_%i", pTupbin), Form("L0bar_L0bar_polarization_pT_pTup_%i", pTupbin), nPtBins, pT_bins);
     }
 
     for(unsigned int etaBin1 = 0; etaBin1 < nEtaBins; etaBin1++)
@@ -1222,6 +1401,30 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
         L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2] = (TH1D*)LLbarOutFile->Get(Form("L0bar_L0bar_cosThetaProdPlane_LS_pT1_%i_pT2_%i_hist", pTbin1, pTbin2));
         L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2] = (TH1D*)LLbarOutFile->Get(Form("L0bar_L0bar_cosThetaProdPlane_ME_pT1_%i_pT2_%i_hist", pTbin1, pTbin2));
       }
+    }
+
+    for(unsigned int pTupbin = 0; pTupbin < nPtBins_corr; pTupbin++)
+    {
+      for(unsigned int pTbin = 0; pTbin < nPtBins-1; pTbin++)
+      {
+        L0_L0bar_cosThetaProdPlane_pT_US_hist[pTupbin][pTbin] = (TH1D*)LLbarOutFile->Get(Form("L0_L0bar_cosThetaProdPlane_pT_US_pT1_%i_pT2_%i_hist", pTupbin, pTbin));
+        L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTupbin][pTbin] = (TH1D*)LLbarOutFile->Get(Form("L0_L0bar_cosThetaProdPlane_pT_LS_pT1_%i_pT2_%i_hist", pTupbin, pTbin));
+        L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTupbin][pTbin] = (TH1D*)LLbarOutFile->Get(Form("L0_L0bar_cosThetaProdPlane_pT_ME_pT1_%i_pT2_%i_hist", pTupbin, pTbin));
+
+        L0_L0_cosThetaProdPlane_pT_US_hist[pTupbin][pTbin] = (TH1D*)LLbarOutFile->Get(Form("L0_L0_cosThetaProdPlane_pT_US_pT1_%i_pT2_%i_hist", pTupbin, pTbin));
+        L0_L0_cosThetaProdPlane_pT_LS_hist[pTupbin][pTbin] = (TH1D*)LLbarOutFile->Get(Form("L0_L0_cosThetaProdPlane_pT_LS_pT1_%i_pT2_%i_hist", pTupbin, pTbin));
+        L0_L0_cosThetaProdPlane_pT_ME_hist[pTupbin][pTbin] = (TH1D*)LLbarOutFile->Get(Form("L0_L0_cosThetaProdPlane_pT_ME_pT1_%i_pT2_%i_hist", pTupbin, pTbin));
+
+        L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTupbin][pTbin] = (TH1D*)LLbarOutFile->Get(Form("L0bar_L0bar_cosThetaProdPlane_pT_US_pT1_%i_pT2_%i_hist", pTupbin, pTbin));
+        L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTupbin][pTbin] = (TH1D*)LLbarOutFile->Get(Form("L0bar_L0bar_cosThetaProdPlane_pT_LS_pT1_%i_pT2_%i_hist", pTupbin, pTbin));
+        L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTupbin][pTbin] = (TH1D*)LLbarOutFile->Get(Form("L0bar_L0bar_cosThetaProdPlane_pT_ME_pT1_%i_pT2_%i_hist", pTupbin, pTbin));
+      }
+
+      //one bin for each lower pT selection
+      //histograms are as function of upper pT
+      L0_L0bar_polarization_pT_hist[pTupbin] = (TH1D*)LLbarOutFile->Get(Form("L0_L0bar_polarization_pT_pTup_%i", pTupbin));
+      L0_L0_polarization_pT_hist[pTupbin] = (TH1D*)LLbarOutFile->Get(Form("L0_L0_polarization_pT_pTup_%i", pTupbin));
+      L0bar_L0bar_polarization_pT_hist[pTupbin] = (TH1D*)LLbarOutFile->Get(Form("L0bar_L0bar_polarization_pT_pTup_%i", pTupbin));
     }
 
     for(unsigned int etaBin1 = 0; etaBin1 < nEtaBins; etaBin1++)
@@ -1462,6 +1665,8 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       eventID_last = eventId;
       eventID_last_background = eventId;
 
+      //cout<<eventId<<endl;
+
       nLambda = 0;
       nLambdaBar = 0;
 
@@ -1544,7 +1749,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       if(eventId == eventID_last) //same event as in previous iteration and first event
       {
         //cuts
-        if( cuts(0, pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
+        if( cuts(requireTOF_Lcorr, pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
         {
           if( p_ch == 1 && L_mass > invMassRange_L0[0][pT_bin][eta_bin] && L_mass < invMassRange_L0[1][pT_bin][eta_bin])
           {
@@ -1573,9 +1778,11 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       else if(eventId != eventID_last) //new event
       {
 
+
         //at least one L-Lbar pair in event
         if(nLambda > 0 && nLambdaBar > 0)
         {
+          //cout<<eventId<<endl;
 
           for(unsigned int iLambda = 0; iLambda < L_vector.size(); iLambda++)
           {
@@ -1587,6 +1794,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
               L0_L0bar_cosThetaProdPlane_US_hist->Fill(TMath::Cos(L_Lbar_pairThetaStar));
               L0_L0bar_cosThetaProdPlane_pT_US_hist[L_pT_bin_vector.at(iLambda)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
+              //if( fabs(L_vector.at(iLambda).Rapidity()) < 0.2 && fabs(Lbar_vector.at(iLambdaBar).Rapidity()) < 0.2 ) L0_L0bar_cosThetaProdPlane_pT_US_hist[L_pT_bin_vector.at(iLambda)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
               L0_L0bar_cosThetaProdPlane_eta_US_hist[L_eta_bin_vector.at(iLambda)][Lbar_eta_bin_vector.at(iLambdaBar)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
               //_____________________________________________________________________________
 
@@ -1601,6 +1809,12 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
               L0_L0bar_pT1_vs_pT2_US_hist->Fill( L_vector.at(iLambda).Pt(), Lbar_vector.at(iLambdaBar).Pt() );
 
               L0_L0bar_phi1_vs_phi2_US_hist->Fill( L_vector.at(iLambda).Phi(), Lbar_vector.at(iLambdaBar).Phi() );
+
+              //invariant mass
+              L_inv_mass_US_from_L_Lbar->Fill(L_vector.at(iLambda).M());
+              Lbar_inv_mass_US_from_L_Lbar->Fill(Lbar_vector.at(iLambdaBar).M());
+
+              L_vs_Lbar_mass_US->Fill(L_vector.at(iLambda).M(),Lbar_vector.at(iLambdaBar).M());
 
 
               nEventsWithLambdaPair_US_hist->Fill(1.5);
@@ -1649,6 +1863,12 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
               L0_p_L0_p_phi1_vs_phi2_US_hist->Fill( p_vector.at(iLambda1).Phi(), p_vector.at(iLambda2).Phi() );
               L0_pi_L0_pi_phi1_vs_phi2_US_hist->Fill( pi_vector.at(iLambda1).Phi(), pi_vector.at(iLambda2).Phi() );
 
+              //invariant mass
+              L_inv_mass_US_from_L_L->Fill(L_vector.at(iLambda1).M());
+              L_inv_mass_US_from_L_L->Fill(L_vector.at(iLambda2).M());
+
+              L_vs_L_mass_US->Fill(L_vector.at(iLambda1).M(),L_vector.at(iLambda2).M());
+
             }
           }
         }
@@ -1686,6 +1906,12 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
               L0bar_L0bar_phi1_vs_phi2_US_hist->Fill( Lbar_vector.at(iLambdaBar1).Phi(), Lbar_vector.at(iLambdaBar2).Phi() );
               L0bar_p_L0bar_p_phi1_vs_phi2_US_hist->Fill( pbar_vector.at(iLambdaBar1).Phi(), pbar_vector.at(iLambdaBar2).Phi() );
               L0bar_pi_L0bar_pi_phi1_vs_phi2_US_hist->Fill( pibar_vector.at(iLambdaBar1).Phi(), pibar_vector.at(iLambdaBar2).Phi() );
+
+              //invariant mass
+              Lbar_inv_mass_US_from_Lbar_Lbar->Fill(Lbar_vector.at(iLambdaBar1).M());
+              Lbar_inv_mass_US_from_Lbar_Lbar->Fill(Lbar_vector.at(iLambdaBar2).M());
+
+              Lbar_vs_Lbar_mass_US->Fill(Lbar_vector.at(iLambdaBar1).M(),Lbar_vector.at(iLambdaBar2).M());
 
             }
           }
@@ -1745,7 +1971,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
         //fill L or Lbar from new event
         //need to check cuts again in the new event
-        if( cuts(0,pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
+        if( cuts(requireTOF_Lcorr,pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
         {
           if( p_ch == 1 && L_mass > invMassRange_L0[0][pT_bin][eta_bin] && L_mass < invMassRange_L0[1][pT_bin][eta_bin])
           {
@@ -1794,7 +2020,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       if(eventId == eventID_last_background) //same event as in previous iteration
       {
         //cuts
-        if( cuts(0,pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
+        if( cuts(requireTOF_Lcorr,pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
         {
           if( p_ch == 1 && L_mass > invMassRange_L0[0][pT_bin][eta_bin] && L_mass < invMassRange_L0[1][pT_bin][eta_bin])
           {
@@ -1836,6 +2062,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
               L0_L0bar_cosThetaProdPlane_LS_hist->Fill(TMath::Cos(L_Lbar_pairThetaStar));
               L0_L0bar_cosThetaProdPlane_pT_LS_hist[L_pT_bin_vector_background.at(iLambda)][Lbar_pT_bin_vector_background.at(iLambdaBar)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
+              //if( L_vector_background.at(iLambda).Rapidity() < 0.2 && Lbar_vector_background.at(iLambdaBar).Rapidity() < 0.2 ) L0_L0bar_cosThetaProdPlane_pT_LS_hist[L_pT_bin_vector_background.at(iLambda)][Lbar_pT_bin_vector_background.at(iLambdaBar)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
               L0_L0bar_cosThetaProdPlane_eta_LS_hist[L_eta_bin_vector_background.at(iLambda)][Lbar_eta_bin_vector_background.at(iLambdaBar)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
 
               double delta_eta = fabs( L_vector_background.at(iLambda).Eta() - Lbar_vector_background.at(iLambdaBar).Eta() );
@@ -1849,6 +2076,12 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
               L0_L0bar_pT1_vs_pT2_LS_hist->Fill( L_vector_background.at(iLambda).Pt(), Lbar_vector_background.at(iLambdaBar).Pt() );
 
               L0_L0bar_phi1_vs_phi2_LS_hist->Fill( L_vector_background.at(iLambda).Phi(), Lbar_vector_background.at(iLambdaBar).Phi() );
+
+              //invariant mass
+              L_inv_mass_LS_from_L_Lbar->Fill(L_vector_background.at(iLambda).M());
+              Lbar_inv_mass_LS_from_L_Lbar->Fill(Lbar_vector_background.at(iLambdaBar).M());
+
+              L_vs_Lbar_mass_LS->Fill(L_vector_background.at(iLambda).M(),Lbar_vector_background.at(iLambdaBar).M());
 
               nEventsWithLambdaPair_LS_hist->Fill(1.5);
             }
@@ -1895,6 +2128,13 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
               L0_L0_phi1_vs_phi2_LS_hist->Fill( L_vector_background.at(iLambda1).Phi(), L_vector_background.at(iLambda2).Phi() );
               L0_p_L0_p_phi1_vs_phi2_LS_hist->Fill( p_vector_background.at(iLambda1).Phi(), p_vector_background.at(iLambda2).Phi() );
               L0_pi_L0_pi_phi1_vs_phi2_LS_hist->Fill( pi_vector_background.at(iLambda1).Phi(), pi_vector_background.at(iLambda2).Phi() );
+
+              //invariant mass
+              L_inv_mass_LS_from_L_L->Fill(L_vector_background.at(iLambda1).M());
+              L_inv_mass_LS_from_L_L->Fill(L_vector_background.at(iLambda2).M());
+
+              L_vs_L_mass_LS->Fill(L_vector_background.at(iLambda1).M(), L_vector_background.at(iLambda2).M());
+
             }
           }
         }
@@ -1932,6 +2172,13 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
               L0bar_L0bar_phi1_vs_phi2_LS_hist->Fill( Lbar_vector_background.at(iLambdaBar1).Phi(), Lbar_vector_background.at(iLambdaBar2).Phi() );
               L0bar_p_L0bar_p_phi1_vs_phi2_LS_hist->Fill( pbar_vector_background.at(iLambdaBar1).Phi(), pbar_vector_background.at(iLambdaBar2).Phi() );
               L0bar_pi_L0bar_pi_phi1_vs_phi2_LS_hist->Fill( pibar_vector_background.at(iLambdaBar1).Phi(), pibar_vector_background.at(iLambdaBar2).Phi() );
+
+              //invariant mass
+              Lbar_inv_mass_LS_from_Lbar_Lbar->Fill(Lbar_vector_background.at(iLambdaBar1).M());
+              Lbar_inv_mass_LS_from_Lbar_Lbar->Fill(Lbar_vector_background.at(iLambdaBar2).M());
+
+              Lbar_vs_Lbar_mass_LS->Fill(Lbar_vector_background.at(iLambdaBar1).M(),Lbar_vector_background.at(iLambdaBar2).M());
+
             }
           }
         }
@@ -1954,7 +2201,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
         pibar_vector_background.clear();
 
         //cuts
-        if( cuts(0,pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
+        if( cuts(requireTOF_Lcorr,pi_hasTOFinfo, p_hasTOFinfo, L_y) && pT_bin != -1 && eta_bin != -1 && pT_bin_corr != -1)
         {
           if( p_ch == 1 && L_mass > invMassRange_L0[0][pT_bin][eta_bin] && L_mass < invMassRange_L0[1][pT_bin][eta_bin])
           {
@@ -2014,6 +2261,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
       L0_L0bar_cosThetaProdPlane_ME_hist->Fill(TMath::Cos(L_Lbar_pairThetaStar));
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[L_pT_bin_vector_ME.at(iLambda_ME)][Lbar_pT_bin_vector_ME.at(iLambdaBar_ME)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
+      //if( fabs(L_vector_ME.at(iLambda_ME).Rapidity()) < 0.2 && fabs(Lbar_vector_ME.at(iLambdaBar_ME).Rapidity()) < 0.2 ) L0_L0bar_cosThetaProdPlane_pT_ME_hist[L_pT_bin_vector_ME.at(iLambda_ME)][Lbar_pT_bin_vector_ME.at(iLambdaBar_ME)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[L_eta_bin_vector_ME.at(iLambda_ME)][Lbar_eta_bin_vector_ME.at(iLambdaBar_ME)]->Fill(TMath::Cos(L_Lbar_pairThetaStar));
     }
   }
@@ -2047,14 +2295,52 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
   //________________________________________________________________________________________________________
 
+  TCanvas *L0_L0bar_cosThetaProdPlane_stat_err_can = new TCanvas("L0_L0bar_cosThetaProdPlane_stat_err_can", "L0_L0bar_cosThetaProdPlane_stat_err_can", 1200, 1000);
+
+  L0_L0bar_cosThetaProdPlane_stat_err_can->cd();
+
+  for(unsigned int iBin = 0; iBin < 10; iBin++)
+  {
+    L0_L0bar_cosThetaProdPlane_stat_err->SetBinContent(iBin+1, L0_L0bar_cosThetaProdPlane_US_hist->GetBinError(iBin+1)/L0_L0bar_cosThetaProdPlane_US_hist->GetBinContent(iBin+1)*100 );
+    L0_L0bar_cosThetaProdPlane_stat_err->SetBinError(iBin+1, 0 );
+  }
+  L0_L0bar_cosThetaProdPlane_stat_err->GetXaxis()->SetTitle("cos(#theta*)");
+  L0_L0bar_cosThetaProdPlane_stat_err->GetXaxis()->CenterTitle();
+  L0_L0bar_cosThetaProdPlane_stat_err->GetYaxis()->SetTitle("Relative error (%)");
+  L0_L0bar_cosThetaProdPlane_stat_err->GetYaxis()->CenterTitle();
+  L0_L0bar_cosThetaProdPlane_stat_err->SetMinimum(0);
+  L0_L0bar_cosThetaProdPlane_stat_err->SetMarkerSize(1.5);
+  L0_L0bar_cosThetaProdPlane_stat_err->SetMarkerStyle(20);
+  L0_L0bar_cosThetaProdPlane_stat_err->SetMarkerColor(kRed);
+  L0_L0bar_cosThetaProdPlane_stat_err->SetLineColor(kRed);
+  L0_L0bar_cosThetaProdPlane_stat_err->Draw("p e");
+
+  TPaveText *L0_L0bar_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+  L0_L0bar_text->SetTextFont(42);
+  //L0_L0bar_text->AddText("STAR Internal");
+  //L0_L0bar_text->AddText("STAR preliminary");
+  //((TText*)L0_L0bar_text->GetListOfLines()->Last())->SetTextColor(2);
+  L0_L0bar_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  if(trigger == 0 || trigger == 2) L0_L0bar_text->AddText("Minimum bias");
+  if(trigger == 1) L0_L0bar_text->AddText("JP2");
+  L0_L0bar_text->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
+  L0_L0bar_text->AddText("|#it{y}| < 1");
+  L0_L0bar_text->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
+  L0_L0bar_text->SetFillColorAlpha(0, 0.01);
+  L0_L0bar_text->Draw("same");
 
 
-  TCanvas *L0_L0bar_cosThetaProdPlane_can = new TCanvas("L0_L0bar_cosThetaProdPlane_can", "L0_L0bar_cosThetaProdPlane_can", 1200, 1000);
+  L0_L0bar_cosThetaProdPlane_stat_err_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0bar_cosThetaProdPlane_stat_err.png");
+  //________________________________________________________________
 
-  L0_L0bar_cosThetaProdPlane_can->cd();
+
+  TCanvas *L0_L0bar_cosThetaProdPlane_no_corr_can = new TCanvas("L0_L0bar_cosThetaProdPlane_no_corr_can", "L0_L0bar_cosThetaProdPlane_no_corr_can", 1200, 1000);
+
+  L0_L0bar_cosThetaProdPlane_no_corr_can->cd();
 
   L0_L0bar_cosThetaProdPlane_US_hist->GetXaxis()->SetTitle("cos(#theta*)");
   L0_L0bar_cosThetaProdPlane_US_hist->GetXaxis()->CenterTitle();
+  //L0_L0bar_cosThetaProdPlane_US_hist->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
   L0_L0bar_cosThetaProdPlane_US_hist->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
   L0_L0bar_cosThetaProdPlane_US_hist->GetYaxis()->CenterTitle();
   L0_L0bar_cosThetaProdPlane_US_hist->GetYaxis()->SetMaxDigits(3);
@@ -2064,9 +2350,9 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   L0_L0bar_cosThetaProdPlane_US_hist->SetLineColor(kRed);
   double nLLbar = L0_L0bar_cosThetaProdPlane_US_hist->Integral();
   L0_L0bar_cosThetaProdPlane_US_hist->Sumw2();
-  L0_L0bar_cosThetaProdPlane_US_hist->Divide(L0_L0bar_cosThetaProdPlane_eff);
-  L0_L0bar_cosThetaProdPlane_US_hist->Scale(1./L0_L0bar_cosThetaProdPlane_US_hist->Integral());
+  //L0_L0bar_cosThetaProdPlane_US_hist->Divide(L0_L0bar_cosThetaProdPlane_eff);
   L0_L0bar_cosThetaProdPlane_US_hist->Scale(1./L0_L0bar_cosThetaProdPlane_US_hist->GetXaxis()->GetBinWidth(1));
+  //L0_L0bar_cosThetaProdPlane_US_hist->Scale(1./L0_L0bar_cosThetaProdPlane_US_hist->Integral());
   L0_L0bar_cosThetaProdPlane_US_hist->SetMinimum(0);
   L0_L0bar_cosThetaProdPlane_US_hist->Draw("p e");
 
@@ -2076,11 +2362,12 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   double nLLbar_back = L0_L0bar_cosThetaProdPlane_LS_hist->Integral();
   L0_L0bar_cosThetaProdPlane_LS_hist->Sumw2();
   L0_L0bar_cosThetaProdPlane_LS_hist->Scale(1./L0_L0bar_cosThetaProdPlane_LS_hist->GetXaxis()->GetBinWidth(1));
-  L0_L0bar_cosThetaProdPlane_LS_hist->Divide(L0_L0bar_cosThetaProdPlane_eff);
+  //L0_L0bar_cosThetaProdPlane_LS_hist->Divide(L0_L0bar_cosThetaProdPlane_eff);
   //L0_L0bar_cosThetaProdPlane_LS_hist->Draw("p e same");
 
   L0_L0bar_cosThetaProdPlane_ME_hist->GetXaxis()->SetTitle("cos(#theta*)");
   L0_L0bar_cosThetaProdPlane_ME_hist->GetXaxis()->CenterTitle();
+  //L0_L0bar_cosThetaProdPlane_ME_hist->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
   L0_L0bar_cosThetaProdPlane_ME_hist->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
   L0_L0bar_cosThetaProdPlane_ME_hist->GetYaxis()->CenterTitle();
   L0_L0bar_cosThetaProdPlane_ME_hist->GetYaxis()->SetMaxDigits(3);
@@ -2089,12 +2376,64 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   L0_L0bar_cosThetaProdPlane_ME_hist->SetMarkerColor(kBlue);
   L0_L0bar_cosThetaProdPlane_ME_hist->SetLineColor(kBlue);
   L0_L0bar_cosThetaProdPlane_ME_hist->Sumw2();
-  L0_L0bar_cosThetaProdPlane_ME_hist->Divide(L0_L0bar_cosThetaProdPlane_ME_eff);
-  L0_L0bar_cosThetaProdPlane_ME_hist->Scale(1./L0_L0bar_cosThetaProdPlane_ME_hist->Integral());
+  //L0_L0bar_cosThetaProdPlane_ME_hist->Divide(L0_L0bar_cosThetaProdPlane_ME_eff);
+  L0_L0bar_cosThetaProdPlane_ME_hist->Scale(nLLbar_back/L0_L0bar_cosThetaProdPlane_ME_hist->Integral()); //scale ME to expected background levels using LS
   L0_L0bar_cosThetaProdPlane_ME_hist->Scale(1./L0_L0bar_cosThetaProdPlane_ME_hist->GetXaxis()->GetBinWidth(1));
   L0_L0bar_cosThetaProdPlane_ME_hist->SetMinimum(0);
   L0_L0bar_cosThetaProdPlane_ME_hist->Draw("same p e");
 
+
+  TF1 *fitL0_L0bar_US_ThetaStar_no_corr = new TF1("fitL0_L0bar_US_ThetaStar_no_corr", "[0]*(1 + [1]*x)", -1, 1);
+  fitL0_L0bar_US_ThetaStar_no_corr->SetParameters(100, 0.5);
+
+  //fit_res_gaus_wrong_sign = L_inv_mass_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
+  L0_L0bar_cosThetaProdPlane_US_hist->Fit(fitL0_L0bar_US_ThetaStar_no_corr, "s i 0 r");
+
+  float P_L0_L0bar_no_corr = fitL0_L0bar_US_ThetaStar_no_corr->GetParameter(1)/(L0_alpha*L0bar_alpha);
+  float P_L0_L0bar_no_corr_err = fitL0_L0bar_US_ThetaStar_no_corr->GetParError(1)/(L0_alpha*L0bar_alpha);
+
+  fitL0_L0bar_US_ThetaStar_no_corr->SetLineColor(1);
+  fitL0_L0bar_US_ThetaStar_no_corr->Draw("same");
+
+  TLegend *L0_L0bar_leg = new TLegend(0.15, 0.2, 0.39, 0.49);
+  L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_US_hist, "Unlike-sign p#pi");
+  //L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_LS_hist, "Like-sign p#pi");
+  L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_LS_hist, "Mixed event");
+  L0_L0bar_leg->AddEntry(fitL0_L0bar_US_ThetaStar_no_corr, "Linear fit to US");
+  L0_L0bar_leg->SetBorderSize(0);
+  L0_L0bar_leg->SetFillColorAlpha(0, 0.01);
+  L0_L0bar_leg->Draw("same");
+
+  TPaveText *L0_L0bar_text_no_corr = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+  L0_L0bar_text_no_corr->SetTextFont(42);
+  //L0_L0bar_text_no_corr->AddText("STAR Internal");
+  //L0_L0bar_text_no_corr->AddText("STAR preliminary");
+  //((TText*)L0_L0bar_text_no_corr->GetListOfLines()->Last())->SetTextColor(2);
+  L0_L0bar_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  if(trigger == 0 || trigger == 2) L0_L0bar_text_no_corr->AddText("Minimum bias, no correction");
+  if(trigger == 1) L0_L0bar_text_no_corr->AddText("JP2, no correction");
+  L0_L0bar_text_no_corr->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
+  L0_L0bar_text_no_corr->AddText("|#it{y}| < 1");
+  L0_L0bar_text_no_corr->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
+  L0_L0bar_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0_L0bar_no_corr, P_L0_L0bar_no_corr_err));
+  L0_L0bar_text_no_corr->SetFillColorAlpha(0, 0.01);
+  L0_L0bar_text_no_corr->Draw("same");
+
+  L0_L0bar_cosThetaProdPlane_no_corr_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0bar_cosThetaProdPlane_no_corr.png");
+  //_____________________________________________________________________________________
+
+  TCanvas *L0_L0bar_cosThetaProdPlane_can = new TCanvas("L0_L0bar_cosThetaProdPlane_can", "L0_L0bar_cosThetaProdPlane_can", 1200, 1000);
+
+  L0_L0bar_cosThetaProdPlane_can->cd();
+
+  L0_L0bar_cosThetaProdPlane_US_hist->Divide(L0_L0bar_cosThetaProdPlane_eff);
+  //L0_L0bar_cosThetaProdPlane_US_hist->Scale(1./L0_L0bar_cosThetaProdPlane_US_hist->Integral());
+  L0_L0bar_cosThetaProdPlane_US_hist->SetMinimum(0);
+  L0_L0bar_cosThetaProdPlane_US_hist->Draw("p e");
+
+  L0_L0bar_cosThetaProdPlane_ME_hist->Divide(L0_L0bar_cosThetaProdPlane_ME_eff);
+  //L0_L0bar_cosThetaProdPlane_ME_hist->Scale(1./L0_L0bar_cosThetaProdPlane_ME_hist->Integral());
+  L0_L0bar_cosThetaProdPlane_ME_hist->Draw("same p e");
 
   TF1 *fitL0_L0bar_US_ThetaStar = new TF1("fitL0_L0bar_US_ThetaStar", "[0]*(1 + [1]*x)", -1, 1);
   fitL0_L0bar_US_ThetaStar->SetParameters(100, 0.5);
@@ -2108,39 +2447,63 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   fitL0_L0bar_US_ThetaStar->SetLineColor(1);
   fitL0_L0bar_US_ThetaStar->Draw("same");
 
-  TLegend *L0_L0bar_leg = new TLegend(0.15, 0.2, 0.39, 0.49);
-  L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_US_hist, "Unlike-sign p#pi");
-  //L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_LS_hist, "Like-sign p#pi");
-  L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_LS_hist, "Mixed event");
-  L0_L0bar_leg->AddEntry(fitL0_L0bar_US_ThetaStar, "Linear fit to US");
-  L0_L0bar_leg->SetBorderSize(0);
-  L0_L0bar_leg->SetFillColorAlpha(0, 0.01);
-  L0_L0bar_leg->Draw("same");
 
-  TPaveText *L0_L0bar_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
-  L0_L0bar_text->SetTextFont(42);
-  L0_L0bar_text->AddText("STAR Internal");
-  //L0_L0bar_text->AddText("STAR preliminary");
-  //((TText*)L0_L0bar_text->GetListOfLines()->Last())->SetTextColor(2);
-  L0_L0bar_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-  if(trigger == 0) L0_L0bar_text->AddText("Minimum bias");
-  if(trigger == 1) L0_L0bar_text->AddText("JP2");
-  L0_L0bar_text->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
-  L0_L0bar_text->AddText("|#eta| < 1");
-  L0_L0bar_text->AddText("p_{T} integrated");
   L0_L0bar_text->AddText(Form("P = %.2f #pm %.2f", P_L0_L0bar, P_L0_L0bar_err));
-  L0_L0bar_text->SetFillColorAlpha(0, 0.01);
   L0_L0bar_text->Draw("same");
+
+  L0_L0bar_leg->Draw("same");
 
   L0_L0bar_cosThetaProdPlane_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0bar_cosThetaProdPlane.png");
   //____________________________________________________________________
 
-  TCanvas *L0_L0_cosThetaProdPlane_can = new TCanvas("L0_L0_cosThetaProdPlane_can", "L0_L0_cosThetaProdPlane_can", 1200, 1000);
 
-  L0_L0_cosThetaProdPlane_can->cd();
+  TCanvas *L0_L0_cosThetaProdPlane_stat_err_can = new TCanvas("L0_L0_cosThetaProdPlane_stat_err_can", "L0_L0_cosThetaProdPlane_stat_err_can", 1200, 1000);
+
+  L0_L0_cosThetaProdPlane_stat_err_can->cd();
+
+  for(unsigned int iBin = 0; iBin < 10; iBin++)
+  {
+    L0_L0_cosThetaProdPlane_stat_err->SetBinContent(iBin+1, L0_L0_cosThetaProdPlane_US_hist->GetBinError(iBin+1)/L0_L0_cosThetaProdPlane_US_hist->GetBinContent(iBin+1)*100 );
+    L0_L0_cosThetaProdPlane_stat_err->SetBinError(iBin+1, 0 );
+  }
+  L0_L0_cosThetaProdPlane_stat_err->GetXaxis()->SetTitle("cos(#theta*)");
+  L0_L0_cosThetaProdPlane_stat_err->GetXaxis()->CenterTitle();
+  L0_L0_cosThetaProdPlane_stat_err->GetYaxis()->SetTitle("Relative error (%)");
+  L0_L0_cosThetaProdPlane_stat_err->GetYaxis()->CenterTitle();
+  L0_L0_cosThetaProdPlane_stat_err->SetMinimum(0);
+  L0_L0_cosThetaProdPlane_stat_err->SetMarkerSize(1.5);
+  L0_L0_cosThetaProdPlane_stat_err->SetMarkerStyle(20);
+  L0_L0_cosThetaProdPlane_stat_err->SetMarkerColor(kRed);
+  L0_L0_cosThetaProdPlane_stat_err->SetLineColor(kRed);
+  L0_L0_cosThetaProdPlane_stat_err->Draw("p e");
+
+
+  TPaveText *L0_L0_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+  L0_L0_text->SetTextFont(42);
+  //L0_L0_text->AddText("STAR Internal");
+  //cent_text->AddText("STAR preliminary");
+  //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+  L0_L0_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  if(trigger == 0 || trigger == 2) L0_L0_text->AddText("Minimum bias");
+  if(trigger == 1) L0_L0_text->AddText("JP2");
+  L0_L0_text->AddText("#Lambda^{0}-#Lambda^{0}");
+  L0_L0_text->AddText("|#it{y}| < 1");
+  L0_L0_text->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
+  L0_L0_text->SetFillColorAlpha(0, 0.01);
+  L0_L0_text->Draw("same");
+
+
+  L0_L0_cosThetaProdPlane_stat_err_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0_cosThetaProdPlane_stat_err.png");
+  //________________________________
+
+
+  TCanvas *L0_L0_cosThetaProdPlane_no_corr_can = new TCanvas("L0_L0_cosThetaProdPlane_no_corr_can", "L0_L0_cosThetaProdPlane_no_corr_can", 1200, 1000);
+
+  L0_L0_cosThetaProdPlane_no_corr_can->cd();
 
   L0_L0_cosThetaProdPlane_US_hist->GetXaxis()->SetTitle("cos(#theta*)");
   L0_L0_cosThetaProdPlane_US_hist->GetXaxis()->CenterTitle();
+  //L0_L0_cosThetaProdPlane_US_hist->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
   L0_L0_cosThetaProdPlane_US_hist->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
   L0_L0_cosThetaProdPlane_US_hist->GetYaxis()->CenterTitle();
   L0_L0_cosThetaProdPlane_US_hist->SetMarkerSize(1.5);
@@ -2149,9 +2512,9 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   L0_L0_cosThetaProdPlane_US_hist->SetLineColor(kRed);
   double nLL = L0_L0_cosThetaProdPlane_US_hist->Integral();
   L0_L0_cosThetaProdPlane_US_hist->Sumw2();
-  L0_L0_cosThetaProdPlane_US_hist->Divide(L0_L0_cosThetaProdPlane_eff);
-  L0_L0_cosThetaProdPlane_US_hist->Scale(1./L0_L0_cosThetaProdPlane_US_hist->Integral());
+  //L0_L0_cosThetaProdPlane_US_hist->Divide(L0_L0_cosThetaProdPlane_eff);
   L0_L0_cosThetaProdPlane_US_hist->Scale(1./L0_L0_cosThetaProdPlane_US_hist->GetXaxis()->GetBinWidth(1));
+  //L0_L0_cosThetaProdPlane_US_hist->Scale(1./L0_L0_cosThetaProdPlane_US_hist->Integral());
   L0_L0_cosThetaProdPlane_US_hist->SetMinimum(0);
   L0_L0_cosThetaProdPlane_US_hist->Draw("p e");
 
@@ -2167,6 +2530,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   L0_L0_cosThetaProdPlane_ME_hist->GetXaxis()->SetTitle("cos(#theta*)");
   L0_L0_cosThetaProdPlane_ME_hist->GetXaxis()->CenterTitle();
   L0_L0_cosThetaProdPlane_ME_hist->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
+  //L0_L0_cosThetaProdPlane_ME_hist->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
   L0_L0_cosThetaProdPlane_ME_hist->GetYaxis()->CenterTitle();
   L0_L0_cosThetaProdPlane_ME_hist->GetYaxis()->SetMaxDigits(3);
   L0_L0_cosThetaProdPlane_ME_hist->SetMarkerSize(1.5);
@@ -2174,12 +2538,64 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   L0_L0_cosThetaProdPlane_ME_hist->SetMarkerColor(kBlue);
   L0_L0_cosThetaProdPlane_ME_hist->SetLineColor(kBlue);
   L0_L0_cosThetaProdPlane_ME_hist->Sumw2();
-  L0_L0_cosThetaProdPlane_ME_hist->Divide(L0_L0_cosThetaProdPlane_ME_eff);
-  L0_L0_cosThetaProdPlane_ME_hist->Scale(1./L0_L0_cosThetaProdPlane_ME_hist->Integral());
+  //L0_L0_cosThetaProdPlane_ME_hist->Divide(L0_L0_cosThetaProdPlane_ME_eff);
+  L0_L0_cosThetaProdPlane_ME_hist->Scale(nLL_back/L0_L0_cosThetaProdPlane_ME_hist->Integral());
   L0_L0_cosThetaProdPlane_ME_hist->Scale(1./L0_L0_cosThetaProdPlane_ME_hist->GetXaxis()->GetBinWidth(1));
   L0_L0_cosThetaProdPlane_ME_hist->SetMinimum(0);
   L0_L0_cosThetaProdPlane_ME_hist->Draw("same p e");
 
+
+  TF1 *fitL0_L0_US_ThetaStar_no_corr = new TF1("fitL0_L0_US_ThetaStar_no_corr", "[0]*(1 + [1]*x)", -1, 1);
+  fitL0_L0_US_ThetaStar_no_corr->SetParameters(100, 0.5);
+
+  //fit_res_gaus_wrong_sign = L_inv_mass_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
+  L0_L0_cosThetaProdPlane_US_hist->Fit(fitL0_L0_US_ThetaStar_no_corr, "s i 0 r");
+
+  float P_L0_L0_no_corr = fitL0_L0_US_ThetaStar_no_corr->GetParameter(1)/(L0_alpha*L0_alpha);
+  float P_L0_L0_no_corr_err = fitL0_L0_US_ThetaStar_no_corr->GetParError(1)/(L0_alpha*L0_alpha);
+
+  fitL0_L0_US_ThetaStar_no_corr->SetLineColor(1);
+  fitL0_L0_US_ThetaStar_no_corr->Draw("same");
+
+  TLegend *L0_L0_leg = new TLegend(0.15, 0.2, 0.39, 0.49);
+  L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_US_hist, "Unlike-sign p#pi");
+  //L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_LS_hist, "Like-sign p#pi");
+  L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_LS_hist, "Mixed event");
+  L0_L0_leg->AddEntry(fitL0_L0_US_ThetaStar_no_corr, "Linear fit to US");
+  L0_L0_leg->SetBorderSize(0);
+  L0_L0_leg->SetFillColorAlpha(0, 0.01);
+  L0_L0_leg->Draw("same");
+
+  TPaveText *L0_L0_text_no_corr = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+  L0_L0_text_no_corr->SetTextFont(42);
+  //L0_L0_text_no_corr->AddText("STAR Internal");
+  //L0_L0_text_no_corr->AddText("STAR preliminary");
+  //((TText*)L0_L0_text_no_corr->GetListOfLines()->Last())->SetTextColor(2);
+  L0_L0_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  if(trigger == 0 || trigger == 2) L0_L0_text_no_corr->AddText("Minimum bias, no correction");
+  if(trigger == 1) L0_L0_text_no_corr->AddText("JP2, no correction");
+  L0_L0_text_no_corr->AddText("#Lambda^{0}-#Lambda^{0}");
+  L0_L0_text_no_corr->AddText("|#it{y}| < 1");
+  L0_L0_text_no_corr->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
+  L0_L0_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0_L0_no_corr, P_L0_L0_no_corr_err));
+  L0_L0_text_no_corr->SetFillColorAlpha(0, 0.01);
+  L0_L0_text_no_corr->Draw("same");
+
+  L0_L0_cosThetaProdPlane_no_corr_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0_cosThetaProdPlane_no_corr.png");
+  //________________________________________________________________________
+
+  TCanvas *L0_L0_cosThetaProdPlane_can = new TCanvas("L0_L0_cosThetaProdPlane_can", "L0_L0_cosThetaProdPlane_can", 1200, 1000);
+
+  L0_L0_cosThetaProdPlane_can->cd();
+
+  L0_L0_cosThetaProdPlane_US_hist->Divide(L0_L0_cosThetaProdPlane_eff);
+  //L0_L0_cosThetaProdPlane_US_hist->Scale(1./L0_L0_cosThetaProdPlane_US_hist->Integral());
+  L0_L0_cosThetaProdPlane_US_hist->SetMinimum(0);
+  L0_L0_cosThetaProdPlane_US_hist->Draw("p e");
+
+  L0_L0_cosThetaProdPlane_ME_hist->Divide(L0_L0_cosThetaProdPlane_ME_eff);
+  //L0_L0_cosThetaProdPlane_ME_hist->Scale(1./L0_L0_cosThetaProdPlane_ME_hist->Integral());
+  L0_L0_cosThetaProdPlane_ME_hist->Draw("same p e");
 
   TF1 *fitL0_L0_US_ThetaStar = new TF1("fitL0_L0_US_ThetaStar", "[0]*(1 + [1]*x)", -1, 1);
   fitL0_L0_US_ThetaStar->SetParameters(100, 0.5);
@@ -2193,40 +2609,60 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   fitL0_L0_US_ThetaStar->SetLineColor(1);
   fitL0_L0_US_ThetaStar->Draw("same");
 
-  TLegend *L0_L0_leg = new TLegend(0.15, 0.2, 0.39, 0.49);
-  L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_US_hist, "Unlike-sign p#pi");
-  //L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_LS_hist, "Like-sign p#pi");
-  L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_LS_hist, "Mixed event");
-  L0_L0_leg->AddEntry(fitL0_L0_US_ThetaStar, "Linear fit to US");
-  L0_L0_leg->SetBorderSize(0);
-  L0_L0_leg->SetFillColorAlpha(0, 0.01);
-  L0_L0_leg->Draw("same");
-
-  TPaveText *L0_L0_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
-  L0_L0_text->SetTextFont(42);
-  L0_L0_text->AddText("STAR Internal");
-  //cent_text->AddText("STAR preliminary");
-  //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
-  L0_L0_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-  if(trigger == 0) L0_L0_text->AddText("Minimum bias");
-  if(trigger == 1) L0_L0_text->AddText("JP2");
-  L0_L0_text->AddText("#Lambda^{0}-#Lambda^{0}");
-  L0_L0_text->AddText("|#eta| < 1");
-  L0_L0_text->AddText("p_{T} integrated");
   L0_L0_text->AddText(Form("P = %.2f #pm %.2f", P_L0_L0, P_L0_L0_err));
-  L0_L0_text->SetFillColorAlpha(0, 0.01);
   L0_L0_text->Draw("same");
+
+  L0_L0_leg->Draw("same");
 
   L0_L0_cosThetaProdPlane_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0_cosThetaProdPlane.png");
   //____________________________________________________________________
 
+  TCanvas *L0bar_L0bar_cosThetaProdPlane_stat_err_can = new TCanvas("L0bar_L0bar_cosThetaProdPlane_stat_err_can", "L0bar_L0bar_cosThetaProdPlane_stat_err_can", 1200, 1000);
 
-  TCanvas *L0bar_L0bar_cosThetaProdPlane_can = new TCanvas("L0bar_L0bar_cosThetaProdPlane_can", "L0bar_L0bar_cosThetaProdPlane_can", 1200, 1000);
+  L0bar_L0bar_cosThetaProdPlane_stat_err_can->cd();
 
-  L0bar_L0bar_cosThetaProdPlane_can->cd();
+  for(unsigned int iBin = 0; iBin < 10; iBin++)
+  {
+    L0bar_L0bar_cosThetaProdPlane_stat_err->SetBinContent(iBin+1, L0bar_L0bar_cosThetaProdPlane_US_hist->GetBinError(iBin+1)/L0bar_L0bar_cosThetaProdPlane_US_hist->GetBinContent(iBin+1)*100 );
+    L0bar_L0bar_cosThetaProdPlane_stat_err->SetBinError(iBin+1, 0 );
+  }
+  L0bar_L0bar_cosThetaProdPlane_stat_err->GetXaxis()->SetTitle("cos(#theta*)");
+  L0bar_L0bar_cosThetaProdPlane_stat_err->GetXaxis()->CenterTitle();
+  L0bar_L0bar_cosThetaProdPlane_stat_err->GetYaxis()->SetTitle("Relative error (%)");
+  L0bar_L0bar_cosThetaProdPlane_stat_err->GetYaxis()->CenterTitle();
+  L0bar_L0bar_cosThetaProdPlane_stat_err->SetMinimum(0);
+  L0bar_L0bar_cosThetaProdPlane_stat_err->SetMarkerSize(1.5);
+  L0bar_L0bar_cosThetaProdPlane_stat_err->SetMarkerStyle(20);
+  L0bar_L0bar_cosThetaProdPlane_stat_err->SetMarkerColor(kRed);
+  L0bar_L0bar_cosThetaProdPlane_stat_err->SetLineColor(kRed);
+  L0bar_L0bar_cosThetaProdPlane_stat_err->Draw("p e");
+
+  TPaveText *L0bar_L0bar_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+  L0bar_L0bar_text->SetTextFont(42);
+  //L0bar_L0bar_text->AddText("STAR Internal");
+  //cent_text->AddText("STAR preliminary");
+  //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+  L0bar_L0bar_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  if(trigger == 0 || trigger == 2) L0bar_L0bar_text->AddText("Minimum bias");
+  if(trigger == 1) L0bar_L0bar_text->AddText("JP2");
+  L0bar_L0bar_text->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
+  L0bar_L0bar_text->AddText("|#it{y}| < 1");
+  L0bar_L0bar_text->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
+  L0bar_L0bar_text->SetFillColorAlpha(0, 0.01);
+  L0bar_L0bar_text->Draw("same");
+
+
+  L0bar_L0bar_cosThetaProdPlane_stat_err_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0bar_L0bar_cosThetaProdPlane_stat_err.png");
+  //________________________________
+
+
+  TCanvas *L0bar_L0bar_cosThetaProdPlane_no_corr_can = new TCanvas("L0bar_L0bar_cosThetaProdPlane_no_corr_can", "L0bar_L0bar_cosThetaProdPlane_no_corr_can", 1200, 1000);
+
+  L0bar_L0bar_cosThetaProdPlane_no_corr_can->cd();
 
   L0bar_L0bar_cosThetaProdPlane_US_hist->GetXaxis()->SetTitle("cos(#theta*)");
   L0bar_L0bar_cosThetaProdPlane_US_hist->GetXaxis()->CenterTitle();
+  //L0bar_L0bar_cosThetaProdPlane_US_hist->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
   L0bar_L0bar_cosThetaProdPlane_US_hist->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
   L0bar_L0bar_cosThetaProdPlane_US_hist->GetYaxis()->CenterTitle();
   L0bar_L0bar_cosThetaProdPlane_US_hist->SetMarkerSize(1.5);
@@ -2235,9 +2671,9 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   L0bar_L0bar_cosThetaProdPlane_US_hist->SetLineColor(kRed);
   double nLbarLbar = L0bar_L0bar_cosThetaProdPlane_US_hist->Integral();
   L0bar_L0bar_cosThetaProdPlane_US_hist->Sumw2();
-  L0bar_L0bar_cosThetaProdPlane_US_hist->Divide(L0bar_L0bar_cosThetaProdPlane_ME_eff);
-  L0bar_L0bar_cosThetaProdPlane_US_hist->Scale(1./L0bar_L0bar_cosThetaProdPlane_US_hist->Integral());
+  //L0bar_L0bar_cosThetaProdPlane_US_hist->Divide(L0bar_L0bar_cosThetaProdPlane_ME_eff);
   L0bar_L0bar_cosThetaProdPlane_US_hist->Scale(1./L0bar_L0bar_cosThetaProdPlane_US_hist->GetXaxis()->GetBinWidth(1));
+  //L0bar_L0bar_cosThetaProdPlane_US_hist->Scale(1./L0bar_L0bar_cosThetaProdPlane_US_hist->Integral());
   L0bar_L0bar_cosThetaProdPlane_US_hist->SetMinimum(0);
   L0bar_L0bar_cosThetaProdPlane_US_hist->Draw("p e");
 
@@ -2247,11 +2683,12 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   double nLbarLbar_back = L0bar_L0bar_cosThetaProdPlane_LS_hist->Integral();
   L0bar_L0bar_cosThetaProdPlane_LS_hist->Sumw2();
   L0bar_L0bar_cosThetaProdPlane_LS_hist->Scale(1./L0bar_L0bar_cosThetaProdPlane_LS_hist->GetXaxis()->GetBinWidth(1));
-  L0bar_L0bar_cosThetaProdPlane_LS_hist->Divide(L0bar_L0bar_cosThetaProdPlane_eff);
+  //L0bar_L0bar_cosThetaProdPlane_LS_hist->Divide(L0bar_L0bar_cosThetaProdPlane_eff);
   //L0bar_L0bar_cosThetaProdPlane_LS_hist->Draw("p e same");
 
   L0bar_L0bar_cosThetaProdPlane_ME_hist->GetXaxis()->SetTitle("cos(#theta*)");
   L0bar_L0bar_cosThetaProdPlane_ME_hist->GetXaxis()->CenterTitle();
+  //L0bar_L0bar_cosThetaProdPlane_ME_hist->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
   L0bar_L0bar_cosThetaProdPlane_ME_hist->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
   L0bar_L0bar_cosThetaProdPlane_ME_hist->GetYaxis()->CenterTitle();
   L0bar_L0bar_cosThetaProdPlane_ME_hist->GetYaxis()->SetMaxDigits(3);
@@ -2260,14 +2697,69 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   L0bar_L0bar_cosThetaProdPlane_ME_hist->SetMarkerColor(kBlue);
   L0bar_L0bar_cosThetaProdPlane_ME_hist->SetLineColor(kBlue);
   L0bar_L0bar_cosThetaProdPlane_ME_hist->Sumw2();
-  L0bar_L0bar_cosThetaProdPlane_ME_hist->Divide(L0bar_L0bar_cosThetaProdPlane_ME_eff);
-  L0bar_L0bar_cosThetaProdPlane_ME_hist->Scale(1./L0bar_L0bar_cosThetaProdPlane_ME_hist->Integral());
+  //L0bar_L0bar_cosThetaProdPlane_ME_hist->Divide(L0bar_L0bar_cosThetaProdPlane_ME_eff);
+  L0bar_L0bar_cosThetaProdPlane_ME_hist->Scale(nLbarLbar_back/L0bar_L0bar_cosThetaProdPlane_ME_hist->Integral());
   L0bar_L0bar_cosThetaProdPlane_ME_hist->Scale(1./L0bar_L0bar_cosThetaProdPlane_ME_hist->GetXaxis()->GetBinWidth(1));
   L0bar_L0bar_cosThetaProdPlane_ME_hist->SetMinimum(0);
   L0bar_L0bar_cosThetaProdPlane_ME_hist->Draw("same p e");
 
 
-  TF1 *fitL0bar_L0bar_US_ThetaStar = new TF1("fitL0bar_L0bar_US_ThetaStar", "[0]*(1 + [1]*x)", -1, 1);
+  TF1 *fitL0bar_L0bar_US_ThetaStar_no_corr = new TF1("fitL0bar_L0bar_US_ThetaStar_no_corr", "[0]*(1 + [1]*x)", -1, 1);
+  fitL0bar_L0bar_US_ThetaStar_no_corr->SetParameters(100, 0.5);
+
+  //fit_res_gaus_wrong_sign = L_inv_mass_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
+  L0bar_L0bar_cosThetaProdPlane_US_hist->Fit(fitL0bar_L0bar_US_ThetaStar_no_corr, "s i 0 r");
+
+  float P_L0bar_L0bar_no_corr = fitL0bar_L0bar_US_ThetaStar_no_corr->GetParameter(1)/(L0bar_alpha*L0bar_alpha);
+  float P_L0bar_L0bar_no_corr_err = fitL0bar_L0bar_US_ThetaStar_no_corr->GetParError(1)/(L0bar_alpha*L0bar_alpha);
+
+  fitL0bar_L0bar_US_ThetaStar_no_corr->SetLineColor(1);
+  fitL0bar_L0bar_US_ThetaStar_no_corr->Draw("same");
+
+
+  TLegend *L0bar_L0bar_leg = new TLegend(0.15, 0.2, 0.39, 0.49);
+  L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_US_hist, "Unlike-sign p#pi");
+  //L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_LS_hist, "Like-sign p#pi");
+  L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_LS_hist, "Mixed event");
+  L0bar_L0bar_leg->AddEntry(fitL0bar_L0bar_US_ThetaStar_no_corr, "Linear fit to US");
+  L0bar_L0bar_leg->SetBorderSize(0);
+  L0bar_L0bar_leg->SetFillColorAlpha(0, 0.01);
+  L0bar_L0bar_leg->Draw("same");
+
+
+  TPaveText *L0bar_L0bar_text_no_corr = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+  L0bar_L0bar_text_no_corr->SetTextFont(42);
+  //L0bar_L0bar_text_no_corr->AddText("STAR Internal");
+  //L0bar_L0bar_text_no_corr->AddText("STAR preliminary");
+  //((TText*)L0bar_L0bar_text_no_corr->GetListOfLines()->Last())->SetTextColor(2);
+  L0bar_L0bar_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  if(trigger == 0 || trigger == 2) L0bar_L0bar_text_no_corr->AddText("Minimum bias, no correction");
+  if(trigger == 1) L0bar_L0bar_text_no_corr->AddText("JP2, no correction");
+  L0bar_L0bar_text_no_corr->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
+  L0bar_L0bar_text_no_corr->AddText("|#it{y}| < 1");
+  L0bar_L0bar_text_no_corr->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
+  L0bar_L0bar_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0bar_L0bar_no_corr, P_L0bar_L0bar_no_corr_err));
+  L0bar_L0bar_text_no_corr->SetFillColorAlpha(0, 0.01);
+  L0bar_L0bar_text_no_corr->Draw("same");
+
+
+  L0bar_L0bar_cosThetaProdPlane_no_corr_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0bar_L0bar_cosThetaProdPlane_no_corr.png");
+  //_______________________________________________________________________________________
+
+  TCanvas *L0bar_L0bar_cosThetaProdPlane_can = new TCanvas("L0bar_L0bar_cosThetaProdPlane_can", "L0bar_L0bar_cosThetaProdPlane_can", 1200, 1000);
+
+  L0bar_L0bar_cosThetaProdPlane_can->cd();
+
+  L0bar_L0bar_cosThetaProdPlane_US_hist->Divide(L0bar_L0bar_cosThetaProdPlane_eff);
+  //L0bar_L0bar_cosThetaProdPlane_US_hist->Scale(1./L0bar_L0bar_cosThetaProdPlane_US_hist->Integral());
+  L0bar_L0bar_cosThetaProdPlane_US_hist->SetMinimum(0);
+  L0bar_L0bar_cosThetaProdPlane_US_hist->Draw("p e");
+
+  L0bar_L0bar_cosThetaProdPlane_ME_hist->Divide(L0bar_L0bar_cosThetaProdPlane_ME_eff);
+  //L0bar_L0bar_cosThetaProdPlane_ME_hist->Scale(1./L0bar_L0bar_cosThetaProdPlane_ME_hist->Integral());
+  L0bar_L0bar_cosThetaProdPlane_ME_hist->Draw("same p e");
+
+    TF1 *fitL0bar_L0bar_US_ThetaStar = new TF1("fitL0bar_L0bar_US_ThetaStar", "[0]*(1 + [1]*x)", -1, 1);
   fitL0bar_L0bar_US_ThetaStar->SetParameters(100, 0.5);
 
   //fit_res_gaus_wrong_sign = L_inv_mass_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
@@ -2279,84 +2771,166 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   fitL0bar_L0bar_US_ThetaStar->SetLineColor(1);
   fitL0bar_L0bar_US_ThetaStar->Draw("same");
 
-  TLegend *L0bar_L0bar_leg = new TLegend(0.15, 0.2, 0.39, 0.49);
-  L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_US_hist, "Unlike-sign p#pi");
-  //L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_LS_hist, "Like-sign p#pi");
-  L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_LS_hist, "Mixed event");
-  L0bar_L0bar_leg->AddEntry(fitL0bar_L0bar_US_ThetaStar, "Linear fit to US");
-  L0bar_L0bar_leg->SetBorderSize(0);
-  L0bar_L0bar_leg->SetFillColorAlpha(0, 0.01);
-  L0bar_L0bar_leg->Draw("same");
-
-
-  TPaveText *L0bar_L0bar_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
-  L0bar_L0bar_text->SetTextFont(42);
-  L0bar_L0bar_text->AddText("STAR Internal");
-  //cent_text->AddText("STAR preliminary");
-  //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
-  L0bar_L0bar_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-  if(trigger == 0) L0bar_L0bar_text->AddText("Minimum bias");
-  if(trigger == 1) L0bar_L0bar_text->AddText("JP2");
-  L0bar_L0bar_text->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
-  L0bar_L0bar_text->AddText("|#eta| < 1");
-  L0bar_L0bar_text->AddText("p_{T} integrated");
   L0bar_L0bar_text->AddText(Form("P = %.2f #pm %.2f", P_L0bar_L0bar, P_L0bar_L0bar_err));
-  L0bar_L0bar_text->SetFillColorAlpha(0, 0.01);
   L0bar_L0bar_text->Draw("same");
+
+
+  L0bar_L0bar_leg->Draw("same");
 
 
   L0bar_L0bar_cosThetaProdPlane_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0bar_L0bar_cosThetaProdPlane.png");
   //____________________________________________________________________
+
+  double nLLbar_pT[nPtBins_corr][nPtBins_corr];
+  double nLL_pT[nPtBins_corr][nPtBins_corr];
+  double nLbarLbar_pT[nPtBins_corr][nPtBins_corr];
+
+  double nLLbar_pT_back[nPtBins_corr][nPtBins_corr];
+  double nLL_pT_back[nPtBins_corr][nPtBins_corr];
+  double nLbarLbar_pT_back[nPtBins_corr][nPtBins_corr];
 
 
   for(unsigned int pTbin1 = 0; pTbin1 < nPtBins_corr; pTbin1++)
   {
     for(unsigned int pTbin2 = 0; pTbin2 < nPtBins_corr; pTbin2++)
     {
-      TCanvas *L0_L0bar_cosThetaProdPlane_pT_can = new TCanvas(Form("L0_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
 
-      L0_L0bar_cosThetaProdPlane_pT_can->cd();
+      TCanvas *L0_L0bar_cosThetaProdPlane_pT_stat_err_can = new TCanvas(Form("L0_L0bar_cosThetaProdPlane_stat_err_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0_L0bar_cosThetaProdPlane_stat_err_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
+
+      L0_L0bar_cosThetaProdPlane_pT_stat_err_can->cd();
+
+      for(unsigned int iBin = 0; iBin < 10; iBin++)
+      {
+        L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetBinContent(iBin+1, L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetBinError(iBin+1)/L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetBinContent(iBin+1)*100 );
+        L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetBinError(iBin+1, 0 );
+      }
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetXaxis()->SetTitle("cos(#theta*)");
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetYaxis()->SetTitle("Relative error (%)");
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMinimum(0);
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMarkerSize(1.5);
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMarkerStyle(20);
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMarkerColor(kRed);
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetLineColor(kRed);
+      L0_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->Draw("p e");
+
+      TPaveText *L0_L0bar_pT_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+      L0_L0bar_pT_text->SetTextFont(42);
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      L0_L0bar_pT_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      if(trigger == 0 || trigger == 2) L0_L0bar_pT_text->AddText("Minimum bias");
+      if(trigger == 1) L0_L0bar_pT_text->AddText("JP2");
+      L0_L0bar_pT_text->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
+      L0_L0bar_pT_text->AddText("|#it{y}| < 1");
+      L0_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0bar_pT_text->SetFillColorAlpha(0, 0.01);
+      L0_L0bar_pT_text->Draw("same");
+
+
+      L0_L0bar_cosThetaProdPlane_pT_stat_err_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0bar_cosThetaProdPlane_stat_err_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+      //________________________________________________________________
+
+      TCanvas *L0_L0bar_cosThetaProdPlane_pT_no_corr_can = new TCanvas(Form("L0_L0bar_cosThetaProdPlane_no_corr_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0_L0bar_cosThetaProdPlane_no_corr_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
+
+      L0_L0bar_cosThetaProdPlane_pT_no_corr_can->cd();
 
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      //L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMarkerColor(kRed);
+      L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMarkerSize(2);
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetLineColor(kRed);
-      //double nLLbar = L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral();
+      nLLbar_pT[pTbin1][pTbin2] = L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral();
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Sumw2();
-      L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Divide(L0_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
-      L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral());
+      //L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Divide(L0_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
+      //L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral());
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMinimum(0);
       L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Draw("p e");
 
       L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
       L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerColor(kBlue);
-      //double nLLbar_back = L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral();
+      L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerSize(2);
+      nLLbar_pT_back[pTbin1][pTbin2] = L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral();
       L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Sumw2();
-      L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Scale(1./L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
-      L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Divide(L0_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
+      //L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Scale(1./L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
+      //L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Divide(L0_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
       //L0_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Draw("p e same");
 
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      //L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerColor(kBlue);
+      L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerSize(2);
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetLineColor(kBlue);
       //double nLLbar = L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral();
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Sumw2();
-      L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Divide(L0_L0bar_cosThetaProdPlane_ME_pT_eff[pTbin1][pTbin2]);
-      L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(1./L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral());
+      //L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Divide(L0_L0bar_cosThetaProdPlane_ME_pT_eff[pTbin1][pTbin2]);
+      L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(nLLbar_pT_back[pTbin1][pTbin2]/L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral());
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(1./L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMinimum(0);
       L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Draw("same p e");
 
 
-      TF1 *fitL0_L0bar_pT_US_ThetaStar = new TF1("fitL0_L0bar_pT_US_ThetaStar", "[0]*(1 + [1]*x)", -1, 1);
+      TF1 *fitL0_L0bar_pT_US_ThetaStar_no_corr = new TF1("fitL0_L0bar_pT_US_ThetaStar_no_corr", "[0]*(1 + [1]*x)", -1, 1);
+      fitL0_L0bar_pT_US_ThetaStar_no_corr->SetParameters(100, 0.5);
+
+      //fit_res_gaus_wrong_sign = L_inv_mass_pT_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
+      L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Fit(fitL0_L0bar_pT_US_ThetaStar_no_corr, "s i 0 r");
+
+      float P_L0_L0bar_pT_no_corr = fitL0_L0bar_pT_US_ThetaStar_no_corr->GetParameter(1)/(L0_alpha*L0bar_alpha);
+      float P_L0_L0bar_pT_no_corr_err = fitL0_L0bar_pT_US_ThetaStar_no_corr->GetParError(1)/(L0_alpha*L0bar_alpha);
+
+      fitL0_L0bar_pT_US_ThetaStar_no_corr->SetLineColor(1);
+      fitL0_L0bar_pT_US_ThetaStar_no_corr->Draw("same");
+
+      TPaveText *L0_L0bar_pT_text_no_corr = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+      L0_L0bar_pT_text_no_corr->SetTextFont(42);
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      L0_L0bar_pT_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      if(trigger == 0 || trigger == 2) L0_L0bar_pT_text_no_corr->AddText("Minimum bias, no correction");
+      if(trigger == 1) L0_L0bar_pT_text_no_corr->AddText("JP2, no correction");
+      L0_L0bar_pT_text_no_corr->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
+      //L0_L0bar_pT_text_no_corr->AddText("|#it{y}| < 0.2");
+      L0_L0bar_pT_text_no_corr->AddText("|#it{y}| < 1");
+      L0_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0bar_pT_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0_L0bar_pT_no_corr, P_L0_L0bar_pT_no_corr_err));
+      L0_L0bar_pT_text_no_corr->SetFillColorAlpha(0, 0.01);
+      L0_L0bar_pT_text_no_corr->Draw("same");
+
+      L0_L0bar_leg->Draw("same");
+
+
+      L0_L0bar_cosThetaProdPlane_pT_no_corr_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0bar_cosThetaProdPlane_no_corr_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+      //_______________________________________________
+
+
+
+      TCanvas *L0_L0bar_cosThetaProdPlane_pT_can = new TCanvas(Form("L0_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
+
+      L0_L0bar_cosThetaProdPlane_pT_can->cd();
+
+      L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Divide(L0_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
+      //L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral());
+      L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMinimum(0);
+      L0_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Draw("p e");
+
+      L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Divide(L0_L0bar_cosThetaProdPlane_ME_pT_eff[pTbin1][pTbin2]);
+      //L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(1./L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral());
+      L0_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Draw("same p e");
+
+       TF1 *fitL0_L0bar_pT_US_ThetaStar = new TF1("fitL0_L0bar_pT_US_ThetaStar", "[0]*(1 + [1]*x)", -1, 1);
       fitL0_L0bar_pT_US_ThetaStar->SetParameters(100, 0.5);
 
       //fit_res_gaus_wrong_sign = L_inv_mass_pT_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
@@ -2368,18 +2942,8 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       fitL0_L0bar_pT_US_ThetaStar->SetLineColor(1);
       fitL0_L0bar_pT_US_ThetaStar->Draw("same");
 
-      TPaveText *L0_L0bar_pT_text = new TPaveText(0.35, 0.2, 0.75, 0.4, "NDC");
-      //cent_text->AddText("STAR preliminary");
-      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
-      L0_L0bar_pT_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-      if(trigger == 0) L0_L0bar_pT_text->AddText("Minimum bias");
-      if(trigger == 1) L0_L0bar_pT_text->AddText("JP2");
-      L0_L0bar_pT_text->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
-      L0_L0bar_pT_text->AddText("|#eta| < 1");
-      L0_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+
       L0_L0bar_pT_text->AddText(Form("P = %.2f #pm %.2f", P_L0_L0bar_pT, P_L0_L0bar_pT_err));
-      L0_L0bar_pT_text->SetFillColorAlpha(0, 0.01);
       L0_L0bar_pT_text->Draw("same");
 
       L0_L0bar_leg->Draw("same");
@@ -2388,47 +2952,137 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       //____________________________________________________________________________________________________
 
 
+      TCanvas *L0_L0_cosThetaProdPlane_pT_stat_err_can = new TCanvas(Form("L0_L0_cosThetaProdPlane_stat_err_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0_L0_cosThetaProdPlane_stat_err_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
 
-      TCanvas *L0_L0_cosThetaProdPlane_pT_can = new TCanvas(Form("L0_L0_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0_L0_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
+      L0_L0_cosThetaProdPlane_pT_stat_err_can->cd();
 
-      L0_L0_cosThetaProdPlane_pT_can->cd();
+      for(unsigned int iBin = 0; iBin < 10; iBin++)
+      {
+        L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetBinContent(iBin+1, L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetBinError(iBin+1)/L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetBinContent(iBin+1)*100 );
+        L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetBinError(iBin+1, 0 );
+      }
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetXaxis()->SetTitle("cos(#theta*)");
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetYaxis()->SetTitle("Relative error (%)");
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMinimum(0);
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMarkerSize(1.5);
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMarkerStyle(20);
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMarkerColor(kRed);
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetLineColor(kRed);
+      L0_L0_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->Draw("p e");
+
+
+      TPaveText *L0_L0_pT_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+      L0_L0_pT_text->SetTextFont(42);
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      L0_L0_pT_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      if(trigger == 0 || trigger == 2) L0_L0_pT_text->AddText("Minimum bias");
+      if(trigger == 1) L0_L0_pT_text->AddText("JP2");
+      L0_L0_pT_text->AddText("#Lambda^{0}-#Lambda^{0}");
+      L0_L0_pT_text->AddText("|#it{y}| < 1");
+      L0_L0_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0_pT_text->SetFillColorAlpha(0, 0.01);
+      L0_L0_pT_text->Draw("same");
+
+
+      L0_L0_cosThetaProdPlane_pT_stat_err_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0_cosThetaProdPlane_stat_err_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+      //________________________________________________________________
+
+
+      TCanvas *L0_L0_cosThetaProdPlane_pT_no_corr_can = new TCanvas(Form("L0_L0_cosThetaProdPlane_no_corr_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0_L0_cosThetaProdPlane_no_corr_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
+
+      L0_L0_cosThetaProdPlane_pT_no_corr_can->cd();
 
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      //L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMarkerColor(kRed);
+      L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMarkerSize(2);
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetLineColor(kRed);
-      //double nLL = L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral();
+      nLL_pT[pTbin1][pTbin2] = L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral();
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Sumw2();
-      L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Divide(L0_L0_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
-      L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral());
+      //L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Divide(L0_L0_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
+      //L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral());
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMinimum(0);
       L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Draw("p e");
 
       L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
       L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerColor(kBlue);
-      //double nLL_back = L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral();
+      L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerSize(2);
+      nLL_pT_back[pTbin1][pTbin2] = L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral();
       L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Sumw2();
-      L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Scale(1./L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
-      L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Divide(L0_L0_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
+      //L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Scale(1./L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
+      //L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Divide(L0_L0_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
       //L0_L0_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Draw("p e same");
 
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      //L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerColor(kBlue);
+      L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerSize(2);
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetLineColor(kBlue);
       //double nLLbar = L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral();
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Sumw2();
-      L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Divide(L0_L0_cosThetaProdPlane_ME_pT_eff[pTbin1][pTbin2]);
-      L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(1./L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral());
+      //L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Divide(L0_L0_cosThetaProdPlane_ME_pT_eff[pTbin1][pTbin2]);
+      L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(nLL_pT_back[pTbin1][pTbin2]/L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral());
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(1./L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMinimum(0);
+      L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Draw("same p e");
+
+      TF1 *fitL0_L0_pT_US_ThetaStar_no_corr = new TF1("fitL0_L0_pT_US_ThetaStar_no_corr", "[0]*(1 + [1]*x)", -1, 1);
+      fitL0_L0_pT_US_ThetaStar_no_corr->SetParameters(100, 0.5);
+
+      //fit_res_gaus_wrong_sign = L_inv_mass_pT_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
+      L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Fit(fitL0_L0_pT_US_ThetaStar_no_corr, "s i 0 r");
+
+      float P_L0_L0_pT_no_corr = fitL0_L0_pT_US_ThetaStar_no_corr->GetParameter(1)/(L0_alpha*L0_alpha);
+      float P_L0_L0_pT_no_corr_err = fitL0_L0_pT_US_ThetaStar_no_corr->GetParError(1)/(L0_alpha*L0_alpha);
+
+      fitL0_L0_pT_US_ThetaStar_no_corr->SetLineColor(1);
+      fitL0_L0_pT_US_ThetaStar_no_corr->Draw("same");
+
+      TPaveText *L0_L0_pT_text_no_corr = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+      L0_L0_pT_text_no_corr->SetTextFont(42);
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      L0_L0_pT_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      if(trigger == 0 || trigger == 2) L0_L0_pT_text_no_corr->AddText("Minimum bias, no correction");
+      if(trigger == 1) L0_L0_pT_text_no_corr->AddText("JP2, no correction");
+      L0_L0_pT_text_no_corr->AddText("#Lambda^{0}-#Lambda^{0}");
+      L0_L0_pT_text_no_corr->AddText("|#it{y}| < 1");
+      L0_L0_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0_pT_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0_L0_pT_no_corr, P_L0_L0_pT_no_corr_err));
+      L0_L0_pT_text_no_corr->SetFillColorAlpha(0, 0.01);
+      L0_L0_pT_text_no_corr->Draw("same");
+
+      L0_L0_leg->Draw("same");
+
+      L0_L0_cosThetaProdPlane_pT_no_corr_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0_cosThetaProdPlane_no_corr_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+      //_______________________________________________________________________
+
+      TCanvas *L0_L0_cosThetaProdPlane_pT_can = new TCanvas(Form("L0_L0_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0_L0_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
+
+      L0_L0_cosThetaProdPlane_pT_can->cd();
+
+
+      L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Divide(L0_L0_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
+      //L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral());
+      L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMinimum(0);
+      L0_L0_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Draw("p e");
+
+      L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Divide(L0_L0_cosThetaProdPlane_ME_pT_eff[pTbin1][pTbin2]);
+      //L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(1./L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral());
       L0_L0_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Draw("same p e");
 
 
@@ -2444,67 +3098,147 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       fitL0_L0_pT_US_ThetaStar->SetLineColor(1);
       fitL0_L0_pT_US_ThetaStar->Draw("same");
 
-      TPaveText *L0_L0_pT_text = new TPaveText(0.35, 0.2, 0.75, 0.4, "NDC");
-      //cent_text->AddText("STAR preliminary");
-      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
-      L0_L0_pT_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-      if(trigger == 0) L0_L0_pT_text->AddText("Minimum bias");
-      if(trigger == 1) L0_L0_pT_text->AddText("JP2");
-      L0_L0_pT_text->AddText("#Lambda^{0}-#Lambda^{0}");
-      L0_L0_pT_text->AddText("|#eta| < 1");
-      L0_L0_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+
       L0_L0_pT_text->AddText(Form("P = %.2f #pm %.2f", P_L0_L0_pT, P_L0_L0_pT_err));
-      L0_L0_pT_text->SetFillColorAlpha(0, 0.01);
       L0_L0_pT_text->Draw("same");
 
       L0_L0_leg->Draw("same");
 
+
       L0_L0_cosThetaProdPlane_pT_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0_cosThetaProdPlane_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
       //____________________________________________________________________________________________________
 
+      TCanvas *L0bar_L0bar_cosThetaProdPlane_pT_stat_err_can = new TCanvas(Form("L0bar_L0bar_cosThetaProdPlane_stat_err_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0bar_L0bar_cosThetaProdPlane_stat_err_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
+
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err_can->cd();
+
+      for(unsigned int iBin = 0; iBin < 10; iBin++)
+      {
+        L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetBinContent(iBin+1, L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetBinError(iBin+1)/L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetBinContent(iBin+1)*100 );
+        L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetBinError(iBin+1, 0 );
+      }
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetXaxis()->SetTitle("cos(#theta*)");
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetYaxis()->SetTitle("Relative error (%)");
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMinimum(0);
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMarkerSize(1.5);
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMarkerStyle(20);
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetMarkerColor(kRed);
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->SetLineColor(kRed);
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err[pTbin1][pTbin2]->Draw("p e");
+
+      TPaveText *L0bar_L0bar_pT_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+      L0bar_L0bar_pT_text->SetTextFont(42);
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      L0bar_L0bar_pT_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      if(trigger == 0 || trigger == 2) L0bar_L0bar_pT_text->AddText("Minimum bias");
+      if(trigger == 1) L0bar_L0bar_pT_text->AddText("JP2");
+      L0bar_L0bar_pT_text->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
+      L0bar_L0bar_pT_text->AddText("|#it{y}| < 1");
+      L0bar_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0bar_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0bar_L0bar_pT_text->SetFillColorAlpha(0, 0.01);
+      L0bar_L0bar_pT_text->Draw("same");
 
 
-      TCanvas *L0bar_L0bar_cosThetaProdPlane_pT_can = new TCanvas(Form("L0bar_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0bar_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
+      L0bar_L0bar_cosThetaProdPlane_pT_stat_err_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0bar_L0bar_cosThetaProdPlane_stat_err_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+      //________________________________________________________________
 
-      L0bar_L0bar_cosThetaProdPlane_pT_can->cd();
+
+      TCanvas *L0bar_L0bar_cosThetaProdPlane_pT_no_corr_can = new TCanvas(Form("L0bar_L0bar_cosThetaProdPlane_no_corr_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0bar_L0bar_cosThetaProdPlane_no_corr_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
+
+      L0bar_L0bar_cosThetaProdPlane_pT_no_corr_can->cd();
 
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      //L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMarkerColor(kRed);
+      L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMarkerSize(2);
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetLineColor(kRed);
-      //double nLbarLbar = L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral();
+      nLbarLbar_pT[pTbin1][pTbin2] = L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral();
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Sumw2();
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Divide(L0bar_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
-      L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral());
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
+      //L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral());
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMinimum(0);
       L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Draw("p e");
 
       L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
       L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerColor(kBlue);
-      //double nLbarLbar_back = L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral();
+      L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerSize(2);
+      nLbarLbar_pT_back[pTbin1][pTbin2] = L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral();
       L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Sumw2();
-      L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
-      L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Divide(L0bar_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
+      //L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
+      //L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Divide(L0bar_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
       //L0bar_L0bar_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Draw("p e same");
 
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      //L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerColor(kBlue);
+      L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerSize(2);
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetLineColor(kBlue);
       //double nLLbar = L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral();
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Sumw2();
-      L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Divide(L0bar_L0bar_cosThetaProdPlane_ME_pT_eff[pTbin1][pTbin2]);
-      L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral());
+      //L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Divide(L0bar_L0bar_cosThetaProdPlane_ME_pT_eff[pTbin1][pTbin2]);
+      L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(nLbarLbar_pT_back[pTbin1][pTbin2]/L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral());
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1));
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMinimum(0);
+      L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Draw("same p e");
+
+
+
+      TF1 *fitL0bar_L0bar_pT_US_ThetaStar_no_corr = new TF1("fitL0bar_L0bar_pT_US_ThetaStar_no_corr", "[0]*(1 + [1]*x)", -1, 1);
+      fitL0bar_L0bar_pT_US_ThetaStar_no_corr->SetParameters(100, 0.5);
+
+      //fit_res_gaus_wrong_sign = L_inv_mass_pT_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
+      L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Fit(fitL0bar_L0bar_pT_US_ThetaStar_no_corr, "s i 0 r");
+
+      float P_L0bar_L0bar_pT_no_corr = fitL0bar_L0bar_pT_US_ThetaStar_no_corr->GetParameter(1)/(L0bar_alpha*L0bar_alpha);
+      float P_L0bar_L0bar_pT_no_corr_err = fitL0bar_L0bar_pT_US_ThetaStar_no_corr->GetParError(1)/(L0bar_alpha*L0bar_alpha);
+
+      fitL0bar_L0bar_pT_US_ThetaStar_no_corr->SetLineColor(1);
+      fitL0bar_L0bar_pT_US_ThetaStar_no_corr->Draw("same");
+
+      TPaveText *L0bar_L0bar_pT_text_no_corr = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+      L0bar_L0bar_pT_text_no_corr->SetTextFont(42);
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      L0bar_L0bar_pT_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      if(trigger == 0 || trigger == 2) L0bar_L0bar_pT_text_no_corr->AddText("Minimum bias, no correction");
+      if(trigger == 1) L0bar_L0bar_pT_text_no_corr->AddText("JP2, no correction");
+      L0bar_L0bar_pT_text_no_corr->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
+      L0bar_L0bar_pT_text_no_corr->AddText("|#it{y}| < 1");
+      L0bar_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0bar_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0bar_L0bar_pT_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0bar_L0bar_pT_no_corr, P_L0bar_L0bar_pT_no_corr_err));
+      L0bar_L0bar_pT_text_no_corr->SetFillColorAlpha(0, 0.01);
+      L0bar_L0bar_pT_text_no_corr->Draw("same");
+
+      L0bar_L0bar_leg->Draw("same");
+
+      L0bar_L0bar_cosThetaProdPlane_pT_no_corr_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0bar_L0bar_cosThetaProdPlane_no_corr_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+      //_____________________________________________________________________________
+
+      TCanvas *L0bar_L0bar_cosThetaProdPlane_pT_can = new TCanvas(Form("L0bar_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), Form("L0bar_L0bar_cosThetaProdPlane_pT1_%i_pT2_%i_can", pTbin1, pTbin2), 1200, 1000);
+
+      L0bar_L0bar_cosThetaProdPlane_pT_can->cd();
+
+      L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Divide(L0bar_L0bar_cosThetaProdPlane_pT_eff[pTbin1][pTbin2]);
+      //L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral());
+      L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMinimum(0);
+      L0bar_L0bar_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Draw("p e");
+
+      L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Divide(L0bar_L0bar_cosThetaProdPlane_ME_pT_eff[pTbin1][pTbin2]);
+      //L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral());
       L0bar_L0bar_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Draw("same p e");
 
       TF1 *fitL0bar_L0bar_pT_US_ThetaStar = new TF1("fitL0bar_L0bar_pT_US_ThetaStar", "[0]*(1 + [1]*x)", -1, 1);
@@ -2519,19 +3253,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       fitL0bar_L0bar_pT_US_ThetaStar->SetLineColor(1);
       fitL0bar_L0bar_pT_US_ThetaStar->Draw("same");
 
-
-      TPaveText *L0bar_L0bar_pT_text = new TPaveText(0.35, 0.2, 0.75, 0.4, "NDC");
-      //cent_text->AddText("STAR preliminary");
-      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
-      L0bar_L0bar_pT_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-      if(trigger == 0) L0bar_L0bar_pT_text->AddText("Minimum bias");
-      if(trigger == 1) L0bar_L0bar_pT_text->AddText("JP2");
-      L0bar_L0bar_pT_text->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
-      L0bar_L0bar_pT_text->AddText("|#eta| < 1");
-      L0bar_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0bar_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0bar_L0bar_pT_text->AddText(Form("P = %.2f #pm %.2f", P_L0bar_L0bar_pT, P_L0bar_L0bar_pT_err));
-      L0bar_L0bar_pT_text->SetFillColorAlpha(0, 0.01);
       L0bar_L0bar_pT_text->Draw("same");
 
       L0bar_L0bar_leg->Draw("same");
@@ -2546,48 +3268,98 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   {
     for(unsigned int etaBin2 = 0; etaBin2 < nEtaBins; etaBin2++)
     {
-      TCanvas *L0_L0bar_cosThetaProdPlane_eta_can = new TCanvas(Form("L0_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), Form("L0_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), 1200, 1000);
+      TCanvas *L0_L0bar_cosThetaProdPlane_eta_no_corr_can = new TCanvas(Form("L0_L0bar_cosThetaProdPlane_no_corr_eta1_%i_eta2_%i_can", etaBin1, etaBin2), Form("L0_L0bar_cosThetaProdPlane_no_corr_eta1_%i_eta2_%i_can", etaBin1, etaBin2), 1200, 1000);
 
-      L0_L0bar_cosThetaProdPlane_eta_can->cd();
+      L0_L0bar_cosThetaProdPlane_eta_no_corr_can->cd();
 
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->CenterTitle();
+      //L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetYaxis()->CenterTitle();
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMarkerColor(kRed);
+      L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMarkerSize(2);
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetLineColor(kRed);
       //double nLLbar = L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral();
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Sumw2();
-      L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Divide(L0_L0bar_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
-      L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral());
+      //L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Divide(L0_L0bar_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
+      //L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral());
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMinimum(0);
       L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Draw("p e");
 
       L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
       L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerColor(kBlue);
+      L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerSize(2);
       //double nLLbar_back = L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Integral();
       L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Sumw2();
-      L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Scale(1./L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
-      L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Divide(L0_L0bar_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
+      //L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Scale(1./L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
+      //L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Divide(L0_L0bar_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
       //L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Draw("p e same");
 
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetXaxis()->CenterTitle();
+      //L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetYaxis()->CenterTitle();
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMarkerColor(kBlue);
+      L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMarkerSize(2);
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetLineColor(kBlue);
       //double nLLbar = L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral();
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Sumw2();
-      L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Divide(L0_L0bar_cosThetaProdPlane_ME_eta_eff[etaBin1][etaBin2]);
-      L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(1./L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral());
+      //L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Divide(L0_L0bar_cosThetaProdPlane_ME_eta_eff[etaBin1][etaBin2]);
+      L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(L0_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Integral()/L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral());
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(1./L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
+
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMinimum(0);
       L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Draw("same p e");
 
+
+      TF1 *fitL0_L0bar_eta_US_ThetaStar_no_corr = new TF1("fitL0_L0bar_eta_US_ThetaStar_no_corr", "[0]*(1 + [1]*x)", -1, 1);
+      fitL0_L0bar_eta_US_ThetaStar_no_corr->SetParameters(100, 0.5);
+
+      //fit_res_gaus_wrong_sign = L_inv_mass_eta_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
+      L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Fit(fitL0_L0bar_eta_US_ThetaStar_no_corr, "s i 0 r");
+
+      float P_L0_L0bar_eta_no_corr = fitL0_L0bar_eta_US_ThetaStar_no_corr->GetParameter(1)/(L0_alpha*L0bar_alpha);
+      float P_L0_L0bar_eta_no_corr_err = fitL0_L0bar_eta_US_ThetaStar_no_corr->GetParError(1)/(L0_alpha*L0bar_alpha);
+
+      fitL0_L0bar_eta_US_ThetaStar_no_corr->SetLineColor(1);
+      fitL0_L0bar_eta_US_ThetaStar_no_corr->Draw("same");
+
+      TPaveText *L0_L0bar_eta_text_no_corr = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      L0_L0bar_eta_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      if(trigger == 0 || trigger == 2) L0_L0bar_eta_text_no_corr->AddText("Minimum bias, no correction");
+      if(trigger == 1) L0_L0bar_eta_text_no_corr->AddText("JP2, no correction");
+      L0_L0bar_eta_text_no_corr->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
+      L0_L0bar_eta_text_no_corr->AddText("|#it{y}| < 1");
+      L0_L0bar_eta_text_no_corr->AddText(Form("%.2f < #eta^{1} < %.2f", eta_bins[etaBin1], eta_bins[etaBin1+1]));
+      L0_L0bar_eta_text_no_corr->AddText(Form("%.2f < #eta^{2} < %.2f", eta_bins[etaBin2], eta_bins[etaBin2+1]));
+      L0_L0bar_eta_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0_L0bar_eta_no_corr, P_L0_L0bar_eta_no_corr_err));
+      L0_L0bar_eta_text_no_corr->SetFillColorAlpha(0, 0.01);
+      L0_L0bar_eta_text_no_corr->Draw("same");
+
+      L0_L0bar_leg->Draw("same");
+
+      L0_L0bar_cosThetaProdPlane_eta_no_corr_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0bar_cosThetaProdPlane_no_corr_eta1_%i_eta2_%i.png", etaBin1, etaBin2));
+      //_____________________________________________________________________
+
+      TCanvas *L0_L0bar_cosThetaProdPlane_eta_can = new TCanvas(Form("L0_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), Form("L0_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), 1200, 1000);
+
+      L0_L0bar_cosThetaProdPlane_eta_can->cd();
+
+      L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Divide(L0_L0bar_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
+      //L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral());
+      L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMinimum(0);
+      L0_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Draw("p e");
+
+      L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Divide(L0_L0bar_cosThetaProdPlane_ME_eta_eff[etaBin1][etaBin2]);
+      //L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(1./L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral());
+      L0_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Draw("same p e");
 
       TF1 *fitL0_L0bar_eta_US_ThetaStar = new TF1("fitL0_L0bar_eta_US_ThetaStar", "[0]*(1 + [1]*x)", -1, 1);
       fitL0_L0bar_eta_US_ThetaStar->SetParameters(100, 0.5);
@@ -2601,16 +3373,16 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       fitL0_L0bar_eta_US_ThetaStar->SetLineColor(1);
       fitL0_L0bar_eta_US_ThetaStar->Draw("same");
 
-      TPaveText *L0_L0bar_eta_text = new TPaveText(0.35, 0.2, 0.75, 0.4, "NDC");
+      TPaveText *L0_L0bar_eta_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
       //cent_text->AddText("STAR preliminary");
       //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
       L0_L0bar_eta_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-      if(trigger == 0) L0_L0bar_eta_text->AddText("Minimum bias");
+      if(trigger == 0 || trigger == 2) L0_L0bar_eta_text->AddText("Minimum bias");
       if(trigger == 1) L0_L0bar_eta_text->AddText("JP2");
       L0_L0bar_eta_text->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
       L0_L0bar_eta_text->AddText(Form("%.2f < #eta^{1} < %.2f", eta_bins[etaBin1], eta_bins[etaBin1+1]));
       L0_L0bar_eta_text->AddText(Form("%.2f < #eta^{2} < %.2f", eta_bins[etaBin2], eta_bins[etaBin2+1]));
-      L0_L0bar_eta_text->AddText("p_{T} integrated");
+      L0_L0bar_eta_text->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
       L0_L0bar_eta_text->AddText(Form("P = %.2f #pm %.2f", P_L0_L0bar_eta, P_L0_L0bar_eta_err));
       L0_L0bar_eta_text->SetFillColorAlpha(0, 0.01);
       L0_L0bar_eta_text->Draw("same");
@@ -2622,48 +3394,98 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
 
 
-      TCanvas *L0_L0_cosThetaProdPlane_eta_can = new TCanvas(Form("L0_L0_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), Form("L0_L0_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), 1200, 1000);
+      TCanvas *L0_L0_cosThetaProdPlane_eta_no_corr_can = new TCanvas(Form("L0_L0_cosThetaProdPlane_no_corr_eta1_%i_eta2_%i_can", etaBin1, etaBin2), Form("L0_L0_cosThetaProdPlane_no_corr_eta1_%i_eta2_%i_can", etaBin1, etaBin2), 1200, 1000);
 
-      L0_L0_cosThetaProdPlane_eta_can->cd();
+      L0_L0_cosThetaProdPlane_eta_no_corr_can->cd();
 
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->CenterTitle();
+      //L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetYaxis()->CenterTitle();
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMarkerColor(kRed);
+      L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMarkerSize(2);
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetLineColor(kRed);
       //double nLL = L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral();
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Sumw2();
-      L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Divide(L0_L0_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
-      L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral());
+      //L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Divide(L0_L0_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
+      //L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral());
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMinimum(0);
       L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Draw("p e");
 
       L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
       L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerColor(kBlue);
+      L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerSize(2);
       //double nLL_back = L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Integral();
       L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Sumw2();
-      L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Scale(1./L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
-      L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Divide(L0_L0_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
+      //L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Scale(1./L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
+      //L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Divide(L0_L0_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
       //L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Draw("p e same");
 
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetXaxis()->CenterTitle();
+      //L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetYaxis()->CenterTitle();
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMarkerColor(kBlue);
+      L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMarkerSize(2);
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetLineColor(kBlue);
       //double nLLbar = L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral();
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Sumw2();
-      L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Divide(L0_L0_cosThetaProdPlane_ME_eta_eff[etaBin1][etaBin2]);
-      L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(1./L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral());
+      //L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Divide(L0_L0_cosThetaProdPlane_ME_eta_eff[etaBin1][etaBin2]);
+      L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(L0_L0_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Integral()/L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral());
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(1./L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMinimum(0);
       L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Draw("same p e");
 
+
+      TF1 *fitL0_L0_eta_US_ThetaStar_no_corr = new TF1("fitL0_L0_eta_US_ThetaStar_no_corr", "[0]*(1 + [1]*x)", -1, 1);
+      fitL0_L0_eta_US_ThetaStar_no_corr->SetParameters(100, 0.5);
+
+      //fit_res_gaus_wrong_sign = L_inv_mass_eta_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
+      L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Fit(fitL0_L0_eta_US_ThetaStar_no_corr, "s i 0 r");
+
+      float P_L0_L0_eta_no_corr = fitL0_L0_eta_US_ThetaStar_no_corr->GetParameter(1)/(L0_alpha*L0_alpha);
+      float P_L0_L0_eta_no_corr_err = fitL0_L0_eta_US_ThetaStar_no_corr->GetParError(1)/(L0_alpha*L0_alpha);
+
+      fitL0_L0_eta_US_ThetaStar_no_corr->SetLineColor(1);
+      fitL0_L0_eta_US_ThetaStar_no_corr->Draw("same");
+
+      TPaveText *L0_L0_eta_text_no_corr = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      L0_L0_eta_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      if(trigger == 0 || trigger == 2) L0_L0_eta_text_no_corr->AddText("Minimum bias, no correction");
+      if(trigger == 1) L0_L0_eta_text_no_corr->AddText("JP2, no correction");
+      L0_L0_eta_text_no_corr->AddText("#Lambda^{0}-#Lambda^{0}");
+      L0_L0_eta_text_no_corr->AddText("|#it{y}| < 1");
+      L0_L0_eta_text_no_corr->AddText(Form("%.2f < #eta^{1} < %.2f", eta_bins[etaBin1], eta_bins[etaBin1+1]));
+      L0_L0_eta_text_no_corr->AddText(Form("%.2f < #eta^{2} < %.2f", eta_bins[etaBin2], eta_bins[etaBin2+1]));
+      L0_L0_eta_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0_L0_eta_no_corr, P_L0_L0_eta_no_corr_err));
+      L0_L0_eta_text_no_corr->SetFillColorAlpha(0, 0.01);
+      L0_L0_eta_text_no_corr->Draw("same");
+
+      L0_L0_leg->Draw("same");
+
+
+      L0_L0_cosThetaProdPlane_eta_no_corr_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0_L0_cosThetaProdPlane_no_corr_eta1_%i_eta2_%i.png", etaBin1, etaBin2));
+      //____________________________________________________________________
+
+      TCanvas *L0_L0_cosThetaProdPlane_eta_can = new TCanvas(Form("L0_L0_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), Form("L0_L0_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), 1200, 1000);
+
+      L0_L0_cosThetaProdPlane_eta_can->cd();
+
+      L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Divide(L0_L0_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
+      //L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral());
+      L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMinimum(0);
+      L0_L0_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Draw("p e");
+
+      L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Divide(L0_L0_cosThetaProdPlane_ME_eta_eff[etaBin1][etaBin2]);
+      //L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(1./L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral());
+      L0_L0_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Draw("same p e");
 
       TF1 *fitL0_L0_eta_US_ThetaStar = new TF1("fitL0_L0_eta_US_ThetaStar", "[0]*(1 + [1]*x)", -1, 1);
       fitL0_L0_eta_US_ThetaStar->SetParameters(100, 0.5);
@@ -2677,16 +3499,16 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       fitL0_L0_eta_US_ThetaStar->SetLineColor(1);
       fitL0_L0_eta_US_ThetaStar->Draw("same");
 
-      TPaveText *L0_L0_eta_text = new TPaveText(0.35, 0.2, 0.75, 0.4, "NDC");
+      TPaveText *L0_L0_eta_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
       //cent_text->AddText("STAR preliminary");
       //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
       L0_L0_eta_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-      if(trigger == 0) L0_L0_eta_text->AddText("Minimum bias");
+      if(trigger == 0 || trigger == 2) L0_L0_eta_text->AddText("Minimum bias");
       if(trigger == 1) L0_L0_eta_text->AddText("JP2");
       L0_L0_eta_text->AddText("#Lambda^{0}-#Lambda^{0}");
       L0_L0_eta_text->AddText(Form("%.2f < #eta^{1} < %.2f", eta_bins[etaBin1], eta_bins[etaBin1+1]));
       L0_L0_eta_text->AddText(Form("%.2f < #eta^{2} < %.2f", eta_bins[etaBin2], eta_bins[etaBin2+1]));
-      L0_L0_eta_text->AddText("p_{T} integrated");
+      L0_L0_eta_text->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
       L0_L0_eta_text->AddText(Form("P = %.2f #pm %.2f", P_L0_L0_eta, P_L0_L0_eta_err));
       L0_L0_eta_text->SetFillColorAlpha(0, 0.01);
       L0_L0_eta_text->Draw("same");
@@ -2698,12 +3520,13 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 
 
 
-      TCanvas *L0bar_L0bar_cosThetaProdPlane_eta_can = new TCanvas(Form("L0bar_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), Form("L0bar_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), 1200, 1000);
+      TCanvas *L0bar_L0bar_cosThetaProdPlane__eta_no_corr_can = new TCanvas(Form("L0bar_L0bar_cosThetaProdPlane_no_corr_eta1_%i_eta2_%i_can", etaBin1, etaBin2), Form("L0bar_L0bar_cosThetaProdPlane_no_corr_eta1_%i_eta2_%i_can", etaBin1, etaBin2), 1200, 1000);
 
-      L0bar_L0bar_cosThetaProdPlane_eta_can->cd();
+      L0bar_L0bar_cosThetaProdPlane__eta_no_corr_can->cd();
 
       L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->CenterTitle();
+      //L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetYaxis()->CenterTitle();
       L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
@@ -2712,8 +3535,8 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       //double nLbarLbar = L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral();
       L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Sumw2();
       L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Divide(L0bar_L0bar_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
-      L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral());
       L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
+      //L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral());
       L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMinimum(0);
       L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Draw("p e");
 
@@ -2721,12 +3544,13 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerColor(kBlue);
       //double nLbarLbar_back = L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Integral();
       L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Sumw2();
-      L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
-      L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Divide(L0bar_L0bar_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
+      //L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
+      //L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Divide(L0bar_L0bar_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
       //L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Draw("p e same");
 
       L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetXaxis()->SetTitle("cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetXaxis()->CenterTitle();
+      //L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
       L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetYaxis()->CenterTitle();
       L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
@@ -2734,11 +3558,56 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetLineColor(kBlue);
       //double nLLbar = L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral();
       L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Sumw2();
-      L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Divide(L0bar_L0bar_cosThetaProdPlane_ME_eta_eff[etaBin1][etaBin2]);
-      L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral());
+      //L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Divide(L0bar_L0bar_cosThetaProdPlane_ME_eta_eff[etaBin1][etaBin2]);
+      L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(L0bar_L0bar_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Integral()/L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral());
       L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1));
       L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMinimum(0);
       L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Draw("same p e");
+
+      TF1 *fitL0bar_L0bar_eta_US_ThetaStar_no_corr = new TF1("fitL0bar_L0bar_eta_US_ThetaStar_no_corr", "[0]*(1 + [1]*x)", -1, 1);
+      fitL0bar_L0bar_eta_US_ThetaStar_no_corr->SetParameters(100, 0.5);
+
+      //fit_res_gaus_wrong_sign = L_inv_mass_eta_US->Fit(fitGaussBack, "s i 0", "", 1.07, 1.4);
+      L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Fit(fitL0bar_L0bar_eta_US_ThetaStar_no_corr, "s i 0 r");
+
+      float P_L0bar_L0bar_eta_no_corr = fitL0bar_L0bar_eta_US_ThetaStar_no_corr->GetParameter(1)/(L0bar_alpha*L0bar_alpha);
+      float P_L0bar_L0bar_eta_no_corr_err = fitL0bar_L0bar_eta_US_ThetaStar_no_corr->GetParError(1)/(L0bar_alpha*L0bar_alpha);
+
+      fitL0bar_L0bar_eta_US_ThetaStar_no_corr->SetLineColor(1);
+      fitL0bar_L0bar_eta_US_ThetaStar_no_corr->Draw("same");
+
+      TPaveText *L0bar_L0bar_eta_text_no_corr = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      L0bar_L0bar_eta_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      if(trigger == 0 || trigger == 2) L0bar_L0bar_eta_text_no_corr->AddText("Minimum bias, no correction");
+      if(trigger == 1) L0bar_L0bar_eta_text_no_corr->AddText("JP2, no correction");
+      L0bar_L0bar_eta_text_no_corr->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
+      L0bar_L0bar_eta_text_no_corr->AddText("|#it{y}| < 1");
+      L0bar_L0bar_eta_text_no_corr->AddText(Form("%.2f < #eta^{1} < %.2f", eta_bins[etaBin1], eta_bins[etaBin1+1]));
+      L0bar_L0bar_eta_text_no_corr->AddText(Form("%.2f < #eta^{2} < %.2f", eta_bins[etaBin2], eta_bins[etaBin2+1]));
+      L0bar_L0bar_eta_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0bar_L0bar_eta_no_corr, P_L0bar_L0bar_eta_no_corr_err));
+      L0bar_L0bar_eta_text_no_corr->SetFillColorAlpha(0, 0.01);
+      L0bar_L0bar_eta_text_no_corr->Draw("same");
+
+      L0bar_L0bar_leg->Draw("same");
+
+
+      L0bar_L0bar_cosThetaProdPlane__eta_no_corr_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0bar_L0bar_cosThetaProdPlane_no_corr_eta1_%i_eta2_%i.png", etaBin1, etaBin2));
+      //_________________________________________________________
+
+      TCanvas *L0bar_L0bar_cosThetaProdPlane_eta_can = new TCanvas(Form("L0bar_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), Form("L0bar_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i_can", etaBin1, etaBin2), 1200, 1000);
+
+      L0bar_L0bar_cosThetaProdPlane_eta_can->cd();
+
+      L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Divide(L0bar_L0bar_cosThetaProdPlane_eta_eff[etaBin1][etaBin2]);
+      //L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral());
+      L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMinimum(0);
+      L0bar_L0bar_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Draw("p e");
+
+      L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Divide(L0bar_L0bar_cosThetaProdPlane_ME_eta_eff[etaBin1][etaBin2]);
+      //L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(1./L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral());
+      L0bar_L0bar_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Draw("p e same");
 
       TF1 *fitL0bar_L0bar_eta_US_ThetaStar = new TF1("fitL0bar_L0bar_eta_US_ThetaStar", "[0]*(1 + [1]*x)", -1, 1);
       fitL0bar_L0bar_eta_US_ThetaStar->SetParameters(100, 0.5);
@@ -2753,21 +3622,22 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
       fitL0bar_L0bar_eta_US_ThetaStar->Draw("same");
 
 
-      TPaveText *L0bar_L0bar_eta_text = new TPaveText(0.35, 0.2, 0.75, 0.4, "NDC");
+      TPaveText *L0bar_L0bar_eta_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
       //cent_text->AddText("STAR preliminary");
       //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
       L0bar_L0bar_eta_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
-      if(trigger == 0) L0bar_L0bar_eta_text->AddText("Minimum bias");
+      if(trigger == 0 || trigger == 2) L0bar_L0bar_eta_text->AddText("Minimum bias");
       if(trigger == 1) L0bar_L0bar_eta_text->AddText("JP2");
       L0bar_L0bar_eta_text->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
       L0bar_L0bar_eta_text->AddText(Form("%.2f < #eta^{1} < %.2f", eta_bins[etaBin1], eta_bins[etaBin1+1]));
       L0bar_L0bar_eta_text->AddText(Form("%.2f < #eta^{2} < %.2f", eta_bins[etaBin2], eta_bins[etaBin2+1]));
-      L0bar_L0bar_eta_text->AddText("p_{T} integrated");
+      L0bar_L0bar_eta_text->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
       L0bar_L0bar_eta_text->AddText(Form("P = %.2f #pm %.2f", P_L0bar_L0bar_eta, P_L0bar_L0bar_eta_err));
       L0bar_L0bar_eta_text->SetFillColorAlpha(0, 0.01);
       L0bar_L0bar_eta_text->Draw("same");
 
       L0bar_L0bar_leg->Draw("same");
+
 
       L0bar_L0bar_cosThetaProdPlane_eta_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L0bar_L0bar_cosThetaProdPlane_eta1_%i_eta2_%i.png", etaBin1, etaBin2));
       //____________________________________________________________________________________________________
@@ -3106,6 +3976,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   L_pair_cosThetaProdPlane_US_hist->Add(L0bar_L0bar_cosThetaProdPlane_US_hist);
   L_pair_cosThetaProdPlane_US_hist->GetXaxis()->SetTitle("cos(#theta*)");
   L_pair_cosThetaProdPlane_US_hist->GetXaxis()->CenterTitle();
+  //L_pair_cosThetaProdPlane_US_hist->GetYaxis()->SetTitle("1/N_{pair} d#it{N}/d cos(#theta*)");
   L_pair_cosThetaProdPlane_US_hist->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
   L_pair_cosThetaProdPlane_US_hist->GetYaxis()->CenterTitle();
   L_pair_cosThetaProdPlane_US_hist->SetMarkerStyle(20);
@@ -3124,23 +3995,232 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   L_pair_cosThetaProdPlane_LS_hist->Scale(1./L_pair_cosThetaProdPlane_LS_hist->GetXaxis()->GetBinWidth(1));
   L_pair_cosThetaProdPlane_LS_hist->Draw("p e same");
 
-  TPaveText *LL_LbarLbar_text = new TPaveText(0.35, 0.2, 0.75, 0.4, "NDC");
+  TPaveText *LL_LbarLbar_text = new TPaveText(0.6, 0.2, 0.85, 0.49, "NDC");
   //cent_text->AddText("STAR preliminary");
   //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
   LL_LbarLbar_text->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
   if(trigger == 0) LL_LbarLbar_text->AddText("Minimum bias");
   if(trigger == 1) LL_LbarLbar_text->AddText("JP2");
   LL_LbarLbar_text->AddText("(#bar{#Lambda^{0}}-#bar{#Lambda^{0}} + #Lambda^{0}-#Lambda^{0})");
-  LL_LbarLbar_text->AddText("|#eta| < 1");
-  LL_LbarLbar_text->AddText("p_{T} integrated");
+  LL_LbarLbar_text->AddText("|#it{y}| < 1");
+  LL_LbarLbar_text->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
   LL_LbarLbar_text->SetFillColorAlpha(0, 0.01);
   LL_LbarLbar_text->Draw("same");
 
   L_pair_cosThetaProdPlane_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L_pair_cosThetaProdPlane_can.png");
 
+  //________________________________________________________________________________________________________________________________________________________________
+
+  //L and Lbar invariant mass from pairs with combinatorial background
+
+  TCanvas *L_inv_mass_from_L_Lbar_can = new TCanvas("L_inv_mass_from_L_Lbar_can", "L_inv_mass_from_L_Lbar_can", 1200, 1000);
+  L_inv_mass_from_L_Lbar_can->cd();
+
+  L_inv_mass_US_from_L_Lbar->SetMarkerStyle(20);
+  L_inv_mass_US_from_L_Lbar->SetMarkerColor(kRed);
+  L_inv_mass_US_from_L_Lbar->SetLineColor(kRed);
+  L_inv_mass_US_from_L_Lbar->GetXaxis()->SetTitle("M_{inv}^{p#pi^{-}} (GeV/#it{c}^{2})");
+  L_inv_mass_US_from_L_Lbar->GetXaxis()->CenterTitle();
+  L_inv_mass_US_from_L_Lbar->GetXaxis()->SetRangeUser(1.1, 1.14);
+  L_inv_mass_US_from_L_Lbar->GetYaxis()->SetTitle("Counts");
+  L_inv_mass_US_from_L_Lbar->GetYaxis()->CenterTitle();
+  //L_inv_mass_US_from_L_Lbar->GetYaxis()->SetRangeUser(0, 3000);
+  L_inv_mass_US_from_L_Lbar->Draw("p e");
+
+  L_inv_mass_LS_from_L_Lbar->SetMarkerStyle(20);
+  L_inv_mass_LS_from_L_Lbar->SetMarkerColor(kBlue);
+  L_inv_mass_LS_from_L_Lbar->SetLineColor(kBlue);
+  L_inv_mass_LS_from_L_Lbar->Draw("p e same");
 
 
-  //----------------------------------Histograms, pT binnig, main analyisis---------------------------------
+  TLegend *SigAndBckgLeg = new TLegend(0.2, 0.65, 0.4, 0.75 );
+  SigAndBckgLeg->SetTextFont(42);
+  SigAndBckgLeg->AddEntry(L_inv_mass_US_from_L_Lbar, "Unlike-sign");
+  SigAndBckgLeg->AddEntry(L_inv_mass_LS_from_L_Lbar, "Like-sign");
+  SigAndBckgLeg->SetBorderSize(0);
+  SigAndBckgLeg->Draw("same");
+
+  TPaveText *L_Minv_text_pair = new TPaveText(0.6, 0.6, 0.89, 0.75, "NDC");
+  //cent_text->AddText("STAR preliminary");
+  //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+  L_Minv_text_pair->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  if(trigger == 0) L_Minv_text_pair->AddText("Minimum bias");
+  if(trigger == 1) L_Minv_text_pair->AddText("JP2");
+  L_Minv_text_pair->AddText("#Lambda^{0} from #Lambda^{0}-#bar{#Lambda^{0}}");
+  L_Minv_text_pair->AddText("|#it{y}| < 1");
+  L_Minv_text_pair->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
+  L_Minv_text_pair->SetFillColorAlpha(0, 0.01);
+  L_Minv_text_pair->Draw("same");
+
+
+  L_inv_mass_from_L_Lbar_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L_inv_mass_from_L_Lbar.png");
+
+
+  TCanvas *Lbar_inv_mass_from_L_Lbar_can = new TCanvas("Lbar_inv_mass_from_L_Lbar_can", "Lbar_inv_mass_from_L_Lbar_can", 1200, 1000);
+  Lbar_inv_mass_from_L_Lbar_can->cd();
+
+  Lbar_inv_mass_US_from_L_Lbar->SetMarkerStyle(20);
+  Lbar_inv_mass_US_from_L_Lbar->SetMarkerColor(kRed);
+  Lbar_inv_mass_US_from_L_Lbar->SetLineColor(kRed);
+  Lbar_inv_mass_US_from_L_Lbar->GetXaxis()->SetTitle("M_{inv}^{#bar{p}#pi^{+}} (GeV/#it{c}^{2})");
+  Lbar_inv_mass_US_from_L_Lbar->GetXaxis()->CenterTitle();
+  Lbar_inv_mass_US_from_L_Lbar->GetXaxis()->SetRangeUser(1.1, 1.14);
+  Lbar_inv_mass_US_from_L_Lbar->GetYaxis()->SetTitle("Counts");
+  Lbar_inv_mass_US_from_L_Lbar->GetYaxis()->CenterTitle();
+  //Lbar_inv_mass_US_from_L_Lbar->GetYaxis()->SetRangeUser(0, 7000);
+  //Lbar_inv_mass_US_from_L_Lbar->GetYaxis()->SetRangeUser(0, 3000);
+  Lbar_inv_mass_US_from_L_Lbar->Draw("p e");
+
+  Lbar_inv_mass_LS_from_L_Lbar->SetMarkerStyle(20);
+  Lbar_inv_mass_LS_from_L_Lbar->SetMarkerColor(kBlue);
+  Lbar_inv_mass_LS_from_L_Lbar->SetLineColor(kBlue);
+  Lbar_inv_mass_LS_from_L_Lbar->Draw("p e same");
+
+  SigAndBckgLeg->Draw("same");
+
+  TPaveText *Lbar_Minv_text_pair = new TPaveText(0.6, 0.6, 0.89, 0.75, "NDC");
+  //cent_text->AddText("STAR preliminary");
+  //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+  Lbar_Minv_text_pair->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  if(trigger == 0) Lbar_Minv_text_pair->AddText("Minimum bias");
+  if(trigger == 1) Lbar_Minv_text_pair->AddText("JP2");
+  Lbar_Minv_text_pair->AddText("#bar{#Lambda^{0}} from #Lambda^{0}-#bar{#Lambda^{0}}");
+  Lbar_Minv_text_pair->AddText("|#it{y}| < 1");
+  Lbar_Minv_text_pair->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
+  Lbar_Minv_text_pair->SetFillColorAlpha(0, 0.01);
+  Lbar_Minv_text_pair->Draw("same");
+
+  Lbar_inv_mass_from_L_Lbar_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/Lbar_inv_mass_from_L_Lbar.png");
+
+
+  TCanvas *L_vs_Lbar_mass_can = new TCanvas("L_vs_Lbar_mass_can", "L_vs_Lbar_mass_can", 1200, 1200);
+  L_vs_Lbar_mass_can->cd();
+
+  L_vs_Lbar_mass_US->Add(L_vs_Lbar_mass_LS, -1);
+  L_vs_Lbar_mass_US->GetXaxis()->SetTitle("M_{inv}^{p#pi^{-}} (GeV/#it{c}^{2})");
+  L_vs_Lbar_mass_US->GetXaxis()->CenterTitle();
+  L_vs_Lbar_mass_US->GetXaxis()->SetRangeUser(1.1, 1.14);
+  L_vs_Lbar_mass_US->GetYaxis()->SetTitle("M_{inv}^{#bar{p}#pi^{+}} (GeV/#it{c}^{2})");
+  L_vs_Lbar_mass_US->GetYaxis()->CenterTitle();
+  L_vs_Lbar_mass_US->GetYaxis()->SetRangeUser(1.1, 1.14);
+  L_vs_Lbar_mass_US->Draw("colz");
+
+  L_vs_Lbar_mass_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L_vs_Lbar_mass.png");
+
+
+  //_____________________________________________________________________________________
+
+  TCanvas *L_inv_mass_from_L_L_can = new TCanvas("L_inv_mass_from_L_L_can", "L_inv_mass_from_L_L_can", 1200, 1000);
+  L_inv_mass_from_L_L_can->cd();
+
+  L_inv_mass_US_from_L_L->SetMarkerStyle(20);
+  L_inv_mass_US_from_L_L->SetMarkerColor(kRed);
+  L_inv_mass_US_from_L_L->SetLineColor(kRed);
+  L_inv_mass_US_from_L_L->GetXaxis()->SetTitle("M_{inv}^{p#pi^{-}} (GeV/#it{c}^{2})");
+  L_inv_mass_US_from_L_L->GetXaxis()->CenterTitle();
+  L_inv_mass_US_from_L_L->GetXaxis()->SetRangeUser(1.1, 1.14);
+  L_inv_mass_US_from_L_L->GetYaxis()->SetTitle("Counts");
+  L_inv_mass_US_from_L_L->GetYaxis()->CenterTitle();
+  //L_inv_mass_US_from_L_L->GetYaxis()->SetRangeUser(0, 7000);
+  //L_inv_mass_US_from_L_L->GetYaxis()->SetRangeUser(0, 3000);
+  L_inv_mass_US_from_L_L->Draw("p e");
+
+  L_inv_mass_LS_from_L_L->SetMarkerStyle(20);
+  L_inv_mass_LS_from_L_L->SetMarkerColor(kBlue);
+  L_inv_mass_LS_from_L_L->SetLineColor(kBlue);
+  L_inv_mass_LS_from_L_L->Draw("p e same");
+
+
+  SigAndBckgLeg->Draw("same");
+
+  TPaveText *L_Minv_text_pair_2 = new TPaveText(0.6, 0.6, 0.89, 0.75, "NDC");
+  //cent_text->AddText("STAR preliminary");
+  //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+  L_Minv_text_pair_2->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  if(trigger == 0) L_Minv_text_pair_2->AddText("Minimum bias");
+  if(trigger == 1) L_Minv_text_pair_2->AddText("JP2");
+  L_Minv_text_pair_2->AddText("#Lambda^{0} from #Lambda^{0}-#Lambda^{0}");
+  L_Minv_text_pair_2->AddText("|#it{y}| < 1");
+  L_Minv_text_pair_2->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
+  L_Minv_text_pair_2->SetFillColorAlpha(0, 0.01);
+  L_Minv_text_pair_2->Draw("same");
+
+  L_inv_mass_from_L_L_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L_inv_mass_from_L_L.png");
+
+
+  TCanvas *L_vs_L_mass_can = new TCanvas("L_vs_L_mass_can", "L_vs_L_mass_can", 1200, 1200);
+  L_vs_L_mass_can->cd();
+
+  L_vs_L_mass_US->Add(L_vs_L_mass_LS, -1);
+  L_vs_L_mass_US->GetXaxis()->SetTitle("M_{inv}^{p#pi^{-}} (GeV/#it{c}^{2})");
+  L_vs_L_mass_US->GetXaxis()->CenterTitle();
+  L_vs_L_mass_US->GetXaxis()->SetRangeUser(1.1, 1.14);
+  L_vs_L_mass_US->GetYaxis()->SetTitle("M_{inv}^{#bar{p}#pi^{+}} (GeV/#it{c}^{2})");
+  L_vs_L_mass_US->GetYaxis()->CenterTitle();
+  L_vs_L_mass_US->GetYaxis()->SetRangeUser(1.1, 1.14);
+  L_vs_L_mass_US->Draw("colz");
+
+  L_vs_L_mass_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/L_vs_L_mass.png");
+
+
+
+  //_____________________________________________________________________________________
+
+  TCanvas *Lbar_inv_mass_from_Lbar_Lbar_can = new TCanvas("Lbar_inv_mass_from_Lbar_Lbar_can", "Lbar_inv_mass_from_Lbar_Lbar_can", 1200, 1000);
+  Lbar_inv_mass_from_Lbar_Lbar_can->cd();
+
+  Lbar_inv_mass_US_from_Lbar_Lbar->SetMarkerStyle(20);
+  Lbar_inv_mass_US_from_Lbar_Lbar->SetMarkerColor(kRed);
+  Lbar_inv_mass_US_from_Lbar_Lbar->SetLineColor(kRed);
+  Lbar_inv_mass_US_from_Lbar_Lbar->GetXaxis()->SetTitle("M_{inv}^{p#pi^{-}} (GeV/#it{c}^{2})");
+  Lbar_inv_mass_US_from_Lbar_Lbar->GetXaxis()->CenterTitle();
+  Lbar_inv_mass_US_from_Lbar_Lbar->GetXaxis()->SetRangeUser(1.1, 1.14);
+  Lbar_inv_mass_US_from_Lbar_Lbar->GetYaxis()->SetTitle("Counts");
+  Lbar_inv_mass_US_from_Lbar_Lbar->GetYaxis()->CenterTitle();
+  //Lbar_inv_mass_US_from_Lbar_Lbar->GetYaxis()->SetRangeUser(0, 7000);
+  //Lbar_inv_mass_US_from_Lbar_Lbar->GetYaxis()->SetRangeUser(0, 3000);
+  Lbar_inv_mass_US_from_Lbar_Lbar->Draw("p e");
+
+  Lbar_inv_mass_LS_from_Lbar_Lbar->SetMarkerStyle(20);
+  Lbar_inv_mass_LS_from_Lbar_Lbar->SetMarkerColor(kBlue);
+  Lbar_inv_mass_LS_from_Lbar_Lbar->SetLineColor(kBlue);
+  Lbar_inv_mass_LS_from_Lbar_Lbar->Draw("p e same");
+
+
+  SigAndBckgLeg->Draw("same");
+
+  TPaveText *Lbar_Minv_text_pair_2 = new TPaveText(0.6, 0.6, 0.89, 0.75, "NDC");
+  //cent_text->AddText("STAR preliminary");
+  //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+  Lbar_Minv_text_pair_2->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  if(trigger == 0) Lbar_Minv_text_pair_2->AddText("Minimum bias");
+  if(trigger == 1) Lbar_Minv_text_pair_2->AddText("JP2");
+  Lbar_Minv_text_pair_2->AddText("#bar{#Lambda^{0}} from #bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
+  Lbar_Minv_text_pair_2->AddText("|#it{y}| < 1");
+  Lbar_Minv_text_pair_2->AddText("0.5 < p_{T} < 5.0 GeV/#it{c}");
+  Lbar_Minv_text_pair_2->SetFillColorAlpha(0, 0.01);
+  Lbar_Minv_text_pair_2->Draw("same");
+
+  Lbar_inv_mass_from_Lbar_Lbar_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/Lbar_inv_mass_from_Lbar_Lbar.png");
+
+
+  TCanvas *Lbar_vs_Lbar_mass_can = new TCanvas("Lbar_vs_Lbar_mass_can", "Lbar_vs_Lbar_mass_can", 1200, 1200);
+  Lbar_vs_Lbar_mass_can->cd();
+
+  Lbar_vs_Lbar_mass_US->Add(Lbar_vs_Lbar_mass_LS, -1);
+  Lbar_vs_Lbar_mass_US->GetXaxis()->SetTitle("M_{inv}^{p#pi^{-}} (GeV/#it{c}^{2})");
+  Lbar_vs_Lbar_mass_US->GetXaxis()->CenterTitle();
+  Lbar_vs_Lbar_mass_US->GetXaxis()->SetRangeUser(1.1, 1.14);
+  Lbar_vs_Lbar_mass_US->GetYaxis()->SetTitle("M_{inv}^{#bar{p}#pi^{+}} (GeV/#it{c}^{2})");
+  Lbar_vs_Lbar_mass_US->GetYaxis()->CenterTitle();
+  Lbar_vs_Lbar_mass_US->GetYaxis()->SetRangeUser(1.1, 1.14);
+  Lbar_vs_Lbar_mass_US->Draw("colz");
+
+  Lbar_vs_Lbar_mass_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/L_correlations/Lbar_vs_Lbar_mass.png");
+
+
+
+  //----------------------------------L pair stats---------------------------------
 
   cout<<endl;
   cout<<"N events with L-Lbar pair: "<<nEventsWithLambdaPair_US_hist->GetBinContent(2)<<endl;
@@ -3155,6 +4235,24 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
   cout<<"N Lbar-Lbar pairs from hist: "<<nLbarLbar<<endl;
   cout<<"N Lbar-Lbar background pairs from hist: "<<nLbarLbar_back<<endl;
 
+  for(unsigned int pTbin1 = 0; pTbin1 < nPtBins_corr; pTbin1++)
+  {
+    for(unsigned int pTbin2 = 0; pTbin2 < nPtBins_corr; pTbin2++)
+    {
+      cout<<endl;
+      cout<<"pT1: "<<pTbin1<<", pT2: "<<pTbin2<<endl;
+      cout<<"N L-Lbar pairs from hist: "<<nLLbar_pT[pTbin1][pTbin2]<<endl;
+      cout<<"N L-Lbar background pairs from hist: "<<nLLbar_pT_back[pTbin1][pTbin2]<<endl;
+      cout<<endl;
+      cout<<"N L-L pairs from hist: "<<nLL_pT[pTbin1][pTbin2]<<endl;
+      cout<<"N L-L background pairs from hist: "<<nLL_pT_back[pTbin1][pTbin2]<<endl;
+      cout<<endl;
+      cout<<"N Lbar-Lbar pairs from hist: "<<nLbarLbar_pT[pTbin1][pTbin2]<<endl;
+      cout<<"N Lbar-Lbar background pairs from hist: "<<nLbarLbar_pT_back[pTbin1][pTbin2]<<endl;
+    }
+  }
+
+
 
 
   LLbarOutFile->Close();
@@ -3166,7 +4264,7 @@ void LambdaLambdaBarSpinCorr(TChain *L_tree, double invMassRange_L0[2][nPtBins+1
 //__________________________________________________________________________________________________________________________
 
 //ReadMode = 0 - read TTree, ReadMode = 1 - read histograms - First run in ReadMode = 0 to save relevant histograms, then can run in ReadMode = 1 to read just histograms and save time
-//trigger = 0 - MB, 1 - JP2
+//trigger = 0 - MB pi TOF, 1 - JP2, 2 - MB no TOF
 //energy - collision energy in GeV
 void Ana003_Lambda_corr(const int ReadMode = 0, const int trigger = 0, const int energy = 510, const int year = 2017)
 {
@@ -3175,25 +4273,25 @@ void Ana003_Lambda_corr(const int ReadMode = 0, const int trigger = 0, const int
   if(energy == 510)
   {
     //MB
-    if(trigger == 0) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17/fileList.list");
+    //if(trigger == 0) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17/fileList.list");
 
     //JP2
     if(trigger == 1) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17_JP2/fileList.list");
 
     //MB without strict TOF matching
-    if(trigger == 2) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17_MB_noTOF/fileList.list");
+    if(trigger == 0 || trigger == 2) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run17_MB_noTOF/fileList.list");
 
   }
   else if(energy == 200)
   {
     //MB
-    if(trigger == 0) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12/fileList.list");
+    //if(trigger == 0) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12/fileList.list");
 
     //JP2
     if(trigger == 1) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12_JP2/fileList.list");
 
     //MB without strict TOF matching
-    if(trigger == 2) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12_MB_noTOF/fileList.list");
+    if(trigger == 0 ||trigger == 2) fileList.open("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/input/Run12_MB_noTOF/fileList.list");
 
   }
   else
