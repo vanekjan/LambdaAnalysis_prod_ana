@@ -343,7 +343,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
   //______________________________________________________
 
-  //like-sign (for combinatorial background)
+  //for combinatorial background
   vector<TLorentzVector> L_vector_background;
   vector<int> L_pT_bin_vector_background;
   vector<int> L_eta_bin_vector_background;
@@ -396,6 +396,11 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
   //TLorentzVector *L_Lorentz_vector = new TLorentzVector(1,1,1,1);
   //TLorentzVector *p_Lorenz_vector = new TLorentzVector(1,1,1,1);
+
+  //for filling of US-LS L-L and Lbar-Lbar pair background
+  //to be able to fill bacground Minv histograms correctly
+  int nFillLL_bckg = 0;
+  int nFillLbarLbar_backg = 0;
 
   for(Long64_t i = 0; i < nEntries; i++) //Read TTree only in ReadMode = 0
   {
@@ -651,7 +656,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
 
 
-      // LS-LS L pairs - bacground - just continuum
+      // LS-LS L pairs - background - just continuum
 
       if(L_vector_background.size() > 0 && Lbar_vector_background.size() > 0)
       {
@@ -663,6 +668,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
             L0_inv_mass_vs_L0bar_inv_mass_LS[L_pT_bin_vector_background.at(iLambda)][Lbar_pT_bin_vector_background.at(iLambdaBar)]->Fill(L_vector_background.at(iLambda).M(), Lbar_vector_background.at(iLambdaBar).M());
 
+            /*
             //save info for cos(theta*) to be analyzed later
             double L_Lbar_pairThetaStar = LpairThetaStar(L_vector_background.at(iLambda), p_vector_background.at(iLambda), Lbar_vector_background.at(iLambdaBar), pBar_vector_background.at(iLambdaBar));
 
@@ -676,6 +682,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
             L_Lbar_eta_bin_L_back.push_back(L_eta_bin_vector_background.at(iLambda));
             L_Lbar_eta_bin_Lbar_back.push_back(Lbar_eta_bin_vector_background.at(iLambdaBar));
+            */
 
           }
         }
@@ -695,6 +702,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
             L0_inv_mass_vs_L0_inv_mass_LS[L_pT_bin_vector_background.at(iLambda1)][L_pT_bin_vector_background.at(iLambda2)]->Fill(L_vector_background.at(iLambda1).M(), L_vector_background.at(iLambda2).M());
 
+            /*
             //save info for cos(theta*) to be analyzed later
             double L_L_pairThetaStar = LpairThetaStar(L_vector_background.at(iLambda1), p_vector_background.at(iLambda1), L_vector_background.at(iLambda2), p_vector_background.at(iLambda2));
 
@@ -708,6 +716,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
             L_L_eta_bin_L1_back.push_back(L_eta_bin_vector_background.at(iLambda1));
             L_L_eta_bin_L2_back.push_back(L_eta_bin_vector_background.at(iLambda2));
+            */
 
           }
         }
@@ -725,7 +734,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
             L0bar_inv_mass_vs_L0bar_inv_mass_LS[Lbar_pT_bin_vector_background.at(iLambdaBar1)][Lbar_pT_bin_vector_background.at(iLambdaBar2)]->Fill(Lbar_vector_background.at(iLambdaBar1).M(), Lbar_vector_background.at(iLambdaBar2).M());
 
-
+            /*
              //save info for cos(theta*) to be analyzed later
             double Lbar_Lbar_pairThetaStar = LpairThetaStar(Lbar_vector_background.at(iLambdaBar1), pBar_vector_background.at(iLambdaBar1), Lbar_vector_background.at(iLambdaBar2), pBar_vector_background.at(iLambdaBar2));
 
@@ -739,6 +748,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
             Lbar_Lbar_eta_bin_Lbar1_back.push_back(Lbar_eta_bin_vector_background.at(iLambdaBar1));
             Lbar_Lbar_eta_bin_Lbar2_back.push_back(Lbar_eta_bin_vector_background.at(iLambdaBar2));
+            */
 
           }
         }
@@ -747,8 +757,9 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       //___________________________________________________________________________________________________
 
 
-      // US-LS and LS-US L pairs - background - case when good L is paired with bacground L (+ continuum?)
+      // US-LS and LS-US L pairs - background - case when US L (can be signal or background) is paired with bacground L (+ continuum?)
 
+      //Bacground for L-Lbar
       // L - US, Lbar - LS
       if(L_vector.size() > 0 && Lbar_vector_background.size() > 0)
       {
@@ -759,31 +770,28 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
           for(unsigned int iLambdaBar = 0; iLambdaBar < Lbar_vector_background.size(); iLambdaBar++)
           {
             //fill Minv histogram
+            if(pi_vector.at(iLambda).Rapidity() == piBar_vector_background.at(iLambdaBar).Rapidity()) continue;
 
             L0_inv_mass_vs_L0bar_inv_mass_US_LS[L_pT_bin_vector.at(iLambda)][Lbar_pT_bin_vector_background.at(iLambdaBar)]->Fill(L_vector.at(iLambda).M(), Lbar_vector_background.at(iLambdaBar).M());
 
-            //fill new vectors here with Minv1 and Minv2, and with cos(theta*)
-            //analze stored pairs later, just within selected Minv window
-            //store also pT bin of both L in the pair (maybe eta)
-/*
             //save info for cos(theta*) to be analyzed later
-            double L_Lbar_pairThetaStar = LpairThetaStar(L_vector.at(iLambda), p_vector.at(iLambda), Lbar_vector_background.at(iLambdaBar), pBar_vector.at(iLambdaBar));
+            double L_Lbar_pairThetaStar = LpairThetaStar(L_vector.at(iLambda), p_vector.at(iLambda), Lbar_vector_background.at(iLambdaBar), pBar_vector_background.at(iLambdaBar));
 
-            L_Lbar_cos_theta.push_back(TMath::Cos(L_Lbar_pairThetaStar));
+            L_Lbar_cos_theta_back.push_back(TMath::Cos(L_Lbar_pairThetaStar));
 
-            L_Lbar_Minv_L.push_back(L_vector.at(iLambda).M());
-            L_Lbar_Minv_Lbar.push_back(Lbar_vector_background.at(iLambdaBar).M());
+            L_Lbar_Minv_L_back.push_back(L_vector.at(iLambda).M());
+            L_Lbar_Minv_Lbar_back.push_back(Lbar_vector_background.at(iLambdaBar).M());
 
-            L_Lbar_pT_bin_L.push_back(L_pT_bin_vector.at(iLambda));
-            L_Lbar_pT_bin_Lbar.push_back(Lbar_pT_bin_vector_background.at(iLambdaBar));
+            L_Lbar_pT_bin_L_back.push_back(L_pT_bin_vector.at(iLambda));
+            L_Lbar_pT_bin_Lbar_back.push_back(Lbar_pT_bin_vector_background.at(iLambdaBar));
 
-            L_Lbar_eta_bin_L.push_back(L_eta_bin_vector.at(iLambda));
-            L_Lbar_eta_bin_Lbar.push_back(Lbar_eta_bin_vector_backround.at(iLambdaBar));
-*/
+            L_Lbar_eta_bin_L_back.push_back(L_eta_bin_vector.at(iLambda));
+            L_Lbar_eta_bin_Lbar_back.push_back(Lbar_eta_bin_vector_background.at(iLambdaBar));
+
           }
         }
       }
-
+      // L - LS, Lbar - US
       if(L_vector_background.size() > 0 && Lbar_vector.size() > 0)
       {
         //cout<<eventId<<endl;
@@ -793,29 +801,143 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
           for(unsigned int iLambdaBar = 0; iLambdaBar < Lbar_vector.size(); iLambdaBar++)
           {
             //fill Minv histogram
+            if(pi_vector_background.at(iLambda).Rapidity() == piBar_vector.at(iLambdaBar).Rapidity()) continue;
 
             L0_inv_mass_vs_L0bar_inv_mass_US_LS[L_pT_bin_vector_background.at(iLambda)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(L_vector_background.at(iLambda).M(), Lbar_vector.at(iLambdaBar).M());
 
-            //fill new vectors here with Minv1 and Minv2, and with cos(theta*)
-            //analze stored pairs later, just within selected Minv window
-            //store also pT bin of both L in the pair (maybe eta)
-/*
+
             //save info for cos(theta*) to be analyzed later
-            double L_Lbar_pairThetaStar = LpairThetaStar(L_vector_background.at(iLambda), p_vector.at(iLambda), Lbar_vector.at(iLambdaBar), pBar_vector.at(iLambdaBar));
+            double L_Lbar_pairThetaStar = LpairThetaStar(L_vector_background.at(iLambda), p_vector_background.at(iLambda), Lbar_vector.at(iLambdaBar), pBar_vector.at(iLambdaBar));
 
-            L_Lbar_cos_theta.push_back(TMath::Cos(L_Lbar_pairThetaStar));
+            L_Lbar_cos_theta_back.push_back(TMath::Cos(L_Lbar_pairThetaStar));
 
-            L_Lbar_Minv_L.push_back(L_vector_background.at(iLambda).M());
-            L_Lbar_Minv_Lbar.push_back(Lbar_vector.at(iLambdaBar).M());
+            L_Lbar_Minv_L_back.push_back(L_vector_background.at(iLambda).M());
+            L_Lbar_Minv_Lbar_back.push_back(Lbar_vector.at(iLambdaBar).M());
 
-            L_Lbar_pT_bin_L.push_back(L_pT_bin_vector_background.at(iLambda));
-            L_Lbar_pT_bin_Lbar.push_back(Lbar_pT_bin_vector.at(iLambdaBar));
+            L_Lbar_pT_bin_L_back.push_back(L_pT_bin_vector_background.at(iLambda));
+            L_Lbar_pT_bin_Lbar_back.push_back(Lbar_pT_bin_vector.at(iLambdaBar));
 
-            L_Lbar_eta_bin_L.push_back(L_eta_bin_vector_bavkground.at(iLambda));
-            L_Lbar_eta_bin_Lbar.push_back(Lbar_eta_bin_vector.at(iLambdaBar));
-*/
+            L_Lbar_eta_bin_L_back.push_back(L_eta_bin_vector_background.at(iLambda));
+            L_Lbar_eta_bin_Lbar_back.push_back(Lbar_eta_bin_vector.at(iLambdaBar));
+
+
           }
         }
+      }
+
+      //background for L-L
+      // L - US, L - LS
+      if(L_vector.size() > 0 && L_vector_background.size() > 0)
+      {
+        for(unsigned int iLambda = 0; iLambda < L_vector.size(); iLambda++)
+        {
+          for(unsigned int iLambdaBckg = 0; iLambdaBckg < L_vector_background.size(); iLambdaBckg++)
+          {
+            if(p_vector.at(iLambda).Rapidity() == p_vector_background.at(iLambdaBckg).Rapidity() ) continue;
+
+            if( nFillLL_bckg % 2 == 0 ) //fill LL pair wit US at x axis and LS at y axis
+            {
+              L0_inv_mass_vs_L0_inv_mass_US_LS[L_pT_bin_vector.at(iLambda)][L_pT_bin_vector_background.at(iLambdaBckg)]->Fill(L_vector.at(iLambda).M(), L_vector_background.at(iLambdaBckg).M());
+
+              //save info for cos(theta*) to be analyzed later
+              double L_L_pairThetaStar = LpairThetaStar(L_vector.at(iLambda), p_vector.at(iLambda), L_vector_background.at(iLambdaBckg), p_vector_background.at(iLambdaBckg));
+
+              L_L_cos_theta_back.push_back(TMath::Cos(L_L_pairThetaStar));
+
+              L_L_Minv_L1_back.push_back(L_vector.at(iLambda).M());
+              L_L_Minv_L2_back.push_back(L_vector_background.at(iLambdaBckg).M());
+
+              L_L_pT_bin_L1_back.push_back(L_pT_bin_vector.at(iLambda));
+              L_L_pT_bin_L2_back.push_back(L_pT_bin_vector_background.at(iLambdaBckg));
+
+              L_L_eta_bin_L1_back.push_back(L_eta_bin_vector.at(iLambda));
+              L_L_eta_bin_L2_back.push_back(L_eta_bin_vector_background.at(iLambdaBckg));
+
+            }
+            else //fill LL pair wit US at y axis and LS at x axis, i.e. opposite order than above
+            {
+              L0_inv_mass_vs_L0_inv_mass_US_LS[L_pT_bin_vector_background.at(iLambdaBckg)][L_pT_bin_vector.at(iLambda)]->Fill(L_vector_background.at(iLambdaBckg).M(), L_vector.at(iLambda).M());
+
+
+              //save info for cos(theta*) to be analyzed later
+              double L_L_pairThetaStar = LpairThetaStar(L_vector_background.at(iLambdaBckg), p_vector_background.at(iLambdaBckg), L_vector.at(iLambda), p_vector.at(iLambda));
+
+              L_L_cos_theta_back.push_back(TMath::Cos(L_L_pairThetaStar));
+
+              L_L_Minv_L1_back.push_back(L_vector_background.at(iLambdaBckg).M());
+              L_L_Minv_L2_back.push_back(L_vector.at(iLambda).M());
+
+              L_L_pT_bin_L1_back.push_back(L_pT_bin_vector_background.at(iLambdaBckg));
+              L_L_pT_bin_L2_back.push_back(L_pT_bin_vector.at(iLambda));
+
+              L_L_eta_bin_L1_back.push_back(L_eta_bin_vector_background.at(iLambdaBckg));
+              L_L_eta_bin_L2_back.push_back(L_eta_bin_vector.at(iLambda));
+
+            }
+
+            nFillLL_bckg++;
+
+
+          }
+        }
+
+      }
+
+
+      //background for Lbar-Lbar
+      // Lbar - US, Lbar - LS
+      if(Lbar_vector.size() > 0 && Lbar_vector_background.size() > 0)
+      {
+         for(unsigned int iLambdaBar = 0; iLambdaBar < Lbar_vector.size(); iLambdaBar++)
+        {
+          for(unsigned int iLambdaBarBckg = 0; iLambdaBarBckg < Lbar_vector_background.size(); iLambdaBarBckg++)
+          {
+            if(pBar_vector.at(iLambdaBar).Rapidity() == pBar_vector_background.at(iLambdaBarBckg).Rapidity() ) continue;
+
+            if( nFillLbarLbar_backg % 2 == 0 ) //fill LL pair wit US at x axis and LS at y axis
+            {
+              L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[Lbar_pT_bin_vector.at(iLambdaBar)][Lbar_pT_bin_vector_background.at(iLambdaBarBckg)]->Fill(Lbar_vector.at(iLambdaBar).M(), Lbar_vector_background.at(iLambdaBarBckg).M());
+
+              //save info for cos(theta*) to be analyzed later
+              double Lbar_Lbar_pairThetaStar = LpairThetaStar(Lbar_vector.at(iLambdaBar), pBar_vector.at(iLambdaBar), Lbar_vector_background.at(iLambdaBarBckg), pBar_vector_background.at(iLambdaBarBckg));
+
+              Lbar_Lbar_cos_theta_back.push_back(TMath::Cos(Lbar_Lbar_pairThetaStar));
+
+              Lbar_Lbar_Minv_Lbar1_back.push_back(Lbar_vector.at(iLambdaBar).M());
+              Lbar_Lbar_Minv_Lbar2_back.push_back(Lbar_vector_background.at(iLambdaBarBckg).M());
+
+              Lbar_Lbar_pT_bin_Lbar1_back.push_back(Lbar_pT_bin_vector.at(iLambdaBar));
+              Lbar_Lbar_pT_bin_Lbar2_back.push_back(Lbar_pT_bin_vector_background.at(iLambdaBarBckg));
+
+              Lbar_Lbar_eta_bin_Lbar1_back.push_back(Lbar_eta_bin_vector.at(iLambdaBar));
+              Lbar_Lbar_eta_bin_Lbar2_back.push_back(Lbar_eta_bin_vector_background.at(iLambdaBarBckg));
+
+            }
+            else //fill LL pair wit US at y axis and LS at x axis, i.e. opposite order than above
+            {
+              L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[Lbar_pT_bin_vector_background.at(iLambdaBarBckg)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(Lbar_vector_background.at(iLambdaBarBckg).M(), Lbar_vector.at(iLambdaBar).M());
+
+              //save info for cos(theta*) to be analyzed later
+              double Lbar_Lbar_pairThetaStar = LpairThetaStar(Lbar_vector_background.at(iLambdaBarBckg), pBar_vector_background.at(iLambdaBarBckg), Lbar_vector.at(iLambdaBar), pBar_vector.at(iLambdaBar));
+
+              Lbar_Lbar_cos_theta_back.push_back(TMath::Cos(Lbar_Lbar_pairThetaStar));
+
+              Lbar_Lbar_Minv_Lbar1_back.push_back(Lbar_vector_background.at(iLambdaBarBckg).M());
+              Lbar_Lbar_Minv_Lbar2_back.push_back(Lbar_vector.at(iLambdaBar).M());
+
+              Lbar_Lbar_pT_bin_Lbar1_back.push_back(Lbar_pT_bin_vector_background.at(iLambdaBarBckg));
+              Lbar_Lbar_pT_bin_Lbar2_back.push_back(Lbar_pT_bin_vector.at(iLambdaBar));
+
+              Lbar_Lbar_eta_bin_Lbar1_back.push_back(Lbar_eta_bin_vector_background.at(iLambdaBarBckg));
+              Lbar_Lbar_eta_bin_Lbar2_back.push_back(Lbar_eta_bin_vector.at(iLambdaBar));
+
+            }
+
+            nFillLbarLbar_backg++;
+
+          }
+        }
+
       }
 
 
@@ -963,13 +1085,17 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   TH1F *L0_inv_mass_LLbar_projection[nPtBins_corr][nPtBins_corr];
   TH1F *L0bar_inv_mass_LLbar_projection[nPtBins_corr][nPtBins_corr];
 
-  TH1F *L0_inv_mass_LL_projection_US[nPtBins_corr][nPtBins_corr];
-  TH1F *L0_inv_mass_LL_projection_LS[nPtBins_corr][nPtBins_corr];
+  TH1F *L01_inv_mass_LL_projection_US[nPtBins_corr][nPtBins_corr];
+  TH1F *L02_inv_mass_LL_projection_US[nPtBins_corr][nPtBins_corr];
+  TH1F *L01_inv_mass_LL_projection_LS[nPtBins_corr][nPtBins_corr];
+  TH1F *L02_inv_mass_LL_projection_LS[nPtBins_corr][nPtBins_corr];
   TH1F *L01_inv_mass_LL_projection[nPtBins_corr][nPtBins_corr];
   TH1F *L02_inv_mass_LL_projection[nPtBins_corr][nPtBins_corr];
 
-  TH1F *L0bar_inv_mass_LbarLbar_projection_US[nPtBins_corr][nPtBins_corr];
-  TH1F *L0bar_inv_mass_LbarLbar_projection_LS[nPtBins_corr][nPtBins_corr];
+  TH1F *L0bar1_inv_mass_LbarLbar_projection_US[nPtBins_corr][nPtBins_corr];
+  TH1F *L0bar2_inv_mass_LbarLbar_projection_US[nPtBins_corr][nPtBins_corr];
+  TH1F *L0bar1_inv_mass_LbarLbar_projection_LS[nPtBins_corr][nPtBins_corr];
+  TH1F *L0bar2_inv_mass_LbarLbar_projection_LS[nPtBins_corr][nPtBins_corr];
   TH1F *L0bar1_inv_mass_LbarLbar_projection[nPtBins_corr][nPtBins_corr];
   TH1F *L0bar2_inv_mass_LbarLbar_projection[nPtBins_corr][nPtBins_corr];
 
@@ -1042,8 +1168,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       TCanvas *L0_inv_mass_LLbar_projection_US_can = new TCanvas(Form("L0_inv_mass_LLbar_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_LLbar_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), 1200, 1000);
       L0_inv_mass_LLbar_projection_US_can->cd();
 
-      //L0_inv_mass_LLbar_projection_US[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->ProjectionX(Form("L0_inv_mass_projection_US_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
-      L0_inv_mass_LLbar_projection_US[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->ProjectionX(Form("L0_inv_mass_projection_US_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binHigh, -1); //projection in side-band for testing
+      L0_inv_mass_LLbar_projection_US[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->ProjectionX(Form("L0_inv_mass_projection_US_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      //L0_inv_mass_LLbar_projection_US[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->ProjectionX(Form("L0_inv_mass_projection_US_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binHigh, -1); //projection in side-band for testing
       L0_inv_mass_LLbar_projection_US[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{#pi^{-}p}");
       L0_inv_mass_LLbar_projection_US[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
       L0_inv_mass_LLbar_projection_US[pTbin1][pTbin2]->GetYaxis()->SetTitle("Counts");
@@ -1124,7 +1250,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->GetYaxis()->SetTitle("M_{inv}^{#pi^{+}#bar{p}}");
       L0_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
-      L0_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Add(L0_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2], -1);
+      //L0_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Add(L0_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2], -1);
+      L0_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Add(L0_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2], -1);
       fit_res_gaus_L0_L0Bar[pTbin1][pTbin2] = L0_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Fit(doubleGauss_L_Lbar, "s 0", "", 1.11, 1.125);
       L0_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Draw("surf1");
 
@@ -1202,29 +1329,70 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_inv_mass_vs_L0_inv_mass_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_L/US/L0_inv_mass_vs_L0_inv_mass_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
 
 
+      TCanvas *L0_inv_mass_vs_L0_inv_mass_US_LS_can = new TCanvas(Form("L0_inv_mass_vs_L0_inv_mass_US_LS_can_%i_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_US_LS_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
+      L0_inv_mass_vs_L0_inv_mass_US_LS_can->cd();
 
-      TCanvas *L0_inv_mass_LL_projection_US_can = new TCanvas(Form("L0_inv_mass_LL_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_LL_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), 1200, 1000);
-      L0_inv_mass_LL_projection_US_can->cd();
+      L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{#pi^{-}p}");
+      L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->GetXaxis()->SetRangeUser(1.07, 1.2);
+      L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->SetTitle("M_{inv}^{#pi^{+}#bar{p}}");
+      L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
+      L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->Draw("surf1");
 
-      L0_inv_mass_LL_projection_US[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2]->ProjectionX(Form("L0_inv_mass_projection_US_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
-      L0_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{#pi^{-}p}");
-      L0_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
-      L0_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetYaxis()->SetTitle("Counts");
-      L0_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
-      L0_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetMarkerStyle(20);
-      L0_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetMarkerSize(2);
-      L0_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetMarkerColor(kRed);
-      L0_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetLineColor(kRed);
-      L0_inv_mass_LL_projection_US[pTbin1][pTbin2]->Draw("p e");
+      L0_inv_mass_vs_L0_inv_mass_US_LS_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_L/US/L0_inv_mass_vs_L0_inv_mass_US_LS_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
 
-      L0_inv_mass_LL_projection_LS[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0_inv_mass_LS[pTbin1][pTbin2]->ProjectionX(Form("L0_inv_mass_projection_LS_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
-      L0_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetMarkerStyle(24);
-      L0_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetMarkerSize(2);
-      L0_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetMarkerColor(kBlue);
-      L0_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetLineColor(kBlue);
-      L0_inv_mass_LL_projection_LS[pTbin1][pTbin2]->Draw("p e same");
 
-      L0_inv_mass_LL_projection_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_L/US/L0_inv_mass_LL_projection_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+
+      TCanvas *L01_inv_mass_LL_projection_US_can = new TCanvas(Form("L01_inv_mass_LL_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L01_inv_mass_LL_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), 1200, 1000);
+      L01_inv_mass_LL_projection_US_can->cd();
+
+      L01_inv_mass_LL_projection_US[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2]->ProjectionX(Form("L01_inv_mass_projection_US_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L01_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{#pi^{-}p}");
+      L01_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      L01_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetYaxis()->SetTitle("Counts");
+      L01_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      L01_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetMarkerStyle(20);
+      L01_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetMarkerSize(2);
+      L01_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetMarkerColor(kRed);
+      L01_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetLineColor(kRed);
+      L01_inv_mass_LL_projection_US[pTbin1][pTbin2]->Draw("p e");
+
+      //L01_inv_mass_LL_projection_LS[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0_inv_mass_LS[pTbin1][pTbin2]->ProjectionX(Form("L01_inv_mass_projection_LS_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L01_inv_mass_LL_projection_LS[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->ProjectionX(Form("L01_inv_mass_projection_LS_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L01_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetMarkerStyle(24);
+      L01_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetMarkerSize(2);
+      L01_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetMarkerColor(kBlue);
+      L01_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetLineColor(kBlue);
+      L01_inv_mass_LL_projection_LS[pTbin1][pTbin2]->Draw("p e same");
+
+      L01_inv_mass_LL_projection_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_L/US/L01_inv_mass_LL_projection_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+
+
+      TCanvas *L02_inv_mass_LL_projection_US_can = new TCanvas(Form("L02_inv_mass_LL_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L02_inv_mass_LL_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), 1200, 1000);
+      L02_inv_mass_LL_projection_US_can->cd();
+
+      L02_inv_mass_LL_projection_US[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2]->ProjectionY(Form("L02_inv_mass_projection_US_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L02_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{#pi^{-}p}");
+      L02_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      L02_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetYaxis()->SetTitle("Counts");
+      L02_inv_mass_LL_projection_US[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      L02_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetMarkerStyle(20);
+      L02_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetMarkerSize(2);
+      L02_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetMarkerColor(kRed);
+      L02_inv_mass_LL_projection_US[pTbin1][pTbin2]->SetLineColor(kRed);
+      L02_inv_mass_LL_projection_US[pTbin1][pTbin2]->Draw("p e");
+
+      //L02_inv_mass_LL_projection_LS[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0_inv_mass_LS[pTbin1][pTbin2]->ProjectionY(Form("L02_inv_mass_projection_LS_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L02_inv_mass_LL_projection_LS[pTbin1][pTbin2] = (TH1F*)L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->ProjectionY(Form("L02_inv_mass_projection_LS_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L02_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetMarkerStyle(24);
+      L02_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetMarkerSize(2);
+      L02_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetMarkerColor(kBlue);
+      L02_inv_mass_LL_projection_LS[pTbin1][pTbin2]->SetLineColor(kBlue);
+      L02_inv_mass_LL_projection_LS[pTbin1][pTbin2]->Draw("p e same");
+
+      L02_inv_mass_LL_projection_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_L/US/L02_inv_mass_LL_projection_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+
 
       //US-LS
       TF2 *doubleGauss_L_L = new TF2("doubleGauss_L_L", "[0]*TMath::Gaus(x,[1],[2])*TMath::Gaus(y,[3],[4])", 1.07, 1.2, 1.07, 1.2);
@@ -1253,7 +1421,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_inv_mass_vs_L0_inv_mass[pTbin1][pTbin2]->GetYaxis()->SetTitle("M_{inv}^{#pi^{-}p}");
       L0_inv_mass_vs_L0_inv_mass[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0_inv_mass_vs_L0_inv_mass[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
-      L0_inv_mass_vs_L0_inv_mass[pTbin1][pTbin2]->Add(L0_inv_mass_vs_L0_inv_mass_LS[pTbin1][pTbin2], -1);
+      //L0_inv_mass_vs_L0_inv_mass[pTbin1][pTbin2]->Add(L0_inv_mass_vs_L0_inv_mass_LS[pTbin1][pTbin2], -1);
+      L0_inv_mass_vs_L0_inv_mass[pTbin1][pTbin2]->Add(L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2], -1);
       fit_res_gaus_L0_L0[pTbin1][pTbin2] = L0_inv_mass_vs_L0_inv_mass[pTbin1][pTbin2]->Fit(doubleGauss_L_L, "s 0", "", 1.11, 1.125);
       L0_inv_mass_vs_L0_inv_mass[pTbin1][pTbin2]->Draw("surf1");
 
@@ -1327,29 +1496,70 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0bar_inv_mass_vs_L0bar_inv_mass_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/Lbar_Lbar/US/L0bar_inv_mass_vs_L0bar_inv_mass_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
 
 
+      TCanvas *L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_can = new TCanvas(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_can_%i_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_can->cd();
 
-      TCanvas *L0bar_inv_mass_LbarLbar_projection_US_can = new TCanvas(Form("L0bar_inv_mass_LbarLbar_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_LbarLbar_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), 1200, 1000);
-      L0bar_inv_mass_LbarLbar_projection_US_can->cd();
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{#pi^{-}p}");
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->GetXaxis()->SetRangeUser(1.07, 1.2);
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->SetTitle("M_{inv}^{#pi^{+}#bar{p}}");
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->Draw("surf1");
 
-      L0bar_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2] = (TH1F*)L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->ProjectionX(Form("L0bar_inv_mass_projection_US_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
-      L0bar_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{#pi^{-}p}");
-      L0bar_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
-      L0bar_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetYaxis()->SetTitle("Counts");
-      L0bar_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
-      L0bar_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetMarkerStyle(20);
-      L0bar_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetMarkerSize(2);
-      L0bar_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetMarkerColor(kRed);
-      L0bar_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetLineColor(kRed);
-      L0bar_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->Draw("p e");
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/Lbar_Lbar/US/L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
 
-      L0bar_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2] = (TH1F*)L0bar_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2]->ProjectionX(Form("L0bar_inv_mass_projection_LS_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
-      L0bar_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetMarkerStyle(24);
-      L0bar_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetMarkerSize(2);
-      L0bar_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetMarkerColor(kBlue);
-      L0bar_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetLineColor(kBlue);
-      L0bar_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->Draw("p e same");
 
-      L0bar_inv_mass_LbarLbar_projection_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/Lbar_Lbar/US/L0bar_inv_mass_LbarLbar_projection_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+
+      TCanvas *L0bar1_inv_mass_LbarLbar_projection_US_can = new TCanvas(Form("L0bar1_inv_mass_LbarLbar_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0bar1_inv_mass_LbarLbar_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), 1200, 1000);
+      L0bar1_inv_mass_LbarLbar_projection_US_can->cd();
+
+      L0bar1_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2] = (TH1F*)L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->ProjectionX(Form("L0bar1_inv_mass_projection_US_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L0bar1_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{#pi^{-}p}");
+      L0bar1_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      L0bar1_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetYaxis()->SetTitle("Counts");
+      L0bar1_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      L0bar1_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetMarkerStyle(20);
+      L0bar1_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetMarkerSize(2);
+      L0bar1_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetMarkerColor(kRed);
+      L0bar1_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetLineColor(kRed);
+      L0bar1_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->Draw("p e");
+
+      //L0bar1_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2] = (TH1F*)L0bar1_inv_mass_vs_L0bar1_inv_mass_LS[pTbin1][pTbin2]->ProjectionX(Form("L0bar1_inv_mass_projection_LS_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L0bar1_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2] = (TH1F*)L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->ProjectionX(Form("L0bar1_inv_mass_projection_LS_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L0bar1_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetMarkerStyle(24);
+      L0bar1_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetMarkerSize(2);
+      L0bar1_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetMarkerColor(kBlue);
+      L0bar1_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetLineColor(kBlue);
+      L0bar1_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->Draw("p e same");
+
+      L0bar1_inv_mass_LbarLbar_projection_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/Lbar_Lbar/US/L0bar1_inv_mass_LbarLbar_projection_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+
+
+
+      TCanvas *L0bar2_inv_mass_LbarLbar_projection_US_can = new TCanvas(Form("L0bar2_inv_mass_LbarLbar_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0bar2_inv_mass_LbarLbar_projection_US_can_pT1_%i_pT2_%i", pTbin1, pTbin2), 1200, 1000);
+      L0bar2_inv_mass_LbarLbar_projection_US_can->cd();
+
+      L0bar2_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2] = (TH1F*)L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->ProjectionX(Form("L0bar2_inv_mass_projection_US_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L0bar2_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{#pi^{-}p}");
+      L0bar2_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      L0bar2_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetYaxis()->SetTitle("Counts");
+      L0bar2_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      L0bar2_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetMarkerStyle(20);
+      L0bar2_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetMarkerSize(2);
+      L0bar2_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetMarkerColor(kRed);
+      L0bar2_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->SetLineColor(kRed);
+      L0bar2_inv_mass_LbarLbar_projection_US[pTbin1][pTbin2]->Draw("p e");
+
+      //L0bar2_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2] = (TH1F*)L0bar2_inv_mass_vs_L0bar2_inv_mass_LS[pTbin1][pTbin2]->ProjectionX(Form("L0bar2_inv_mass_projection_LS_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L0bar2_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2] = (TH1F*)L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->ProjectionX(Form("L0bar2_inv_mass_projection_LS_can_pT1_%i_pT2_%i.png", pTbin1, pTbin2), binLow, binHigh);
+      L0bar2_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetMarkerStyle(24);
+      L0bar2_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetMarkerSize(2);
+      L0bar2_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetMarkerColor(kBlue);
+      L0bar2_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->SetLineColor(kBlue);
+      L0bar2_inv_mass_LbarLbar_projection_LS[pTbin1][pTbin2]->Draw("p e same");
+
+      L0bar2_inv_mass_LbarLbar_projection_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/Lbar_Lbar/US/L0bar2_inv_mass_LbarLbar_projection_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
 
       //US-LS
       TF2 *doubleGauss_Lbar_Lbar = new TF2("doubleGauss_Lbar_Lbar", "[0]*TMath::Gaus(x,[1],[2])*TMath::Gaus(y,[3],[4])", 1.07, 1.2, 1.07, 1.2);
@@ -1378,11 +1588,12 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
       L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->GetYaxis()->SetTitle("M_{inv}^{#pi^{+}#bar{p}}");
       L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
-      L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Add(L0bar_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2], -1);
-      if( pTbin1 == 0 && pTbin2 == 1 ) fit_res_gaus_L0Bar_L0Bar[pTbin1][pTbin2] = L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Fit(doubleGauss_Lbar_Lbar, "s 0", "", 1.1, 1.12);
-      else if( pTbin1 == 1 && pTbin2 == 1 ) fit_res_gaus_L0Bar_L0Bar[pTbin1][pTbin2] = L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Fit(doubleGauss_Lbar_Lbar, "s 0", "", 1.1, 1.12);
-      else fit_res_gaus_L0Bar_L0Bar[pTbin1][pTbin2] = L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Fit(doubleGauss_Lbar_Lbar, "s 0", "", 1.11, 1.125);
-      //fit_res_gaus_L0Bar_L0Bar[pTbin1][pTbin2] = L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Fit(doubleGauss_Lbar_Lbar, "s 0", "", 1.114, 1.125);
+      //L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Add(L0bar_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2], -1);
+      L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Add(L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2], -1);
+      //if( pTbin1 == 0 && pTbin2 == 1 ) fit_res_gaus_L0Bar_L0Bar[pTbin1][pTbin2] = L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Fit(doubleGauss_Lbar_Lbar, "s 0", "", 1.1, 1.12);
+      //else if( pTbin1 == 1 && pTbin2 == 1 ) fit_res_gaus_L0Bar_L0Bar[pTbin1][pTbin2] = L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Fit(doubleGauss_Lbar_Lbar, "s 0", "", 1.1, 1.12);
+      //else fit_res_gaus_L0Bar_L0Bar[pTbin1][pTbin2] = L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Fit(doubleGauss_Lbar_Lbar, "s 0", "", 1.11, 1.125);
+      fit_res_gaus_L0Bar_L0Bar[pTbin1][pTbin2] = L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Fit(doubleGauss_Lbar_Lbar, "s 0", "", 1.114, 1.125);
       L0bar_inv_mass_vs_L0bar_inv_mass[pTbin1][pTbin2]->Draw("surf1");
 
       L0bar_inv_mass_vs_L0bar_inv_mass_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/Lbar_Lbar/US-LS/L0bar_inv_mass_vs_L0bar_inv_mass_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
@@ -1790,7 +2001,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
 
 
-  //Like-Sign
+  //background
 
   //L-Lbar
   for(unsigned int L_Lbar_index = 0; L_Lbar_index < L_Lbar_cos_theta_back.size(); L_Lbar_index++)
@@ -1803,8 +2014,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
 
     //weight for LS - need to scale LS to match realistic sig/bckg ratio known from Minv
-    float LS_weight = sideBandScale_L_Lbar[L_Lbar_pT_bin_L_back.at(L_Lbar_index)][L_Lbar_pT_bin_Lbar_back.at(L_Lbar_index)];
-    //float LS_weight = 1;
+    //float LS_weight = sideBandScale_L_Lbar[L_Lbar_pT_bin_L_back.at(L_Lbar_index)][L_Lbar_pT_bin_Lbar_back.at(L_Lbar_index)];
+    float LS_weight = 1;
 
     //signal region LS
     if( L_Lbar_Minv_L_back.at(L_Lbar_index) > L_peak_mean-3*L_peak_sigma && L_Lbar_Minv_L_back.at(L_Lbar_index) < L_peak_mean+3*L_peak_sigma &&
@@ -1832,8 +2043,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
     float L2_peak_sigma = fabs(fit_res_gaus_L0_L0[L_L_pT_bin_L1_back.at(L_L_index)][L_L_pT_bin_L2_back.at(L_L_index)]->Parameter(4));
 
 
-    float LS_weight = sideBandScale_L_L[L_L_pT_bin_L1_back.at(L_L_index)][L_L_pT_bin_L2_back.at(L_L_index)];
-    //float LS_weight = 1.;
+    //float LS_weight = sideBandScale_L_L[L_L_pT_bin_L1_back.at(L_L_index)][L_L_pT_bin_L2_back.at(L_L_index)];
+    float LS_weight = 1.;
 
 
     if( L_L_Minv_L1_back.at(L_L_index) > L1_peak_mean-3*L1_peak_sigma && L_L_Minv_L1_back.at(L_L_index) < L1_peak_mean+3*L1_peak_sigma &&
@@ -1861,8 +2072,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
     float Lbar2_peak_sigma = fabs(fit_res_gaus_L0Bar_L0Bar[Lbar_Lbar_pT_bin_Lbar1_back.at(Lbar_Lbar_index)][Lbar_Lbar_pT_bin_Lbar2_back.at(Lbar_Lbar_index)]->Parameter(4));
 
 
-    float LS_weight = sideBandScale_Lbar_Lbar[Lbar_Lbar_pT_bin_Lbar1_back.at(Lbar_Lbar_index)][Lbar_Lbar_pT_bin_Lbar2_back.at(Lbar_Lbar_index)];
-    //float LS_weight = 1.;
+    //float LS_weight = sideBandScale_Lbar_Lbar[Lbar_Lbar_pT_bin_Lbar1_back.at(Lbar_Lbar_index)][Lbar_Lbar_pT_bin_Lbar2_back.at(Lbar_Lbar_index)];
+    float LS_weight = 1.;
 
     if( Lbar_Lbar_Minv_Lbar1_back.at(Lbar_Lbar_index) > Lbar1_peak_mean-3*Lbar1_peak_sigma && Lbar_Lbar_Minv_Lbar1_back.at(Lbar_Lbar_index) < Lbar1_peak_mean+3*Lbar1_peak_sigma &&
         Lbar_Lbar_Minv_Lbar2_back.at(Lbar_Lbar_index) > Lbar2_peak_mean-3*Lbar2_peak_sigma && Lbar_Lbar_Minv_Lbar2_back.at(Lbar_Lbar_index) < Lbar2_peak_mean+3*Lbar2_peak_sigma)
@@ -2032,7 +2243,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   TLegend *L0_L0bar_leg = new TLegend(0.15, 0.4, 0.39, 0.69);
   L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_US_hist, "Unlike-sign p#pi");
   //L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_US_side_band_hist, "Side-band p#pi");
-  L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_LS_hist, "Like-sign p#pi");
+  L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_LS_hist, "Combinatorial bckg.");
   //L0_L0bar_leg->AddEntry(L0_L0bar_cosThetaProdPlane_ME_hist, "Mixed event");
   L0_L0bar_leg->AddEntry(fitL0_L0bar_US_ThetaStar_no_corr, "Linear fit to US");
   L0_L0bar_leg->SetBorderSize(0);
@@ -2172,7 +2383,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   TLegend *L0_L0_leg = new TLegend(0.15, 0.4, 0.39, 0.69);
   L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_US_hist, "Unlike-sign p#pi");
   //L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_US_side_band_hist, "Side-band p#pi");
-  L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_LS_hist, "Like-sign p#pi");
+  L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_LS_hist, "Combinatorial bckg.");
   //L0_L0_leg->AddEntry(L0_L0_cosThetaProdPlane_ME_hist, "Mixed event");
   L0_L0_leg->AddEntry(fitL0_L0_US_ThetaStar_no_corr, "Linear fit to US");
   L0_L0_leg->SetBorderSize(0);
@@ -2312,7 +2523,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   TLegend *L0bar_L0bar_leg = new TLegend(0.15, 0.4, 0.39, 0.69);
   L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_US_hist, "Unlike-sign p#pi");
   //L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_US_side_band_hist, "Side-band p#pi");
-  L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_LS_hist, "Like-sign p#pi");
+  L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_LS_hist, "Combinatorial bckg.");
   //L0bar_L0bar_leg->AddEntry(L0bar_L0bar_cosThetaProdPlane_ME_hist, "Mixed event");
   L0bar_L0bar_leg->AddEntry(fitL0bar_L0bar_US_ThetaStar_no_corr, "Linear fit to US");
   L0bar_L0bar_leg->SetBorderSize(0);
