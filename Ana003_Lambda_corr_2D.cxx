@@ -167,6 +167,9 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       return false;
     }
   }
+
+  TFile *Delta_eta_delta_phi_file = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/output/delta_eta_delta_phi/Delta_eta_delta_phi.root", "recreate");
+
   //_______________________________________________________________________________________________________________________________________________
 
   //need to change binning
@@ -177,15 +180,42 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   TH2F *L0_inv_mass_vs_L0bar_inv_mass_LS[nPtBins_corr][nPtBins_corr]; //for LS-LS Lambda pairs
   TH2F *L0_inv_mass_vs_L0bar_inv_mass[nPtBins_corr][nPtBins_corr];
 
+  TH2F *L0_inv_mass_vs_L0bar_inv_mass_US_zoom[nPtBins_corr][nPtBins_corr]; //for US-US Lambda pairs
+  TH2F *L0_inv_mass_vs_L0bar_inv_mass_US_LS_zoom[nPtBins_corr][nPtBins_corr]; //for US-LS Lambda pairs
+  TH2F *L0_inv_mass_vs_L0bar_inv_mass_zoom[nPtBins_corr][nPtBins_corr];
+
+
   TH2F *L0_inv_mass_vs_L0_inv_mass_US[nPtBins_corr][nPtBins_corr]; //for US-US Lambda pairs
   TH2F *L0_inv_mass_vs_L0_inv_mass_US_LS[nPtBins_corr][nPtBins_corr]; //for US-LS Lambda pairs
   TH2F *L0_inv_mass_vs_L0_inv_mass_LS[nPtBins_corr][nPtBins_corr]; //for LS-LS Lambda pairs
   TH2F *L0_inv_mass_vs_L0_inv_mass[nPtBins_corr][nPtBins_corr];
 
+  TH2F *L0_inv_mass_vs_L0_inv_mass_US_zoom[nPtBins_corr][nPtBins_corr]; //for US-US Lambda pairs
+  TH2F *L0_inv_mass_vs_L0_inv_mass_US_LS_zoom[nPtBins_corr][nPtBins_corr]; //for US-LS Lambda pairs
+  TH2F *L0_inv_mass_vs_L0_inv_mass_zoom[nPtBins_corr][nPtBins_corr];
+
+
   TH2F *L0bar_inv_mass_vs_L0bar_inv_mass_US[nPtBins_corr][nPtBins_corr]; //for US-US Lambda pairs
   TH2F *L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[nPtBins_corr][nPtBins_corr]; //for US-LS Lambda pairs
   TH2F *L0bar_inv_mass_vs_L0bar_inv_mass_LS[nPtBins_corr][nPtBins_corr]; //for LS-LS Lambda pairs
   TH2F *L0bar_inv_mass_vs_L0bar_inv_mass[nPtBins_corr][nPtBins_corr];
+
+  TH2F *L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[nPtBins_corr][nPtBins_corr]; //for US-US Lambda pairs
+  TH2F *L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_zoom[nPtBins_corr][nPtBins_corr]; //for US-LS Lambda pairs
+  TH2F *L0bar_inv_mass_vs_L0bar_inv_mass_zoom[nPtBins_corr][nPtBins_corr];
+
+
+  //delta ete vs. delta phi histograms
+  //for re-weighing of ME (need to check im PYTHIA first)
+
+  TH2F *L0_L0bar_delta_eta_vs_delta_phi_US_hist;
+  TH2F *L0_L0bar_delta_eta_vs_delta_phi_US_LS_hist;
+
+  TH2F *L0_L0_delta_eta_vs_delta_phi_US_hist;
+  TH2F *L0_L0_delta_eta_vs_delta_phi_US_LS_hist;
+
+  TH2F *L0bar_L0bar_delta_eta_vs_delta_phi_US_hist;
+  TH2F *L0bar_L0bar_delta_eta_vs_delta_phi_US_LS_hist;
 
 
 
@@ -197,21 +227,44 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       {
         //invariant mass histograms
         //old bins 200
-        L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0bar_inv_mass_US_pT_%i_eta_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_US_pT_%i_eta_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
-        L0_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0bar_inv_mass_US_LS_pT_%i_eta_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_US_LS_pT_%i_eta_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
-        L0_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0bar_inv_mass_LS_pT_%i_eta_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_LS_pT_%i_eta_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+        L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0bar_inv_mass_US_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_US_pT1_%i_pT2_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+        L0_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0bar_inv_mass_US_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_US_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+        L0_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0bar_inv_mass_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
 
-        L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0_inv_mass_US_pT_%i_eta_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_US_pT_%i_eta_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
-        L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0_inv_mass_US_LS_pT_%i_eta_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_US_LS_pT_%i_eta_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
-        L0_inv_mass_vs_L0_inv_mass_LS[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0_inv_mass_LS_pT_%i_eta_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_LS_pT_%i_eta_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+        L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0bar_inv_mass_US_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_US_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), 60, 1.1, 1.13, 60, 1.1, 1.13);
+        L0_inv_mass_vs_L0bar_inv_mass_US_LS_zoom[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0bar_inv_mass_US_LS_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_US_LS_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), 60, 1.1, 1.13, 60, 1.1, 1.13);
 
-        L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2] = new TH2F(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_pT_%i_eta_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_pT_%i_eta_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
-        L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2] = new TH2F(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_pT_%i_eta_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_pT_%i_eta_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
-        L0bar_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2] = new TH2F(Form("L0bar_inv_mass_vs_L0bar_inv_mass_LS_pT_%i_eta_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_LS_pT_%i_eta_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+
+        L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0_inv_mass_US_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_US_pT1_%i_pT2_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+        L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0_inv_mass_US_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_US_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+        L0_inv_mass_vs_L0_inv_mass_LS[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0_inv_mass_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+
+        L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0_inv_mass_US_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_US_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), 60, 1.1, 1.13, 60, 1.1, 1.13);
+        L0_inv_mass_vs_L0_inv_mass_US_LS_zoom[pTbin1][pTbin2] = new TH2F(Form("L0_inv_mass_vs_L0_inv_mass_US_LS_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_US_LS_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), 60, 1.1, 1.13, 60, 1.1, 1.13);
+
+
+        L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2] = new TH2F(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_pT1_%i_pT2_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+        L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2] = new TH2F(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+        L0bar_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2] = new TH2F(Form("L0bar_inv_mass_vs_L0bar_inv_mass_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_LS_pT1_%i_pT2_%i", pTbin1, pTbin2), 180, 1, 1.2, 180, 1, 1.2);
+
+        L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2] = new TH2F(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), 60, 1.1, 1.13, 60, 1.1, 1.13);
+        L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_zoom[pTbin1][pTbin2] = new TH2F(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2), 60, 1.1, 1.13, 60, 1.1, 1.13);
+
         //______________________________________________________________________________________________________________________________
 
       }
     }
+
+    //delta ete vs. delta phi histograms
+    L0_L0bar_delta_eta_vs_delta_phi_US_hist = new TH2D("L0_L0bar_delta_eta_vs_delta_phi_US_hist", "L0_L0bar_delta_eta_vs_delta_phi_US_hist", 100, 0, 2, 100, 0, TMath::TwoPi());
+    L0_L0bar_delta_eta_vs_delta_phi_US_LS_hist = new TH2D("L0_L0bar_delta_eta_vs_delta_phi_US_LS_hist", "L0_L0bar_delta_eta_vs_delta_phi_US_LS_hist", 100, 0, 2, 100, 0, TMath::TwoPi());
+
+    L0_L0_delta_eta_vs_delta_phi_US_hist = new TH2D("L0_L0_delta_eta_vs_delta_phi_US_hist", "L0_L0_delta_eta_vs_delta_phi_US_hist", 100, 0, 2, 100, 0, TMath::TwoPi());
+    L0_L0_delta_eta_vs_delta_phi_US_LS_hist = new TH2D("L0_L0_delta_eta_vs_delta_phi_US_LS_hist", "L0_L0_delta_eta_vs_delta_phi_US_LS_hist", 100, 0, 2, 100, 0, TMath::TwoPi());
+
+    L0bar_L0bar_delta_eta_vs_delta_phi_US_hist = new TH2D("L0bar_L0bar_delta_eta_vs_delta_phi_US_hist", "L0bar_L0bar_delta_eta_vs_delta_phi_US_hist", 100, 0, 2, 100, 0, TMath::TwoPi());
+    L0bar_L0bar_delta_eta_vs_delta_phi_US_LS_hist = new TH2D("L0bar_L0bar_delta_eta_vs_delta_phi_US_LS_hist", "L0bar_L0bar_delta_eta_vs_delta_phi_US_LS_hist", 100, 0, 2, 100, 0, TMath::TwoPi());
+
   }
   else //load histograms from file
   {
@@ -219,20 +272,43 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
     {
       for(unsigned int pTbin2 = 0; pTbin2 < nPtBins_corr; pTbin2++)
       {
-        L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0bar_inv_mass_US_pT_%i_eta_%i", pTbin1, pTbin2));
-        L0_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0bar_inv_mass_US_LS_pT_%i_eta_%i", pTbin1, pTbin2));
-        L0_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0bar_inv_mass_LS_pT_%i_eta_%i", pTbin1, pTbin2));
+        L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0bar_inv_mass_US_pT1_%i_pT2_%i", pTbin1, pTbin2));
+        L0_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0bar_inv_mass_US_LS_pT1_%i_pT2_%i", pTbin1, pTbin2));
+        L0_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0bar_inv_mass_LS_pT1_%i_pT2_%i", pTbin1, pTbin2));
 
-        L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0_inv_mass_US_pT_%i_eta_%i", pTbin1, pTbin2));
-        L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0_inv_mass_US_LS_pT_%i_eta_%i", pTbin1, pTbin2));
-        L0_inv_mass_vs_L0_inv_mass_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0_inv_mass_LS_pT_%i_eta_%i", pTbin1, pTbin2));
+        L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0bar_inv_mass_US_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2));
+        L0_inv_mass_vs_L0bar_inv_mass_US_LS_zoom[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0bar_inv_mass_US_LS_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2));
 
-        L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_pT_%i_eta_%i", pTbin1, pTbin2));
-        L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_pT_%i_eta_%i", pTbin1, pTbin2));
-        L0bar_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0bar_inv_mass_vs_L0bar_inv_mass_LS_pT_%i_eta_%i", pTbin1, pTbin2));
+
+        L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0_inv_mass_US_pT1_%i_pT2_%i", pTbin1, pTbin2));
+        L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0_inv_mass_US_LS_pT1_%i_pT2_%i", pTbin1, pTbin2));
+        L0_inv_mass_vs_L0_inv_mass_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0_inv_mass_LS_pT1_%i_pT2_%i", pTbin1, pTbin2));
+
+        L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0_inv_mass_US_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2));
+        L0_inv_mass_vs_L0_inv_mass_US_LS_zoom[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0_inv_mass_vs_L0_inv_mass_US_LS_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2));
+
+
+        L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_pT1_%i_pT2_%i", pTbin1, pTbin2));
+        L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_pT1_%i_pT2_%i", pTbin1, pTbin2));
+        L0bar_inv_mass_vs_L0bar_inv_mass_LS[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0bar_inv_mass_vs_L0bar_inv_mass_LS_pT1_%i_pT2_%i", pTbin1, pTbin2));
+
+        L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2));
+        L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_zoom[pTbin1][pTbin2] = (TH2F*)InvMassFile->Get(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_zoom_pT1_%i_pT2_%i", pTbin1, pTbin2));
+
         //______________________________________________________________________________________________________________________________
       }
     }
+
+    //delta ete vs. delta phi histograms
+    L0_L0bar_delta_eta_vs_delta_phi_US_hist = (TH2F*)Delta_eta_delta_phi_file->Get("L0_L0bar_delta_eta_vs_delta_phi_US_hist");
+    L0_L0bar_delta_eta_vs_delta_phi_US_LS_hist = (TH2F*)Delta_eta_delta_phi_file->Get("L0_L0bar_delta_eta_vs_delta_phi_US_LS_hist");
+
+    L0_L0_delta_eta_vs_delta_phi_US_hist = (TH2F*)Delta_eta_delta_phi_file->Get("L0_L0_delta_eta_vs_delta_phi_US_hist");
+    L0_L0_delta_eta_vs_delta_phi_US_LS_hist = (TH2F*)Delta_eta_delta_phi_file->Get("L0_L0_delta_eta_vs_delta_phi_US_LS_hist");
+
+    L0bar_L0bar_delta_eta_vs_delta_phi_US_hist = (TH2F*)Delta_eta_delta_phi_file->Get("L0bar_L0bar_delta_eta_vs_delta_phi_US_hist");
+    L0bar_L0bar_delta_eta_vs_delta_phi_US_LS_hist = (TH2F*)Delta_eta_delta_phi_file->Get("L0bar_L0bar_delta_eta_vs_delta_phi_US_LS_hist");
+
   }
   //________________________________________________________________________________________
 
@@ -569,6 +645,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
             //fill Minv histogram
 
             L0_inv_mass_vs_L0bar_inv_mass_US[L_pT_bin_vector.at(iLambda)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(L_vector.at(iLambda).M(), Lbar_vector.at(iLambdaBar).M());
+            L0_inv_mass_vs_L0bar_inv_mass_US_zoom[L_pT_bin_vector.at(iLambda)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(L_vector.at(iLambda).M(), Lbar_vector.at(iLambdaBar).M());
 
             //fill new vectors here with Minv1 and Minv2, and with cos(theta*)
             //analze stored pairs later, just within selected Minv window
@@ -605,6 +682,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
             if(p_vector.at(iLambda1).Rapidity() == p_vector.at(iLambda2).Rapidity()) continue;
 
             L0_inv_mass_vs_L0_inv_mass_US[L_pT_bin_vector.at(iLambda1)][L_pT_bin_vector.at(iLambda2)]->Fill(L_vector.at(iLambda1).M(), L_vector.at(iLambda2).M());
+            L0_inv_mass_vs_L0_inv_mass_US_zoom[L_pT_bin_vector.at(iLambda1)][L_pT_bin_vector.at(iLambda2)]->Fill(L_vector.at(iLambda1).M(), L_vector.at(iLambda2).M());
 
             //save info for cos(theta*) to be analyzed later
             double L_L_pairThetaStar = LpairThetaStar(L_vector.at(iLambda1), p_vector.at(iLambda1), L_vector.at(iLambda2), p_vector.at(iLambda2));
@@ -638,6 +716,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
             //try swithc axes - for testing of the fit
             L0bar_inv_mass_vs_L0bar_inv_mass_US[Lbar_pT_bin_vector.at(iLambdaBar2)][Lbar_pT_bin_vector.at(iLambdaBar1)]->Fill(Lbar_vector.at(iLambdaBar2).M(), Lbar_vector.at(iLambdaBar1).M());
+            L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[Lbar_pT_bin_vector.at(iLambdaBar2)][Lbar_pT_bin_vector.at(iLambdaBar1)]->Fill(Lbar_vector.at(iLambdaBar2).M(), Lbar_vector.at(iLambdaBar1).M());
 
             //save info for cos(theta*) to be analyzed later
             double Lbar_Lbar_pairThetaStar = LpairThetaStar(Lbar_vector.at(iLambdaBar1), pBar_vector.at(iLambdaBar1), Lbar_vector.at(iLambdaBar2), pBar_vector.at(iLambdaBar2));
@@ -763,7 +842,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       //___________________________________________________________________________________________________
 
 
-      // US-LS and LS-US L pairs - background - case when US L (can be signal or background) is paired with bacground L (+ continuum?)
+      // US-LS and LS-US L pairs - background - case when US L (can be signal or background) is paired with background L
 
       //Background for L-Lbar
       // L - US, Lbar - LS
@@ -780,6 +859,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
             if(p_vector.at(iLambda).Rapidity() == pBar_vector_background.at(iLambdaBar).Rapidity()) continue;
 
             L0_inv_mass_vs_L0bar_inv_mass_US_LS[L_pT_bin_vector.at(iLambda)][Lbar_pT_bin_vector_background.at(iLambdaBar)]->Fill(L_vector.at(iLambda).M(), Lbar_vector_background.at(iLambdaBar).M());
+            L0_inv_mass_vs_L0bar_inv_mass_US_LS_zoom[L_pT_bin_vector.at(iLambda)][Lbar_pT_bin_vector_background.at(iLambdaBar)]->Fill(L_vector.at(iLambda).M(), Lbar_vector_background.at(iLambdaBar).M());
 
             //save info for cos(theta*) to be analyzed later
             double L_Lbar_pairThetaStar = LpairThetaStar(L_vector.at(iLambda), p_vector.at(iLambda), Lbar_vector_background.at(iLambdaBar), pBar_vector_background.at(iLambdaBar));
@@ -812,6 +892,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
             if(p_vector_background.at(iLambda).Rapidity() == pBar_vector.at(iLambdaBar).Rapidity()) continue;
 
             L0_inv_mass_vs_L0bar_inv_mass_US_LS[L_pT_bin_vector_background.at(iLambda)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(L_vector_background.at(iLambda).M(), Lbar_vector.at(iLambdaBar).M());
+            L0_inv_mass_vs_L0bar_inv_mass_US_LS_zoom[L_pT_bin_vector_background.at(iLambda)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(L_vector_background.at(iLambda).M(), Lbar_vector.at(iLambdaBar).M());
 
             //save info for cos(theta*) to be analyzed later
             double L_Lbar_pairThetaStar = LpairThetaStar(L_vector_background.at(iLambda), p_vector_background.at(iLambda), Lbar_vector.at(iLambdaBar), pBar_vector.at(iLambdaBar));
@@ -844,6 +925,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
             if( nFillLL_bckg % 2 == 0 ) //fill LL pair wit US at x axis and LS at y axis
             {
               L0_inv_mass_vs_L0_inv_mass_US_LS[L_pT_bin_vector.at(iLambda)][L_pT_bin_vector_background.at(iLambdaBckg)]->Fill(L_vector.at(iLambda).M(), L_vector_background.at(iLambdaBckg).M());
+              L0_inv_mass_vs_L0_inv_mass_US_LS_zoom[L_pT_bin_vector.at(iLambda)][L_pT_bin_vector_background.at(iLambdaBckg)]->Fill(L_vector.at(iLambda).M(), L_vector_background.at(iLambdaBckg).M());
 
               //save info for cos(theta*) to be analyzed later
               double L_L_pairThetaStar = LpairThetaStar(L_vector.at(iLambda), p_vector.at(iLambda), L_vector_background.at(iLambdaBckg), p_vector_background.at(iLambdaBckg));
@@ -863,6 +945,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
             else //fill LL pair wit US at y axis and LS at x axis, i.e. opposite order than above
             {
               L0_inv_mass_vs_L0_inv_mass_US_LS[L_pT_bin_vector_background.at(iLambdaBckg)][L_pT_bin_vector.at(iLambda)]->Fill(L_vector_background.at(iLambdaBckg).M(), L_vector.at(iLambda).M());
+              L0_inv_mass_vs_L0_inv_mass_US_LS_zoom[L_pT_bin_vector_background.at(iLambdaBckg)][L_pT_bin_vector.at(iLambda)]->Fill(L_vector_background.at(iLambdaBckg).M(), L_vector.at(iLambda).M());
 
 
               //save info for cos(theta*) to be analyzed later
@@ -903,6 +986,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
             if( nFillLbarLbar_backg % 2 == 0 ) //fill LL pair wit US at x axis and LS at y axis
             {
               L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[Lbar_pT_bin_vector.at(iLambdaBar)][Lbar_pT_bin_vector_background.at(iLambdaBarBckg)]->Fill(Lbar_vector.at(iLambdaBar).M(), Lbar_vector_background.at(iLambdaBarBckg).M());
+              L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_zoom[Lbar_pT_bin_vector.at(iLambdaBar)][Lbar_pT_bin_vector_background.at(iLambdaBarBckg)]->Fill(Lbar_vector.at(iLambdaBar).M(), Lbar_vector_background.at(iLambdaBarBckg).M());
 
               //save info for cos(theta*) to be analyzed later
               double Lbar_Lbar_pairThetaStar = LpairThetaStar(Lbar_vector.at(iLambdaBar), pBar_vector.at(iLambdaBar), Lbar_vector_background.at(iLambdaBarBckg), pBar_vector_background.at(iLambdaBarBckg));
@@ -922,6 +1006,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
             else //fill LL pair wit US at y axis and LS at x axis, i.e. opposite order than above
             {
               L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[Lbar_pT_bin_vector_background.at(iLambdaBarBckg)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(Lbar_vector_background.at(iLambdaBarBckg).M(), Lbar_vector.at(iLambdaBar).M());
+              L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_zoom[Lbar_pT_bin_vector_background.at(iLambdaBarBckg)][Lbar_pT_bin_vector.at(iLambdaBar)]->Fill(Lbar_vector_background.at(iLambdaBarBckg).M(), Lbar_vector.at(iLambdaBar).M());
 
               //save info for cos(theta*) to be analyzed later
               double Lbar_Lbar_pairThetaStar = LpairThetaStar(Lbar_vector_background.at(iLambdaBarBckg), pBar_vector_background.at(iLambdaBarBckg), Lbar_vector.at(iLambdaBar), pBar_vector.at(iLambdaBar));
@@ -1133,6 +1218,15 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   float sideBandScale_L_L[nPtBins_corr][nPtBins_corr];
   float sideBandScale_Lbar_Lbar[nPtBins_corr][nPtBins_corr];
 
+  float integral_L_Lbar_US[nPtBins_corr][nPtBins_corr];
+  float integral_L_Lbar_US_LS[nPtBins_corr][nPtBins_corr];
+
+  float integral_L_L_US[nPtBins_corr][nPtBins_corr];
+  float integral_L_L_US_LS[nPtBins_corr][nPtBins_corr];
+
+  float integral_Lbar_Lbar_US[nPtBins_corr][nPtBins_corr];
+  float integral_Lbar_Lbar_US_LS[nPtBins_corr][nPtBins_corr];
+
   for(unsigned int pTbin1 = 0; pTbin1 < nPtBins_corr; pTbin1++)
   {
     for(unsigned int pTbin2 = 0; pTbin2 < nPtBins_corr; pTbin2++)
@@ -1140,13 +1234,12 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       //find bins for side band and for projection to x
       //projection bins just for testing, later can do projections with parameters of 2D fit
       int binLow = L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetXaxis()->FindBin(1.11);
-      int binHigh = L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetXaxis()->FindBin(1.125);
+      int binHigh = L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetXaxis()->FindBin(1.12);
 
       int binLow_sideBand = L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetXaxis()->FindBin(1.14);
       int binHigh_sideBand = L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetXaxis()->FindBin(1.18);
 
       //L-Lbar
-
       //US and LS
       TCanvas *L0_inv_mass_vs_L0bar_inv_mass_US_can = new TCanvas(Form("L0_inv_mass_vs_L0bar_inv_mass_US_can_%i_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_US_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
       L0_inv_mass_vs_L0bar_inv_mass_US_can->cd();
@@ -1174,15 +1267,47 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0bar_text_Minv_2D_US->Draw("same");
 
 
-      TPaveText *L0_L0bar_text_Minv_2D_kine = new TPaveText(0.75, 0.83, 0.95, 0.98, "NDC");
+      TPaveText *L0_L0bar_text_Minv_2D_kine = new TPaveText(0.73, 0.83, 0.98, 0.98, "NDC");
       L0_L0bar_text_Minv_2D_kine->SetTextFont(42);
       L0_L0bar_text_Minv_2D_kine->AddText("|#it{y}| < 1");
-      L0_L0bar_text_Minv_2D_kine->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0bar_text_Minv_2D_kine->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0bar_text_Minv_2D_kine->AddText(Form("%.2f < p_{T,1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0bar_text_Minv_2D_kine->AddText(Form("%.2f < p_{T,2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0bar_text_Minv_2D_kine->SetFillColorAlpha(0, 0.01);
       L0_L0bar_text_Minv_2D_kine->Draw("same");
 
       L0_inv_mass_vs_L0bar_inv_mass_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_Lbar/US/L0_inv_mass_vs_L0bar_inv_mass_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+
+
+      TCanvas *L0_inv_mass_vs_L0bar_inv_mass_US_zoom_can = new TCanvas(Form("L0_inv_mass_vs_L0bar_inv_mass_US_zoom_can_%i_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_US_zoom_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
+      L0_inv_mass_vs_L0bar_inv_mass_US_zoom_can->cd();
+
+      L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{1}");
+      L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->SetTitleOffset(2);
+      L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      //L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->SetRangeUser(1.07, 1.2);
+      L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->SetTitle("M_{inv}^{2}");
+      L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->SetTitleOffset(2.1);
+      L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      //L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
+      L0_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->Draw("surf1");
+
+      TPaveText *L0_L0bar_text_Minv_2D_US_zoom = new TPaveText(0.02, 0.83, 0.32, 0.98, "NDC");
+      L0_L0bar_text_Minv_2D_US_zoom->SetTextFont(42);
+      //L0_L0bar_text_Minv_2D_US_zoom->AddText("STAR");
+      //L0_L0bar_text_no_corr->AddText("STAR preliminary");
+      //((TText*)L0_L0bar_text_no_corr->GetListOfLines()->Last())->SetTextColor(2);
+      L0_L0bar_text_Minv_2D_US_zoom->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      L0_L0bar_text_Minv_2D_US_zoom->AddText("Minimum bias");
+      L0_L0bar_text_Minv_2D_US_zoom->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
+      L0_L0bar_text_Minv_2D_US_zoom->AddText("US(#pi^{-}p) vs. US(#pi^{+}#bar{p})");
+      L0_L0bar_text_Minv_2D_US_zoom->SetFillColorAlpha(0, 0.01);
+      L0_L0bar_text_Minv_2D_US_zoom->Draw("same");
+
+      L0_L0bar_text_Minv_2D_kine->Draw("same");
+
+      L0_inv_mass_vs_L0bar_inv_mass_US_zoom_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_Lbar/US/L0_inv_mass_vs_L0bar_inv_mass_US_zoom_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+
+
 
 
       TCanvas *L0_inv_mass_vs_L0bar_inv_mass_LS_can = new TCanvas(Form("L0_inv_mass_vs_L0bar_inv_mass_LS_can_%i_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0bar_inv_mass_LS_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
@@ -1286,8 +1411,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0bar_text_Minv_L->AddText("Projection to #Lambda^{0}");
       //L0_L0bar_text_Minv_L->AddText("US(#pi^{-}p) vs. US(#pi^{+}#bar{p})");
       L0_L0bar_text_Minv_L->AddText("|#it{y}| < 1");
-      L0_L0bar_text_Minv_L->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0bar_text_Minv_L->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0bar_text_Minv_L->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0bar_text_Minv_L->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0bar_text_Minv_L->SetFillColorAlpha(0, 0.01);
       L0_L0bar_text_Minv_L->Draw("same");
 
@@ -1332,8 +1457,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0bar_text_Minv_Lbar->AddText("Projection to #bar{#Lambda^{0}}");
       //L0_L0bar_text_Minv_Lbar->AddText("US(#pi^{-}p) vs. US(#pi^{+}#bar{p})");
       L0_L0bar_text_Minv_Lbar->AddText("|#it{y}| < 1");
-      L0_L0bar_text_Minv_Lbar->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0bar_text_Minv_Lbar->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0bar_text_Minv_Lbar->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0bar_text_Minv_Lbar->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0bar_text_Minv_Lbar->SetFillColorAlpha(0, 0.01);
       L0_L0bar_text_Minv_Lbar->Draw("same");
 
@@ -1343,6 +1468,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
       L0bar_inv_mass_LLbar_projection_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_Lbar/US/L0bar_inv_mass_LLbar_projection_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
 
+
+      //------------------------------------------------------------------------------------------------------------------------------------
 
       //US-LS
       TF2 *doubleGauss_L_Lbar = new TF2("doubleGauss_L_Lbar", "[0]*TMath::Gaus(x,[1],[2])*TMath::Gaus(y,[3],[4])", 1.07, 1.2, 1.07, 1.2);
@@ -1464,11 +1591,19 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
       L0bar_inv_mass_LLbar_projection_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_Lbar/US-LS/L0bar_inv_mass_LLbar_projection_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
 
+      //integrals from Minv for cross-check of number of signal and background pairs
+      int binLow_fit_1 = L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetXaxis()->FindBin(fit_res_gaus_L0_L0Bar[pTbin1][pTbin2]->Parameter(1)-3*fit_res_gaus_L0_L0Bar[pTbin1][pTbin2]->Parameter(2));
+      int binHigh_fit_1 = L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetXaxis()->FindBin(fit_res_gaus_L0_L0Bar[pTbin1][pTbin2]->Parameter(1)+3*fit_res_gaus_L0_L0Bar[pTbin1][pTbin2]->Parameter(2));
+
+      int binLow_fit_2 = L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetXaxis()->FindBin(fit_res_gaus_L0_L0Bar[pTbin1][pTbin2]->Parameter(3)-3*fit_res_gaus_L0_L0Bar[pTbin1][pTbin2]->Parameter(4));
+      int binHigh_fit_2 = L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetXaxis()->FindBin(fit_res_gaus_L0_L0Bar[pTbin1][pTbin2]->Parameter(3)+3*fit_res_gaus_L0_L0Bar[pTbin1][pTbin2]->Parameter(4));
+
+      integral_L_Lbar_US[pTbin1][pTbin2] = L0_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->Integral(binLow_fit_1, binHigh_fit_1, binLow_fit_2, binHigh_fit_2);
+      integral_L_Lbar_US_LS[pTbin1][pTbin2] = L0_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->Integral(binLow_fit_1, binHigh_fit_1, binLow_fit_2, binHigh_fit_2);
 
       //________________________________________________________________________________________________________
 
       //L-L
-
       //US
       TCanvas *L0_inv_mass_vs_L0_inv_mass_US_can = new TCanvas(Form("L0_inv_mass_vs_L0_inv_mass_US_can_%i_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_US_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
       L0_inv_mass_vs_L0_inv_mass_US_can->cd();
@@ -1481,6 +1616,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2]->GetYaxis()->SetTitleOffset(2.1);
       L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
+      integral_L_L_US[pTbin1][pTbin2] = L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2]->Integral(binLow, binHigh, binLow, binHigh);
       L0_inv_mass_vs_L0_inv_mass_US[pTbin1][pTbin2]->Draw("surf1");
 
 
@@ -1501,6 +1637,37 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_inv_mass_vs_L0_inv_mass_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_L/US/L0_inv_mass_vs_L0_inv_mass_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
 
 
+      TCanvas *L0_inv_mass_vs_L0_inv_mass_US_zoom_can = new TCanvas(Form("L0_inv_mass_vs_L0_inv_mass_US_zoom_can_%i_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_US_zoom_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
+      L0_inv_mass_vs_L0_inv_mass_US_zoom_can->cd();
+
+      L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{1}");
+      L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->SetTitleOffset(2);
+      L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      //L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->SetRangeUser(1.07, 1.2);
+      L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->SetTitle("M_{inv}^{2}");
+      L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->SetTitleOffset(2.1);
+      L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      //L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
+      L0_inv_mass_vs_L0_inv_mass_US_zoom[pTbin1][pTbin2]->Draw("surf1");
+
+
+      TPaveText *L0_L0_text_Minv_2D_US_zoom = new TPaveText(0.02, 0.83, 0.32, 0.98, "NDC");
+      L0_L0_text_Minv_2D_US_zoom->SetTextFont(42);
+      //L0_L0_text_Minv_2D_US_zoom->AddText("STAR");
+      //L0_L0_text_no_corr->AddText("STAR preliminary");
+      //((TText*)L0_L0_text_no_corr->GetListOfLines()->Last())->SetTextColor(2);
+      L0_L0_text_Minv_2D_US_zoom->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      L0_L0_text_Minv_2D_US_zoom->AddText("Minimum bias");
+      L0_L0_text_Minv_2D_US_zoom->AddText("#Lambda^{0}-#Lambda^{0}");
+      L0_L0_text_Minv_2D_US_zoom->AddText("US(#pi^{-}p) vs. US(#pi^{-}p)");
+      L0_L0_text_Minv_2D_US_zoom->SetFillColorAlpha(0, 0.01);
+      L0_L0_text_Minv_2D_US_zoom->Draw("same");
+
+      L0_L0bar_text_Minv_2D_kine->Draw("same");
+
+      L0_inv_mass_vs_L0_inv_mass_US_zoom_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/L_L/US/L0_inv_mass_vs_L0_inv_mass_US_zoom_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+
+
       TCanvas *L0_inv_mass_vs_L0_inv_mass_US_LS_can = new TCanvas(Form("L0_inv_mass_vs_L0_inv_mass_US_LS_can_%i_%i", pTbin1, pTbin2), Form("L0_inv_mass_vs_L0_inv_mass_US_LS_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
       L0_inv_mass_vs_L0_inv_mass_US_LS_can->cd();
 
@@ -1517,6 +1684,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->SetTitleOffset(2.1);
       L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
+      integral_L_L_US_LS[pTbin1][pTbin2] = L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->Integral(binLow, binHigh, binLow, binHigh);
       L0_inv_mass_vs_L0_inv_mass_US_LS[pTbin1][pTbin2]->Draw("surf1");
 
       TPaveText *L0_L0_text_Minv_2D_US_LS = new TPaveText(0.02, 0.83, 0.32, 0.98, "NDC");
@@ -1571,8 +1739,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0_text_Minv_L1->AddText("Projection to #Lambda^{0}_{1}");
       //L0_L0_text_Minv_L1->AddText("US(#pi^{-}p) vs. US(#pi^{+}#bar{p})");
       L0_L0_text_Minv_L1->AddText("|#it{y}| < 1");
-      L0_L0_text_Minv_L1->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0_text_Minv_L1->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0_text_Minv_L1->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0_text_Minv_L1->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0_text_Minv_L1->SetFillColorAlpha(0, 0.01);
       L0_L0_text_Minv_L1->Draw("same");
 
@@ -1617,8 +1785,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0_text_Minv_L2->AddText("Projection to #Lambda^{0}_{2}");
       //L0_L0_text_Minv_L2->AddText("US(#pi^{-}p) vs. US(#pi^{+}#bar{p})");
       L0_L0_text_Minv_L2->AddText("|#it{y}| < 1");
-      L0_L0_text_Minv_L2->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0_text_Minv_L2->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0_text_Minv_L2->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0_text_Minv_L2->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0_text_Minv_L2->SetFillColorAlpha(0, 0.01);
       L0_L0_text_Minv_L2->Draw("same");
 
@@ -1755,6 +1923,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetYaxis()->SetTitleOffset(2.1);
       L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
+      integral_Lbar_Lbar_US[pTbin1][pTbin2] = L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->Integral(binLow, binHigh, binLow, binHigh);
       L0bar_inv_mass_vs_L0bar_inv_mass_US[pTbin1][pTbin2]->Draw("surf1");
 
       TPaveText *L0bar_L0bar_text_Minv_2D_US = new TPaveText(0.02, 0.83, 0.32, 0.98, "NDC");
@@ -1774,6 +1943,36 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0bar_inv_mass_vs_L0bar_inv_mass_US_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/Lbar_Lbar/US/L0bar_inv_mass_vs_L0bar_inv_mass_US_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
 
 
+      TCanvas *L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom_can = new TCanvas(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom_can_%i_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom_can->cd();
+
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->SetTitle("M_{inv}^{1}");
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->SetTitleOffset(2);
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->CenterTitle();
+      //L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetXaxis()->SetRangeUser(1.07, 1.2);
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->SetTitle("M_{inv}^{2}");
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->SetTitleOffset(2.1);
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
+      //L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom[pTbin1][pTbin2]->Draw("surf1");
+
+      TPaveText *L0bar_L0bar_text_Minv_2D_US_zoom = new TPaveText(0.02, 0.83, 0.32, 0.98, "NDC");
+      L0bar_L0bar_text_Minv_2D_US_zoom->SetTextFont(42);
+      //L0bar_L0bar_text_Minv_2D_US_zoom->AddText("STAR");
+      //L0bar_L0bar_text_no_corr->AddText("STAR preliminary");
+      //((TText*)L0bar_L0bar_text_no_corr->GetListOfLines()->Last())->SetTextColor(2);
+      L0bar_L0bar_text_Minv_2D_US_zoom->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      L0bar_L0bar_text_Minv_2D_US_zoom->AddText("Minimum bias");
+      L0bar_L0bar_text_Minv_2D_US_zoom->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
+      L0bar_L0bar_text_Minv_2D_US_zoom->AddText("US(#pi^{+}#bar{p}) vs. US(#pi^{+}#bar{p})");
+      L0bar_L0bar_text_Minv_2D_US_zoom->SetFillColorAlpha(0, 0.01);
+      L0bar_L0bar_text_Minv_2D_US_zoom->Draw("same");
+
+      L0_L0bar_text_Minv_2D_kine->Draw("same");
+
+      L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/Lambda/2D_analysis/Minv/Lbar_Lbar/US/L0bar_inv_mass_vs_L0bar_inv_mass_US_zoom_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+
+
       TCanvas *L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_can = new TCanvas(Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_can_%i_%i", pTbin1, pTbin2), Form("L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
       L0bar_inv_mass_vs_L0bar_inv_mass_US_LS_can->cd();
 
@@ -1790,6 +1989,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->SetTitleOffset(2.1);
       L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->CenterTitle();
       L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->GetYaxis()->SetRangeUser(1.07,1.2);
+      integral_Lbar_Lbar_US_LS[pTbin1][pTbin2] = L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->Integral(binLow, binHigh, binLow, binHigh);
       L0bar_inv_mass_vs_L0bar_inv_mass_US_LS[pTbin1][pTbin2]->Draw("surf1");
 
       TPaveText *L0bar_L0bar_text_Minv_2D_US_LS = new TPaveText(0.02, 0.83, 0.32, 0.98, "NDC");
@@ -1843,8 +2043,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0bar_L0bar_text_Minv_L1->AddText("Projection to #bar{#Lambda^{0}}_{1}");
       //L0bar_L0bar_text_Minv_L1->AddText("US(#pi^{-}p) vs. US(#pi^{+}#bar{p})");
       L0bar_L0bar_text_Minv_L1->AddText("|#it{y}| < 1");
-      L0bar_L0bar_text_Minv_L1->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0bar_L0bar_text_Minv_L1->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0bar_L0bar_text_Minv_L1->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0bar_L0bar_text_Minv_L1->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0bar_L0bar_text_Minv_L1->SetFillColorAlpha(0, 0.01);
       L0bar_L0bar_text_Minv_L1->Draw("same");
 
@@ -1891,8 +2091,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0bar_L0bar_text_Minv_L2->AddText("Projection to #bar{#Lambda^{0}}_{2}");
       //L0bar_L0bar_text_Minv_L2->AddText("US(#pi^{-}p) vs. US(#pi^{+}#bar{p})");
       L0bar_L0bar_text_Minv_L2->AddText("|#it{y}| < 1");
-      L0bar_L0bar_text_Minv_L2->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0bar_L0bar_text_Minv_L2->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0bar_L0bar_text_Minv_L2->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0bar_L0bar_text_Minv_L2->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0bar_L0bar_text_Minv_L2->SetFillColorAlpha(0, 0.01);
       L0bar_L0bar_text_Minv_L2->Draw("same");
 
@@ -2033,8 +2233,6 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
 
 
   LLbarOutFile = new TFile("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/output/ProdPlane/ProdPlane_Lambda_work.root", "recreate"); //create file to store wrong and good sign M_inv distributions and daughter pT
-
-
 
 
   //update efficiency files
@@ -2886,9 +3084,9 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   fitL0_L0bar_US_ThetaStar_2->Draw("same");
 
 
-  TPaveText *L0_L0bar_text_2 = new TPaveText(0.6, 0.4, 0.85, 0.69, "NDC");
+  TPaveText *L0_L0bar_text_2 = new TPaveText(0.6, 0.15, 0.85, 0.49, "NDC");
   L0_L0bar_text_2->SetTextFont(42);
-  //L0_L0bar_text_2->AddText("STAR Internal");
+  L0_L0bar_text_2->AddText("STAR");
   //L0_L0bar_text_2->AddText("STAR preliminary");
   //((TText*)L0_L0bar_text_2->GetListOfLines()->Last())->SetTextColor(2);
   L0_L0bar_text_2->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
@@ -2901,7 +3099,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   L0_L0bar_text_2->Draw("same");
 
 
-  TLegend *L0_L0bar_2_leg = new TLegend(0.15, 0.4, 0.5, 0.69);
+  TLegend *L0_L0bar_2_leg = new TLegend(0.15, 0.3, 0.5, 0.49);
   L0_L0bar_2_leg->AddEntry(L0_L0bar_cosThetaProdPlane_US_hist, "US-Bckg.");
   L0_L0bar_2_leg->AddEntry(fitL0_L0bar_US_ThetaStar_2, "Linear fit to US-Backg.");
   L0_L0bar_2_leg->SetBorderSize(0);
@@ -2921,6 +3119,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   L0_L0_cosThetaProdPlane_US_hist->GetXaxis()->CenterTitle();
   L0_L0_cosThetaProdPlane_US_hist->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
   L0_L0_cosThetaProdPlane_US_hist->GetYaxis()->CenterTitle();
+  L0_L0_cosThetaProdPlane_US_hist->GetYaxis()->SetMaxDigits(2);
   L0_L0_cosThetaProdPlane_US_hist->SetMarkerSize(1.5);
   L0_L0_cosThetaProdPlane_US_hist->SetMarkerStyle(20);
   L0_L0_cosThetaProdPlane_US_hist->SetMarkerColor(kRed);
@@ -3077,9 +3276,9 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   fitL0_L0_US_ThetaStar_2->Draw("same");
 
 
-  TPaveText *L0_L0_text_2 = new TPaveText(0.6, 0.4, 0.85, 0.69, "NDC");
+  TPaveText *L0_L0_text_2 = new TPaveText(0.6, 0.15, 0.85, 0.49, "NDC");
   L0_L0_text_2->SetTextFont(42);
-  //L0_L0_text_2->AddText("STAR Internal");
+  L0_L0_text_2->AddText("STAR");
   //cent_text_2->AddText("STAR preliminary");
   //((TText*)cent_text_2->GetListOfLines()->Last())->SetTextColor(2);
   L0_L0_text_2->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
@@ -3106,6 +3305,7 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   L0bar_L0bar_cosThetaProdPlane_US_hist->GetXaxis()->CenterTitle();
   L0bar_L0bar_cosThetaProdPlane_US_hist->GetYaxis()->SetTitle("d#it{N}/d cos(#theta*)");
   L0bar_L0bar_cosThetaProdPlane_US_hist->GetYaxis()->CenterTitle();
+  L0bar_L0bar_cosThetaProdPlane_US_hist->GetYaxis()->SetMaxDigits(2);
   L0bar_L0bar_cosThetaProdPlane_US_hist->SetMarkerSize(1.5);
   L0bar_L0bar_cosThetaProdPlane_US_hist->SetMarkerStyle(20);
   L0bar_L0bar_cosThetaProdPlane_US_hist->SetMarkerColor(kRed);
@@ -3259,9 +3459,9 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
   fitL0bar_L0bar_US_ThetaStar_2->SetLineColor(1);
   fitL0bar_L0bar_US_ThetaStar_2->Draw("same");
 
-  TPaveText *L0bar_L0bar_text_2 = new TPaveText(0.6, 0.4, 0.85, 0.69, "NDC");
+  TPaveText *L0bar_L0bar_text_2 = new TPaveText(0.6, 0.15, 0.85, 0.49, "NDC");
   L0bar_L0bar_text_2->SetTextFont(42);
-  //L0bar_L0bar_text_2->AddText("STAR Internal");
+  L0bar_L0bar_text_2->AddText("STAR");
   //cent_text_2->AddText("STAR preliminary");
   //((TText*)cent_text_2->GetListOfLines()->Last())->SetTextColor(2);
   L0bar_L0bar_text_2->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
@@ -3353,8 +3553,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0bar_pT_text_no_corr->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
       //L0_L0bar_pT_text_no_corr->AddText("|#it{y}| < 0.2");
       L0_L0bar_pT_text_no_corr->AddText("|#it{y}| < 1");
-      L0_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0bar_pT_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0_L0bar_pT_no_corr, P_L0_L0bar_pT_no_corr_err));
       L0_L0bar_pT_text_no_corr->SetFillColorAlpha(0, 0.01);
       L0_L0bar_pT_text_no_corr->Draw("same");
@@ -3418,8 +3618,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0bar_pT_text->AddText("Minimum bias");
       L0_L0bar_pT_text->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
       L0_L0bar_pT_text->AddText("|#it{y}| < 1");
-      L0_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0bar_pT_text->AddText(Form("P = %.2f #pm %.2f", P_L0_L0bar_pT, P_L0_L0bar_pT_err));
       L0_L0bar_pT_text->SetFillColorAlpha(0, 0.01);
       L0_L0bar_pT_text->Draw("same");
@@ -3460,8 +3660,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0bar_pT_text_2->AddText("Minimum bias");
       L0_L0bar_pT_text_2->AddText("#Lambda^{0}-#bar{#Lambda^{0}}");
       L0_L0bar_pT_text_2->AddText("|#it{y}| < 1");
-      L0_L0bar_pT_text_2->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0bar_pT_text_2->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0bar_pT_text_2->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0bar_pT_text_2->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0bar_pT_text_2->AddText(Form("P = %.2f #pm %.2f", P_L0_L0bar_pT_2, P_L0_L0bar_pT_err_2));
       L0_L0bar_pT_text_2->SetFillColorAlpha(0, 0.01);
       L0_L0bar_pT_text_2->Draw("same");
@@ -3531,8 +3731,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0_pT_text_no_corr->AddText("Minimum bias, no correction");
       L0_L0_pT_text_no_corr->AddText("#Lambda^{0}-#Lambda^{0}");
       L0_L0_pT_text_no_corr->AddText("|#it{y}| < 1");
-      L0_L0_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0_pT_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0_L0_pT_no_corr, P_L0_L0_pT_no_corr_err));
       L0_L0_pT_text_no_corr->SetFillColorAlpha(0, 0.01);
       L0_L0_pT_text_no_corr->Draw("same");
@@ -3593,8 +3793,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0_pT_text->AddText("Minimum bias");
       L0_L0_pT_text->AddText("#Lambda^{0}-#Lambda^{0}");
       L0_L0_pT_text->AddText("|#it{y}| < 1");
-      L0_L0_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0_pT_text->AddText(Form("P = %.2f #pm %.2f", P_L0_L0_pT, P_L0_L0_pT_err));
       L0_L0_pT_text->SetFillColorAlpha(0, 0.01);
       L0_L0_pT_text->Draw("same");
@@ -3636,8 +3836,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0_L0_pT_text_2->AddText("Minimum bias");
       L0_L0_pT_text_2->AddText("#Lambda^{0}-#Lambda^{0}");
       L0_L0_pT_text_2->AddText("|#it{y}| < 1");
-      L0_L0_pT_text_2->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0_L0_pT_text_2->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0_L0_pT_text_2->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0_L0_pT_text_2->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0_L0_pT_text_2->AddText(Form("P = %.2f #pm %.2f", P_L0_L0_pT_2, P_L0_L0_pT_err_2));
       L0_L0_pT_text_2->SetFillColorAlpha(0, 0.01);
       L0_L0_pT_text_2->Draw("same");
@@ -3704,8 +3904,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0bar_L0bar_pT_text_no_corr->AddText("Minimum bias, no correction");
       L0bar_L0bar_pT_text_no_corr->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
       L0bar_L0bar_pT_text_no_corr->AddText("|#it{y}| < 1");
-      L0bar_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0bar_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0bar_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0bar_L0bar_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0bar_L0bar_pT_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_L0bar_L0bar_pT_no_corr, P_L0bar_L0bar_pT_no_corr_err));
       L0bar_L0bar_pT_text_no_corr->SetFillColorAlpha(0, 0.01);
       L0bar_L0bar_pT_text_no_corr->Draw("same");
@@ -3764,8 +3964,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0bar_L0bar_pT_text->AddText("Minimum bias");
       L0bar_L0bar_pT_text->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
       L0bar_L0bar_pT_text->AddText("|#it{y}| < 1");
-      L0bar_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0bar_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0bar_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0bar_L0bar_pT_text->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0bar_L0bar_pT_text->AddText(Form("P = %.2f #pm %.2f", P_L0bar_L0bar_pT, P_L0bar_L0bar_pT_err));
       L0bar_L0bar_pT_text->SetFillColorAlpha(0, 0.01);
       L0bar_L0bar_pT_text->Draw("same");
@@ -3804,8 +4004,8 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       L0bar_L0bar_pT_text_2->AddText("Minimum bias");
       L0bar_L0bar_pT_text_2->AddText("#bar{#Lambda^{0}}-#bar{#Lambda^{0}}");
       L0bar_L0bar_pT_text_2->AddText("|#it{y}| < 1");
-      L0bar_L0bar_pT_text_2->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
-      L0bar_L0bar_pT_text_2->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      L0bar_L0bar_pT_text_2->AddText(Form("%.2f < p_{T}^{1} < %.2f GeV/c", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      L0bar_L0bar_pT_text_2->AddText(Form("%.2f < p_{T}^{2} < %.2f GeV/c", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
       L0bar_L0bar_pT_text_2->AddText(Form("P = %.2f #pm %.2f", P_L0bar_L0bar_pT_2, P_L0bar_L0bar_pT_err_2));
       L0bar_L0bar_pT_text_2->SetFillColorAlpha(0, 0.01);
       L0bar_L0bar_pT_text_2->Draw("same");
@@ -4358,6 +4558,17 @@ bool DoAnalysis(TChain *L_tree, const int ReadMode, const int energy = 510, cons
       cout<<endl;
       cout<<"N Lbar-Lbar pairs from hist: "<<nLbarLbar_pT[pTbin1][pTbin2]<<endl;
       cout<<"N Lbar-Lbar background pairs from hist: "<<nLbarLbar_pT_back[pTbin1][pTbin2]<<endl;
+/*
+      cout<<endl;
+      cout<<"N L-Lbar pairs from Minv: "<<integral_L_Lbar_US[pTbin1][pTbin2]<<endl;
+      cout<<"N L-Lbar background pairs from Minv: "<<integral_L_Lbar_US_LS[pTbin1][pTbin2]<<endl;
+      cout<<endl;
+      cout<<"N L-L pairs from Minv: "<<integral_L_L_US[pTbin1][pTbin2]<<endl;
+      cout<<"N L-L background pairs from Minv: "<<integral_L_L_US_LS[pTbin1][pTbin2]<<endl;
+      cout<<endl;
+      cout<<"N Lbar-Lbar pairs from Minv: "<<integral_Lbar_Lbar_US[pTbin1][pTbin2]<<endl;
+      cout<<"N Lbar-Lbar background pairs from Minv: "<<integral_Lbar_Lbar_US_LS[pTbin1][pTbin2]<<endl;
+*/
     }
   }
 

@@ -1222,17 +1222,14 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
     }
   }
 
-
-
   //________________________________________________________________________________________
 
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
 
+  TCanvas *K0s_K0s_cosThetaProdPlane_no_corr_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_no_corr_can"), Form("K0s_K0s_cosThetaProdPlane_no_corr_can"), 1200, 1000);
 
-  TCanvas *K0s_K0s_cosThetaProdPlane_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_can"), Form("K0s_K0s_cosThetaProdPlane_can"), 1200, 1000);
-
-  K0s_K0s_cosThetaProdPlane_can->cd();
+  K0s_K0s_cosThetaProdPlane_no_corr_can->cd();
 
   //signal + background
   K0s_K0s_cosThetaProdPlane_US_hist->GetXaxis()->SetTitle("cos(#theta*)");
@@ -1244,44 +1241,74 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
   K0s_K0s_cosThetaProdPlane_US_hist->SetLineColor(kRed);
   double nK0sK0s = K0s_K0s_cosThetaProdPlane_US_hist->Integral();
   K0s_K0s_cosThetaProdPlane_US_hist->Sumw2();
-
-  K0s_K0s_cosThetaProdPlane_ME_hist->SetMarkerStyle(20);
-  K0s_K0s_cosThetaProdPlane_ME_hist->SetMarkerColor(kOrange);
-  K0s_K0s_cosThetaProdPlane_ME_hist->SetLineColor(kOrange);
-  K0s_K0s_cosThetaProdPlane_ME_hist->Sumw2();
-  //K0s_K0s_cosThetaProdPlane_ME_hist->Scale(nK0sK0s_back/K0s_K0s_cosThetaProdPlane_ME_hist->Integral()); //scale ME to match background
-  K0s_K0s_cosThetaProdPlane_ME_hist->Scale(nK0sK0s/K0s_K0s_cosThetaProdPlane_ME_hist->Integral()); //scale ME to match signal+background
-  K0s_K0s_cosThetaProdPlane_ME_hist->Scale(1./K0s_K0s_cosThetaProdPlane_ME_hist->GetXaxis()->GetBinWidth(1));
-
-  //K0s_K0s_cosThetaProdPlane_US_hist->Divide(K0s_K0s_cosThetaProdPlane_ME_hist); //correction of signal+bacground using ME
-  //K0s_K0s_cosThetaProdPlane_US_hist->Scale(nK0sK0s/K0s_K0s_cosThetaProdPlane_US_hist->Integral()); //scale back to US integral
   K0s_K0s_cosThetaProdPlane_US_hist->Scale(1./K0s_K0s_cosThetaProdPlane_US_hist->GetXaxis()->GetBinWidth(1)); //bin width
   K0s_K0s_cosThetaProdPlane_US_hist->SetMinimum(0);
   K0s_K0s_cosThetaProdPlane_US_hist->Draw("p e");
-
-  K0s_K0s_cosThetaProdPlane_ME_hist->Draw("p e same"); //for plotting ME with uncorrected distributions
-
 
   //background
   K0s_K0s_cosThetaProdPlane_LS_hist->SetMarkerStyle(20);
   K0s_K0s_cosThetaProdPlane_LS_hist->SetMarkerColor(kBlue);
   double nK0sK0s_back = K0s_K0s_cosThetaProdPlane_LS_hist->Integral();
   K0s_K0s_cosThetaProdPlane_LS_hist->Sumw2();
-  //K0s_K0s_cosThetaProdPlane_LS_hist->Scale(1./;
-  //K0s_K0s_cosThetaProdPlane_LS_hist->Divide(K0s_K0s_costhetaProdPlane_eff);
-  //K0s_K0s_cosThetaProdPlane_LS_hist->Draw("p e same");
+  K0s_K0s_cosThetaProdPlane_LS_hist->Scale(1./K0s_K0s_cosThetaProdPlane_LS_hist->GetXaxis()->GetBinWidth(1)); //bin width
+  K0s_K0s_cosThetaProdPlane_LS_hist->Draw("p e same");
 
+  TPaveText *K0s_K0s_text_no_corr = new TPaveText(0.6, 0.4, 0.85, 0.69, "NDC");
+  //cent_text->AddText("STAR preliminary");
+  //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+  K0s_K0s_text_no_corr->SetTextFont(42);
+  K0s_K0s_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+  K0s_K0s_text_no_corr->AddText("Minimum bias, no correction");
+  K0s_K0s_text_no_corr->AddText("K_{s}^{0}-K_{s}^{0}");
+  K0s_K0s_text_no_corr->AddText("|#eta| < 1");
+  K0s_K0s_text_no_corr->AddText("p_{T} integrated");
+  //K0s_K0s_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_K0s_K0s, P_K0s_K0s_err));
+  K0s_K0s_text_no_corr->SetFillColorAlpha(0, 0.01);
+  K0s_K0s_text_no_corr->Draw("same");
+
+  TLegend *K0s_K0s_leg_no_corr = new TLegend(0.15, 0.5, 0.39, 0.69);
+  K0s_K0s_leg_no_corr->AddEntry(K0s_K0s_cosThetaProdPlane_US_hist, "Unlike-sign");
+  K0s_K0s_leg_no_corr->AddEntry(K0s_K0s_cosThetaProdPlane_LS_hist, "Combinatorial bckg.");
+  K0s_K0s_leg_no_corr->SetBorderSize(0);
+  K0s_K0s_leg_no_corr->SetFillColorAlpha(0, 0.01);
+  K0s_K0s_leg_no_corr->Draw("same");
+
+  K0s_K0s_cosThetaProdPlane_no_corr_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/K0s/2D_analysis/K0s_correlations/K0s_K0s_cosThetaProdPlane_no_corr.png");
+
+  //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  TCanvas *K0s_K0s_cosThetaProdPlane_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_can"), Form("K0s_K0s_cosThetaProdPlane_can"), 1200, 1000);
+
+  K0s_K0s_cosThetaProdPlane_can->cd();
+
+  //signal + background
+  K0s_K0s_cosThetaProdPlane_ME_hist->SetMarkerStyle(20);
+  K0s_K0s_cosThetaProdPlane_ME_hist->SetMarkerColor(kOrange);
+  K0s_K0s_cosThetaProdPlane_ME_hist->SetLineColor(kOrange);
+  K0s_K0s_cosThetaProdPlane_ME_hist->Sumw2();
+  K0s_K0s_cosThetaProdPlane_ME_hist->Scale(nK0sK0s/K0s_K0s_cosThetaProdPlane_ME_hist->Integral()); //scale ME to match signal+background
+  K0s_K0s_cosThetaProdPlane_ME_hist->Scale(1./K0s_K0s_cosThetaProdPlane_ME_hist->GetXaxis()->GetBinWidth(1));
+
+  K0s_K0s_cosThetaProdPlane_US_hist->Divide(K0s_K0s_cosThetaProdPlane_ME_hist); //correction of signal+bacground using ME
+  K0s_K0s_cosThetaProdPlane_US_hist->Scale(nK0sK0s/K0s_K0s_cosThetaProdPlane_US_hist->Integral()); //scale back to US integral
+  K0s_K0s_cosThetaProdPlane_US_hist->Scale(1./K0s_K0s_cosThetaProdPlane_US_hist->GetXaxis()->GetBinWidth(1)); //bin width
+  K0s_K0s_cosThetaProdPlane_US_hist->SetMinimum(0);
+  K0s_K0s_cosThetaProdPlane_US_hist->Draw("p e");
+
+  //K0s_K0s_cosThetaProdPlane_ME_hist->Draw("p e same"); //for plotting ME with uncorrected distributions
+
+
+  //background
   K0s_K0s_cosThetaProdPlane_ME_LS_hist->SetMarkerStyle(20);
   K0s_K0s_cosThetaProdPlane_ME_LS_hist->SetMarkerColor(kOrange);
   K0s_K0s_cosThetaProdPlane_ME_LS_hist->SetLineColor(kOrange);
   K0s_K0s_cosThetaProdPlane_ME_LS_hist->Sumw2();
   K0s_K0s_cosThetaProdPlane_ME_LS_hist->Scale(nK0sK0s_back/K0s_K0s_cosThetaProdPlane_ME_LS_hist->Integral()); //scale ME to match background
-  //K0s_K0s_cosThetaProdPlane_ME_LS_hist->Scale(nK0sK0s/K0s_K0s_cosThetaProdPlane_ME_LS_hist->Integral()); //scale ME to match signal+background
   K0s_K0s_cosThetaProdPlane_ME_LS_hist->Scale(1./K0s_K0s_cosThetaProdPlane_ME_LS_hist->GetXaxis()->GetBinWidth(1));
-  K0s_K0s_cosThetaProdPlane_ME_LS_hist->Draw("p e same");
+  //K0s_K0s_cosThetaProdPlane_ME_LS_hist->Draw("p e same");
 
-  //K0s_K0s_cosThetaProdPlane_LS_hist->Divide(K0s_K0s_cosThetaProdPlane_ME_LS_hist); //correction of background using ME
-  //K0s_K0s_cosThetaProdPlane_LS_hist->Scale(nK0sK0s_back/K0s_K0s_cosThetaProdPlane_LS_hist->Integral()); //scale back to raw background integral
+  K0s_K0s_cosThetaProdPlane_LS_hist->Divide(K0s_K0s_cosThetaProdPlane_ME_LS_hist); //correction of background using ME
+  K0s_K0s_cosThetaProdPlane_LS_hist->Scale(nK0sK0s_back/K0s_K0s_cosThetaProdPlane_LS_hist->Integral()); //scale back to raw background integral
   K0s_K0s_cosThetaProdPlane_LS_hist->Scale(1./K0s_K0s_cosThetaProdPlane_LS_hist->GetXaxis()->GetBinWidth(1)); //bin width
   K0s_K0s_cosThetaProdPlane_LS_hist->Draw("p e same");
 
@@ -1324,7 +1351,7 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
 
   K0s_K0s_cosThetaProdPlane_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/K0s/2D_analysis/K0s_correlations/K0s_K0s_cosThetaProdPlane.png");
 
-  //__________________________________________________________________________________________________________________________________________________________________________
+  //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   TCanvas *K0s_K0s_cosThetaProdPlane_2_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_2_can"), Form("K0s_K0s_cosThetaProdPlane_2_can"), 1200, 1000);
 
@@ -1370,6 +1397,7 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
 
   K0s_K0s_cosThetaProdPlane_2_can->SaveAs("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/K0s/2D_analysis/K0s_correlations/K0s_K0s_cosThetaProdPlane_subtract.png");
 
+  //__________________________________________________________________________________________________________________________________________________________________________
 
   float nK0sK0s_pT[nPtBins_corr][nPtBins_corr];
   float nK0sK0s_back_pT[nPtBins_corr][nPtBins_corr];
@@ -1378,9 +1406,10 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
   {
     for(unsigned int pTbin2 = 0; pTbin2 < nPtBins_corr; pTbin2++)
     {
-      TCanvas *K0s_K0s_cosThetaProdPlane_pT_can = new TCanvas("K0s_K0s_cosThetaProdPlane_pT_can", "K0s_K0s_cosThetaProdPlane_pT_can", 1200, 1000);
 
-      K0s_K0s_cosThetaProdPlane_pT_can->cd();
+      TCanvas *K0s_K0s_cosThetaProdPlane_pT_no_corr_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_pT_no_corr_can_%i,_%i", pTbin1, pTbin2), Form("K0s_K0s_cosThetaProdPlane_pT_no_corr_can_%i,_%i", pTbin1, pTbin2), 1200, 1000);
+
+      K0s_K0s_cosThetaProdPlane_pT_no_corr_can->cd();
 
       //signal + background
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->SetTitle("cos(#theta*)");
@@ -1392,13 +1421,49 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetLineColor(kRed);
       nK0sK0s_pT[pTbin1][pTbin2] = K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral();
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Sumw2();
-      //K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Add(K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2], -1);
+      K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(1./K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1)); //bin width
+      K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->SetMinimum(0);
+      K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Draw("p e");
 
+      //background
+      K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
+      K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerColor(kBlue);
+      nK0sK0s_back_pT[pTbin1][pTbin2] = K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral();
+      K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Sumw2();
+      K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Scale(1./K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->GetXaxis()->GetBinWidth(1)); //scale corrected back to background integral + bin width
+      K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Draw("p e same");
+
+
+      TPaveText *K0s_K0s_pT_text_no_corr = new TPaveText(0.6, 0.4, 0.85, 0.69, "NDC");
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      K0s_K0s_pT_text_no_corr->SetTextFont(42);
+      K0s_K0s_pT_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      K0s_K0s_pT_text_no_corr->AddText("Minimum bias, no correction");
+      K0s_K0s_pT_text_no_corr->AddText("K_{s}^{0}-K_{s}^{0}");
+      K0s_K0s_pT_text_no_corr->AddText("|#eta| < 1");
+      K0s_K0s_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{1} < %.2f", pT_bins_corr[pTbin1], pT_bins_corr[pTbin1+1]));
+      K0s_K0s_pT_text_no_corr->AddText(Form("%.2f < p_{T}^{2} < %.2f", pT_bins_corr[pTbin2], pT_bins_corr[pTbin2+1]));
+      //K0s_K0s_pT_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_K0s_K0s_pT, P_K0s_K0s_pT_err));
+      K0s_K0s_pT_text_no_corr->SetFillColorAlpha(0, 0.01);
+      K0s_K0s_pT_text_no_corr->Draw("same");
+
+      K0s_K0s_leg_no_corr->Draw("same");
+
+      K0s_K0s_cosThetaProdPlane_pT_no_corr_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/K0s/2D_analysis/K0s_correlations/K0s_K0s_cosThetaProdPlane_no_corr_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
+
+      //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+      TCanvas *K0s_K0s_cosThetaProdPlane_pT_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_pT_can_%i_%i", pTbin1, pTbin2), Form("K0s_K0s_cosThetaProdPlane_pT_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
+
+      K0s_K0s_cosThetaProdPlane_pT_can->cd();
+
+      //signal + background
       K0s_K0s_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
-      K0s_K0s_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerColor(kBlue);
+      K0s_K0s_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetMarkerColor(kOrange);
+      K0s_K0s_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->SetLineColor(kOrange);
       K0s_K0s_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Sumw2();
       K0s_K0s_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Scale(nK0sK0s_pT[pTbin1][pTbin2]/K0s_K0s_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Integral()); //scale ME to match US
-      //K0s_K0s_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]->Draw("p e same");
 
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Divide(K0s_K0s_cosThetaProdPlane_pT_ME_hist[pTbin1][pTbin2]); //correct US using ME
       K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Scale(nK0sK0s_pT[pTbin1][pTbin2]/K0s_K0s_cosThetaProdPlane_pT_US_hist[pTbin1][pTbin2]->Integral()); //scale corrected back to US integral
@@ -1408,16 +1473,10 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
 
 
       //background
-      K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
-      K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->SetMarkerColor(kBlue);
-      nK0sK0s_back_pT[pTbin1][pTbin2] = K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral();
-      K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Sumw2();
-
       K0s_K0s_cosThetaProdPlane_pT_ME_LS_hist[pTbin1][pTbin2]->SetMarkerStyle(20);
       K0s_K0s_cosThetaProdPlane_pT_ME_LS_hist[pTbin1][pTbin2]->SetMarkerColor(kBlue);
       K0s_K0s_cosThetaProdPlane_pT_ME_LS_hist[pTbin1][pTbin2]->Sumw2();
       K0s_K0s_cosThetaProdPlane_pT_ME_LS_hist[pTbin1][pTbin2]->Scale(nK0sK0s_pT[pTbin1][pTbin2]/K0s_K0s_cosThetaProdPlane_pT_ME_LS_hist[pTbin1][pTbin2]->Integral()); //scale ME to match background
-      //K0s_K0s_cosThetaProdPlane_pT_ME_LS_hist[pTbin1][pTbin2]->Draw("p e same");
 
       K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Divide(K0s_K0s_cosThetaProdPlane_pT_ME_LS_hist[pTbin1][pTbin2]); //correct background using ME
       K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Scale(nK0sK0s_back_pT[pTbin1][pTbin2]/K0s_K0s_cosThetaProdPlane_pT_LS_hist[pTbin1][pTbin2]->Integral()); //scale corrected back to background integral + bin width
@@ -1456,9 +1515,9 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
 
       K0s_K0s_cosThetaProdPlane_pT_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/K0s/2D_analysis/K0s_correlations/K0s_K0s_cosThetaProdPlane_pT1_%i_pT2_%i.png", pTbin1, pTbin2));
 
-      //________________________________________________________________________________________________________________________________________________________
+      //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-      TCanvas *K0s_K0s_cosThetaProdPlane_pT_2_can = new TCanvas("K0s_K0s_cosThetaProdPlane_pT_2_can", "K0s_K0s_cosThetaProdPlane_pT_2_can", 1200, 1000);
+      TCanvas *K0s_K0s_cosThetaProdPlane_pT_2_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_pT_2_can_%i_%i", pTbin1, pTbin2), Form("K0s_K0s_cosThetaProdPlane_pT_2_can_%i_%i", pTbin1, pTbin2), 1200, 1000);
 
       K0s_K0s_cosThetaProdPlane_pT_2_can->cd();
 
@@ -1509,9 +1568,9 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
   {
     for(unsigned int etaBin2 = 0; etaBin2 < nEtaBins; etaBin2++)
     {
-      TCanvas *K0s_K0s_cosThetaProdPlane_eta_can = new TCanvas("K0s_K0s_cosThetaProdPlane_eta_can", "K0s_K0s_cosThetaProdPlane_eta_can", 1200, 1000);
+      TCanvas *K0s_K0s_cosThetaProdPlane_eta_no_corr_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_eta_no_corr_can_%i_%i", etaBin1, etaBin2), Form("K0s_K0s_cosThetaProdPlane_eta_no_corr_can_%i_%i", etaBin1, etaBin2), 1200, 1000);
 
-      K0s_K0s_cosThetaProdPlane_eta_can->cd();
+      K0s_K0s_cosThetaProdPlane_eta_no_corr_can->cd();
 
       //signal + background
       K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->SetTitle("cos(#theta*)");
@@ -1523,9 +1582,47 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
       K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetLineColor(kRed);
       nK0sK0s_eta[etaBin1][etaBin2] = K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Integral();
       K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Sumw2();
+      K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Scale(1./K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1)); //bin width
+      K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->SetMinimum(0);
+      K0s_K0s_cosThetaProdPlane_eta_US_hist[etaBin1][etaBin2]->Draw("p e");
 
+
+      //background
+      K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
+      K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerColor(kBlue);
+      nK0sK0s_back_eta[etaBin1][etaBin2] = K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Integral();
+      K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Sumw2();
+      K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Scale(1./K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->GetXaxis()->GetBinWidth(1)); //bin width
+      K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Draw("p e same");
+
+      TPaveText *K0s_K0s_eta_text_no_corr = new TPaveText(0.6, 0.4, 0.85, 0.69, "NDC");
+      //cent_text->AddText("STAR preliminary");
+      //((TText*)cent_text->GetListOfLines()->Last())->SetTextColor(2);
+      K0s_K0s_eta_text_no_corr->SetTextFont(42);
+      K0s_K0s_eta_text_no_corr->AddText(Form("%i p+p #sqrt{s} = %i GeV", year, energy));
+      K0s_K0s_eta_text_no_corr->AddText("Minimum bias, no correction");
+      K0s_K0s_eta_text_no_corr->AddText("K_{s}^{0}-K_{s}^{0}");
+      K0s_K0s_eta_text_no_corr->AddText(Form("%.2f < #eta^{1} < %.2f", eta_bins[etaBin1], eta_bins[etaBin1+1]));
+      K0s_K0s_eta_text_no_corr->AddText(Form("%.2f < #eta^{2} < %.2f", eta_bins[etaBin2], eta_bins[etaBin2+1]));
+      K0s_K0s_eta_text_no_corr->AddText("p_{T} integrated");
+      //K0s_K0s_eta_text_no_corr->AddText(Form("P = %.2f #pm %.2f", P_K0s_K0s_eta, P_K0s_K0s_eta_err));
+      K0s_K0s_eta_text_no_corr->SetFillColorAlpha(0, 0.01);
+      K0s_K0s_eta_text_no_corr->Draw("same");
+
+      K0s_K0s_leg_no_corr->Draw("same");
+
+      K0s_K0s_cosThetaProdPlane_eta_no_corr_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/K0s/2D_analysis/K0s_correlations/K0s_K0s_cosThetaProdPlane_no_corr_eta1_%i_eta2_%i.png", etaBin1, etaBin2));
+
+      //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+      TCanvas *K0s_K0s_cosThetaProdPlane_eta_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_eta_can_%i_%i", etaBin1, etaBin2), Form("K0s_K0s_cosThetaProdPlane_eta_can_%i_%i", etaBin1, etaBin2), 1200, 1000);
+
+      K0s_K0s_cosThetaProdPlane_eta_can->cd();
+
+      //signal + background
       K0s_K0s_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
-      K0s_K0s_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMarkerColor(kBlue);
+      K0s_K0s_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetMarkerColor(kOrange);
+      K0s_K0s_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->SetLineColor(kOrange);
       K0s_K0s_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Sumw2();
       K0s_K0s_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Scale(nK0sK0s_eta[etaBin1][etaBin2]/K0s_K0s_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Integral());
       //K0s_K0s_cosThetaProdPlane_eta_ME_hist[etaBin1][etaBin2]->Draw("p e same");
@@ -1538,13 +1635,9 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
 
 
       //background
-      K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
-      K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->SetMarkerColor(kBlue);
-      nK0sK0s_back_eta[etaBin1][etaBin2] = K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Integral();
-      K0s_K0s_cosThetaProdPlane_eta_LS_hist[etaBin1][etaBin2]->Sumw2();
-
       K0s_K0s_cosThetaProdPlane_eta_ME_LS_hist[etaBin1][etaBin2]->SetMarkerStyle(20);
-      K0s_K0s_cosThetaProdPlane_eta_ME_LS_hist[etaBin1][etaBin2]->SetMarkerColor(kBlue);
+      K0s_K0s_cosThetaProdPlane_eta_ME_LS_hist[etaBin1][etaBin2]->SetMarkerColor(kOrange);
+      K0s_K0s_cosThetaProdPlane_eta_ME_LS_hist[etaBin1][etaBin2]->SetLineColor(kOrange);
       K0s_K0s_cosThetaProdPlane_eta_ME_LS_hist[etaBin1][etaBin2]->Sumw2();
       K0s_K0s_cosThetaProdPlane_eta_ME_LS_hist[etaBin1][etaBin2]->Scale(nK0sK0s_back_eta[etaBin1][etaBin2]/K0s_K0s_cosThetaProdPlane_eta_ME_LS_hist[etaBin1][etaBin2]->Integral());
       //K0s_K0s_cosThetaProdPlane_eta_ME_LS_hist[etaBin1][etaBin2]->Draw("p e same");
@@ -1585,9 +1678,9 @@ bool DoAnalysis(TChain *K0s_tree, const int ReadMode, const int energy = 510, co
 
       K0s_K0s_cosThetaProdPlane_eta_can->SaveAs(Form("/home/jvanek/C_drive_windows/Work/Analysis/STAR/Production/plots/K0s/2D_analysis/K0s_correlations/K0s_K0s_cosThetaProdPlane_eta1_%i_eta2_%i.png", etaBin1, etaBin2));
 
-      //_______________________________________________________________________________________________________________________________________________________
+      //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-      TCanvas *K0s_K0s_cosThetaProdPlane_eta_2_can = new TCanvas("K0s_K0s_cosThetaProdPlane_eta_2_can", "K0s_K0s_cosThetaProdPlane_eta_2_can", 1200, 1000);
+      TCanvas *K0s_K0s_cosThetaProdPlane_eta_2_can = new TCanvas(Form("K0s_K0s_cosThetaProdPlane_eta_2_can_%i_%i", etaBin1, etaBin2), Form("K0s_K0s_cosThetaProdPlane_eta_2_can_%i_%i", etaBin1, etaBin2), 1200, 1000);
 
       K0s_K0s_cosThetaProdPlane_eta_2_can->cd();
 
@@ -1712,7 +1805,7 @@ void Ana004_K0s_corr_2D(const int ReadMode = 0, const int energy = 510, const in
 
   if(!AnaFinish)
   {
-    cout<<"Analysis of invariant spectra ended abnormally. Abborting!"<<endl;
+    cout<<"Analysis of invariant spectra ended abnormally. Aborting!"<<endl;
 
     return;
   }
